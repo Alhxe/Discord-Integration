@@ -1,0 +1,7 @@
+#Discord
+bot_token: YOUR_TOKEN
+discord_server_id: SERVER_ID
+discord_server_prefix: '+'
+
+#Minecraft
+server_name: 'YourServerName'
