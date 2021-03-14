@@ -61,7 +61,6 @@ public class DiscordBot {
 			this.api = JDABuilder.createDefault(token).build();
 			onConnectToDiscord(plugin);
 		} catch (LoginException e) {
-			e.printStackTrace();
 			plugin.getLogger().warning("The Bot failed to start.");
 		}
 	}
