@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.JDA;
 import utils.entity.DiscordBot;
+import utils.exception.NoApiException;
 
 /**
  * Internal Controller of Plugin.
@@ -45,10 +46,8 @@ public class InternalController {
 	/**
 	 * Main constructor;
 	 * 
-	 * @param plugin     Bukkit plugin.
-	 * @param bot        Bot info.
-	 * @param dataFolder Bukkit plugin folder.
-	 * @param discordApi Bot api.
+	 * @param plugin Bukkit plugin.
+	 * @throws NoApiException 
 	 */
 	public InternalController(Plugin plugin) {
 		this.plugin = plugin;
@@ -69,6 +68,7 @@ public class InternalController {
 
 	/**
 	 * Init Discord Bot.
+	 * 
 	 * @return Finished bot object.
 	 */
 	private DiscordBot initBot() {
@@ -86,7 +86,7 @@ public class InternalController {
 		this.plugin.getLogger().info("Starting Bot");
 		return new DiscordBot(prefix, serverid, token, plugin);
 	}
-	
+
 	/**
 	 * @return Discord Api.
 	 */

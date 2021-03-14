@@ -13,8 +13,9 @@
 	</properties>
 
 	<modules>
-		<module>dicore</module>
 		<module>utils</module>
+		<module>dicore</module>
+		<module>dilogin</module>
 	</modules>
 
 	<repositories>
@@ -59,8 +60,5 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-simple</artifactId> 
-			<version>1.7.21</version> <scope>compile</scope> <optional>true</optional> 
-			</dependency> -->
 	</dependencies>
 </project>

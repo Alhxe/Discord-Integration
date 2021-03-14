@@ -2,6 +2,8 @@ package utils.entity;
 
 import java.util.HashMap;
 
+import org.bukkit.plugin.Plugin;
+
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -21,44 +23,56 @@ public class CommandHandler extends ListenerAdapter {
 	private String prefix;
 
 	/**
+	 * Main Bukkit plugin.
+	 */
+	private Plugin plugin;
+
+	/**
 	 * Add new command to the list.
 	 * 
 	 * @param command The command to add.
 	 */
 	public void registerCommand(DiscordCommand command) {
 		commands.put(command.getAlias(), command);
+		plugin.getLogger().info("Added command: "+command.getAlias());
+
 	}
 
 	/**
 	 * Main constructor of CommandHandler.
 	 * 
-	 * @param api Discord Bot Api.
+	 * @param String Discord Bot prefix.
 	 */
-	public CommandHandler(String prefix) {
-		this.prefix=prefix;
+	public CommandHandler(Plugin plugin, String prefix) {
+		this.plugin = plugin;
+		this.prefix = prefix;
 	}
 
 	/**
 	 * It is in charge of receiving the message creation events and checks if it is
 	 * a command that has been sent or not.
 	 * 
-	 * @param api   Discord Bot Api.
 	 * @param event Main event.
 	 */
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) {
+		plugin.getLogger().info("Message received: " + event.getMessage().getContentDisplay());
 
 		if (event.getAuthor().isBot())
 			return;
+		plugin.getLogger().info("The message is not from a bot");
 
 		if (!event.getMessage().getContentDisplay().startsWith(prefix))
 			return;
+		plugin.getLogger().info("The message begins with the bot prefix.");
 
 		String command = getFirstWord(prefix, event.getMessage().getContentDisplay());
+		plugin.getLogger().info("First word without prefix: " + command);
 
 		if (!commands.containsKey(command)) {
 			if (commands.containsKey(command + " " + getSecondWord(event.getMessage().getContentDisplay()))) {
 				command = command + " " + getSecondWord(event.getMessage().getContentDisplay());
+				plugin.getLogger().info("Two word command: " + command);
 			} else {
 				return;
 			}
@@ -66,7 +80,7 @@ public class CommandHandler extends ListenerAdapter {
 
 		commands.get(command).execute(getMessageWithoutCommand(command, event.getMessage().getContentDisplay(), prefix),
 				event);
-
+		plugin.getLogger().info("Command executed");
 	}
 
 	/**

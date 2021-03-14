@@ -7,8 +7,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dicore</artifactId>
-  <name>dicore</name>
-  <version>2.0.1</version>
+  <name>DICore</name>
   <build>
     <plugins>
       <plugin>

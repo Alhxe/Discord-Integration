@@ -10,8 +10,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>dicore</artifactId>
-	<version>2.0.1</version>
-	<name>dicore</name>
+	<name>DICore</name>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -21,7 +20,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.diproject</groupId>
-			<artifactId>utils</artifactId>
+			<artifactId>internalutils</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>

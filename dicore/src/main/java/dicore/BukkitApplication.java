@@ -14,6 +14,7 @@ public class BukkitApplication extends JavaPlugin {
 		getLogger().info("Plugin started");
 		Plugin plugin = getPlugin(getClass());
 		internalController = new InternalController(plugin);
+	
 	}
 
 	@Override

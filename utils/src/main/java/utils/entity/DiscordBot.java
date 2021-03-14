@@ -59,9 +59,16 @@ public class DiscordBot {
 	public void initBot(String token, Plugin plugin) {
 		try {
 			this.api = JDABuilder.createDefault(token).build();
+			api.awaitReady();
 			onConnectToDiscord(plugin);
 		} catch (LoginException e) {
-			plugin.getLogger().warning("The Bot failed to start.");
+			plugin.getLogger().warning("The Bot failed to start. You have not entered a valid token.");
+			plugin.getPluginLoader().disablePlugin(plugin);
+		} catch (InterruptedException e) {
+			plugin.getLogger().warning("The Bot failed to start. Reason:");
+			e.printStackTrace();
+			plugin.getPluginLoader().disablePlugin(plugin);
+			Thread.currentThread().interrupt();
 		}
 	}
 
@@ -71,8 +78,8 @@ public class DiscordBot {
 	 * @param api Javacord Api.
 	 */
 	private void onConnectToDiscord(Plugin plugin) {
-		
 		plugin.getLogger().info("Bot started");
-		this.commandHandler = new CommandHandler(prefix);
+		this.commandHandler = new CommandHandler(plugin, prefix);
+		api.addEventListener(this.commandHandler);
 	}
 }
