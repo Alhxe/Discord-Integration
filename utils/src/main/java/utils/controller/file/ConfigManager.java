@@ -1,4 +1,4 @@
-package utils.controller;
+package utils.controller.file;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,23 +7,25 @@ import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
 
+import utils.controller.PluginController;
+
 /**
  * Configuration file driver.
  */
-public class ConfigManager {
+public class ConfigManager implements FileController{
 
-	private String fileName;
+	private static final String FILENAME = "config.yml";
 
 	private File customConfigFile;
 
 	private Map<String, Object> yamlData;
 
-	public ConfigManager(InternalController controller, String filename, File dataFolder) {
-		this.fileName = filename;
-		this.customConfigFile = new File(dataFolder, this.fileName);
+	@SuppressWarnings("unchecked")
+	public ConfigManager(PluginController controller, File dataFolder) {
+		this.customConfigFile = new File(dataFolder, FILENAME);
 		if (!this.customConfigFile.exists()) {
 			this.customConfigFile.getParentFile().mkdirs();
-			controller.saveResource(this.fileName);
+			saveResource(controller.getPlugin(), dataFolder, FILENAME, false);
 		}
 		Yaml yaml = new Yaml();
 		try {

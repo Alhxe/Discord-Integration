@@ -75,11 +75,11 @@ public class DiscordBot {
 	/**
 	 * When the bot starts successfully it passes here.
 	 * 
-	 * @param api Javacord Api.
+	 * @param plugin Bukkit plugin.
 	 */
 	private void onConnectToDiscord(Plugin plugin) {
 		plugin.getLogger().info("Bot started");
-		this.commandHandler = new CommandHandler(plugin, prefix);
+		this.commandHandler = new CommandHandler(prefix);
 		api.addEventListener(this.commandHandler);
 	}
 }

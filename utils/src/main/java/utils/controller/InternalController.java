@@ -1,22 +1,18 @@
 package utils.controller;
 
 import java.io.File;
-import java.util.logging.Level;
 
 import org.bukkit.plugin.Plugin;
 
 import lombok.Getter;
-import lombok.Setter;
-import net.dv8tion.jda.api.JDA;
-import utils.entity.DiscordBot;
-import utils.exception.NoApiException;
+import utils.controller.file.ConfigManager;
+import utils.controller.file.YamlManager;
 
 /**
- * Internal Controller of Plugin.
+ * This controller is in charge of configuring and obtaining the default files of the plugin.
  */
 @Getter
-@Setter
-public class InternalController {
+public class InternalController implements PluginController{
 
 	/**
 	 * The driver for the plugin configuration file.
@@ -24,74 +20,45 @@ public class InternalController {
 	private ConfigManager configManager;
 
 	/**
+	 * The driver for the plugin lang file.
+	 */
+	private YamlManager langManager;
+
+	/**
 	 * The bukkit plugin.
 	 */
 	private Plugin plugin;
 
 	/**
-	 * The driver for the plugin lang file.
-	 */
-	private LangManager langManager;
-
-	/**
-	 * Contains the bot config information.
-	 */
-	private DiscordBot bot;
-
-	/**
-	 * Path of the main plugin folder.
+	 * Path of the plugin folder.
 	 */
 	private File dataFolder;
 
 	/**
-	 * Main constructor;
+	 * Main Class Constructor.
 	 * 
-	 * @param plugin Bukkit plugin.
-	 * @throws NoApiException 
+	 * @param plugin         Bukkit plugin.
+	 * @param coreController Core controller.
 	 */
-	public InternalController(Plugin plugin) {
+	public InternalController(Plugin plugin, CoreController coreController) {
 		this.plugin = plugin;
-		this.dataFolder = plugin.getDataFolder();
-		this.configManager = new ConfigManager(this, "config.yml", plugin.getDataFolder());
-		this.langManager = new LangManager(this, "lang.yml", plugin.getDataFolder());
-		this.bot = initBot();
+		this.dataFolder = getInternalPluginDataFolder(plugin, coreController);
+		this.configManager = new ConfigManager(this, dataFolder);
+		this.langManager = new YamlManager(this, "lang.yml", dataFolder);
 	}
 
 	/**
-	 * Save resource in plugin folder.
+	 * Gets the plugin folder located in the DI folder
 	 * 
-	 * @param name Name of file.
+	 * @param plugin         Bukkit plugin.
+	 * @param coreController Core controller.
+	 * @return Plugin folder.
 	 */
-	public void saveResource(String name) {
-		plugin.saveResource(name, false);
+	private File getInternalPluginDataFolder(Plugin plugin, CoreController coreController) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(String.valueOf(coreController.getDataFolder().getAbsolutePath()));
+		stringBuilder.append("/");
+		stringBuilder.append(plugin.getName());
+		return new File(stringBuilder.toString());
 	}
-
-	/**
-	 * Init Discord Bot.
-	 * 
-	 * @return Finished bot object.
-	 */
-	private DiscordBot initBot() {
-
-		String token = configManager.getString("bot_token");
-		long serverid = configManager.getLong("discord_server_id");
-		String prefix = configManager.getString("discord_server_prefix");
-
-		if (token == null || prefix == null || serverid == 0L) {
-			this.plugin.getLogger().log(Level.SEVERE,
-					"Failed to load the data required to start the bot. Did you enter the server ID, token and prefix correctly?");
-			this.plugin.getPluginLoader().disablePlugin((Plugin) this);
-		}
-
-		this.plugin.getLogger().info("Starting Bot");
-		return new DiscordBot(prefix, serverid, token, plugin);
-	}
-
-	/**
-	 * @return Discord Api.
-	 */
-	public JDA getDiscordApi() {
-		return this.bot.getApi();
-	}
-
 }
