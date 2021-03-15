@@ -34,7 +34,7 @@ public class CommandHandler extends ListenerAdapter {
 	 */
 	public void registerCommand(DiscordCommand command) {
 		commands.put(command.getAlias(), command);
-		plugin.getLogger().info("Added command: "+command.getAlias());
+		plugin.getLogger().finest("Added command: "+command.getAlias());
 
 	}
 
@@ -56,23 +56,23 @@ public class CommandHandler extends ListenerAdapter {
 	 */
 	@Override
 	public void onMessageReceived(MessageReceivedEvent event) {
-		plugin.getLogger().info("Message received: " + event.getMessage().getContentDisplay());
+		plugin.getLogger().finest("Message received: " + event.getMessage().getContentDisplay());
 
 		if (event.getAuthor().isBot())
 			return;
-		plugin.getLogger().info("The message is not from a bot");
+		plugin.getLogger().finest("The message is not from a bot");
 
 		if (!event.getMessage().getContentDisplay().startsWith(prefix))
 			return;
-		plugin.getLogger().info("The message begins with the bot prefix.");
+		plugin.getLogger().finest("The message begins with the bot prefix.");
 
 		String command = getFirstWord(prefix, event.getMessage().getContentDisplay());
-		plugin.getLogger().info("First word without prefix: " + command);
+		plugin.getLogger().finest("First word without prefix: " + command);
 
 		if (!commands.containsKey(command)) {
 			if (commands.containsKey(command + " " + getSecondWord(event.getMessage().getContentDisplay()))) {
 				command = command + " " + getSecondWord(event.getMessage().getContentDisplay());
-				plugin.getLogger().info("Two word command: " + command);
+				plugin.getLogger().finest("Two word command: " + command);
 			} else {
 				return;
 			}
@@ -80,7 +80,7 @@ public class CommandHandler extends ListenerAdapter {
 
 		commands.get(command).execute(getMessageWithoutCommand(command, event.getMessage().getContentDisplay(), prefix),
 				event);
-		plugin.getLogger().info("Command executed");
+		plugin.getLogger().finest("Command executed");
 	}
 
 	/**
