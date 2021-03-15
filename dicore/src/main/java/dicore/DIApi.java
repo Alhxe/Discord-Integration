@@ -3,6 +3,7 @@ package dicore;
 import org.bukkit.plugin.Plugin;
 
 import lombok.Getter;
+import utils.controller.CoreController;
 import utils.controller.InternalController;
 import utils.exception.NoApiException;
 
@@ -13,20 +14,29 @@ import utils.exception.NoApiException;
 public class DIApi {
 
 	/**
-	 * Core controller
+	 * Core controller.
+	 */
+	private CoreController coreController;
+
+	/**
+	 * Contains the plugin driver.
 	 */
 	private InternalController internalController;
 
 	/**
-	 * Main Discord Integration Api. When this class is instantiated, the internal controller of the core is obtained.
+	 * Main Discord Integration Api. When this class is instantiated, the internal
+	 * controller of the core is obtained.
+	 * 
 	 * @param plugin Plugin from where it is instantiated. The goal is the logger.
-	 * @throws NoApiException In case the internal controller of the core is not instantiated, it will throw an error.
+	 * @throws NoApiException In case the internal controller of the core is not
+	 *                        instantiated, it will throw an error.
 	 */
 	public DIApi(Plugin plugin) throws NoApiException {
 		if (BukkitApplication.getInternalController() == null) {
 			throw new NoApiException(plugin);
 		}
-		this.internalController = BukkitApplication.getInternalController();
+		this.coreController = BukkitApplication.getInternalController();
+		this.internalController = new InternalController(plugin, coreController);
 	}
 
 }

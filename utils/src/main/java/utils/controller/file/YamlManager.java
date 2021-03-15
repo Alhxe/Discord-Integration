@@ -1,4 +1,4 @@
-package utils.controller;
+package utils.controller.file;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,26 +8,40 @@ import java.util.Map;
 import org.bukkit.entity.Player;
 import org.yaml.snakeyaml.Yaml;
 
+import utils.controller.PluginController;
+
 /**
  * Language file driver.
  */
-public class LangManager {
+public class YamlManager implements FileController{
 
+	/**
+	 * Name of the file to be controlled.
+	 */
 	private String fileName;
 
+	/**
+	 * File configuration.
+	 */
 	private File customConfigFile;
 
+	/**
+	 * Map of the data obtained from the yaml.
+	 */
 	private Map<String, Object> yamlData;
+	
+	/**
+	 * Plugin controller.
+	 */
+	PluginController controller;
 
-	private InternalController controller;
-
-	public LangManager(InternalController controller, String filename, File dataFolder) {
+	@SuppressWarnings("unchecked")
+	public YamlManager(PluginController controller, String filename, File dataFolder) {
 		this.fileName = filename;
 		this.customConfigFile = new File(dataFolder, this.fileName);
-		this.controller = controller;
 		if (!this.customConfigFile.exists()) {
 			this.customConfigFile.getParentFile().mkdirs();
-			controller.saveResource(this.fileName);
+			saveResource(controller.getPlugin(), dataFolder, filename, false);
 		}
 		Yaml yaml = new Yaml();
 		try {

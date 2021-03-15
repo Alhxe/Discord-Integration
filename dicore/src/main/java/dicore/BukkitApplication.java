@@ -3,17 +3,17 @@ package dicore;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import utils.controller.InternalController;
+import utils.controller.CoreController;
 
 public class BukkitApplication extends JavaPlugin {
 
-	private static InternalController internalController;
+	private static CoreController internalController;
 
 	@Override
 	public void onEnable() {
 		getLogger().info("Plugin started");
 		Plugin plugin = getPlugin(getClass());
-		internalController = new InternalController(plugin);
+		internalController = new CoreController(plugin);
 	
 	}
 
@@ -22,7 +22,7 @@ public class BukkitApplication extends JavaPlugin {
 		getLogger().info("Plugin disabled");
 	}
 
-	public static InternalController getInternalController() {
+	public static CoreController getInternalController() {
 		return internalController;
 	}
 
