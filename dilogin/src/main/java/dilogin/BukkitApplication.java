@@ -14,21 +14,31 @@ public class BukkitApplication extends JavaPlugin {
 	/**
 	 * Discord Integration Core Api.
 	 */
-	private DIApi diapi;
+	private static DIApi diapi;
 
+	/**
+	 * Main DILogin plugin.
+	 */
 	private Plugin plugin;
-	
+
 	@Override
 	public void onEnable() {
 		getLogger().info("Plugin started");
 		plugin = getPlugin(getClass());
-		
-		connectWithCoreApi();
-		
-		diapi.getInternalController().getBot().getCommandHandler().registerCommand(new PingCommand());
 
+		connectWithCoreApi();
 	}
 
+	/**
+	 * @return Discord Integration Api.
+	 */
+	public static DIApi getDIApi() {
+		return diapi;
+	}
+
+	/**
+	 * Connect with DIApi.
+	 */
 	private void connectWithCoreApi() {
 		try {
 			diapi = new DIApi(plugin);
