@@ -4,6 +4,9 @@ import org.bukkit.plugin.Plugin;
 
 import utils.controller.file.ConfigManager;
 
+/**
+ * Interace of internal controllers.
+ */
 public interface PluginController {
 	
 	/**

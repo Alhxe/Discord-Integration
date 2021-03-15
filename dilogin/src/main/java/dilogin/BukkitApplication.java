@@ -1,9 +1,14 @@
 package dilogin;
 
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import dicore.DIApi;
+import dilogin.minecraft.command.ForceLoginCommand;
+import dilogin.minecraft.command.RegisterCommand;
+import dilogin.minecraft.command.UnregisterCommand;
+import dilogin.minecraft.event.UserLoginEvent;
 import utils.exception.NoApiException;
 
 /**
@@ -14,7 +19,7 @@ public class BukkitApplication extends JavaPlugin {
 	/**
 	 * Discord Integration Core Api.
 	 */
-	private static DIApi diapi;
+	private static DIApi api;
 
 	/**
 	 * Main DILogin plugin.
@@ -27,13 +32,37 @@ public class BukkitApplication extends JavaPlugin {
 		plugin = getPlugin(getClass());
 
 		connectWithCoreApi();
+		initCommands();
+		initEvents();
 	}
 
 	/**
 	 * @return Discord Integration Api.
 	 */
 	public static DIApi getDIApi() {
-		return diapi;
+		return api;
+	}
+
+	/**
+	 * Add the commands to bukkit.
+	 */
+	private void initCommands() {
+		initUniqueCommand("register", (CommandExecutor) new RegisterCommand());
+		initUniqueCommand("forcelogin", (CommandExecutor) new ForceLoginCommand());
+		initUniqueCommand("unregister", (CommandExecutor) new UnregisterCommand());
+	}
+
+	/**
+	 * Add to each command that the server must respond in case it does not have
+	 * permissions.
+	 * 
+	 * @param command  Bukkit command.
+	 * @param executor CommandExecutor.
+	 */
+	private void initUniqueCommand(String command, CommandExecutor executor) {
+		getCommand(command).setExecutor(executor);
+		getCommand(command)
+				.setPermissionMessage(api.getCoreController().getLangManager().getString("no_permission"));
 	}
 
 	/**
@@ -41,10 +70,14 @@ public class BukkitApplication extends JavaPlugin {
 	 */
 	private void connectWithCoreApi() {
 		try {
-			diapi = new DIApi(plugin);
+			api = new DIApi(plugin);
 		} catch (NoApiException e) {
 			e.printStackTrace();
 			plugin.getPluginLoader().disablePlugin(plugin);
 		}
+	}
+	
+	private void initEvents() {
+		getServer().getPluginManager().registerEvents(new UserLoginEvent(), plugin);
 	}
 }

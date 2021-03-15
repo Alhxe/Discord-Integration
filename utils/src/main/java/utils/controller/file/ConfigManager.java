@@ -43,4 +43,12 @@ public class ConfigManager implements FileController{
 	public long getLong(String path) {
 		return Long.parseLong(this.yamlData.get(path).toString());
 	}
+	
+	public boolean getBoolean(String path) {
+		return Boolean.parseBoolean(this.yamlData.get(path).toString());
+	}
+	
+	public int getInt(String path) {
+		return Integer.parseInt(this.yamlData.get(path).toString());
+	}
 }
