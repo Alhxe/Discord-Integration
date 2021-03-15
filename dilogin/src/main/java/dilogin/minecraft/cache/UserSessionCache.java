@@ -4,13 +4,14 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Optional;
 
+import dicore.BukkitApplication;
 import dilogin.entity.UserSession;
 
 /**
  * Contains the list of users with valid and active sessions.
  */
 public class UserSessionCache {
-	
+
 	/**
 	 * Prohibits instantiation of the class.
 	 */
@@ -69,6 +70,19 @@ public class UserSessionCache {
 				return Optional.of(user);
 		}
 		return Optional.empty();
+	}
+
+	/**
+	 * Add new session.
+	 * 
+	 * @param name Player's name.
+	 * @param ip   Player's ip.
+	 */
+	public static void addSession(String name, String ip) {
+		int minutes = BukkitApplication.getInternalController().getConfigManager().getInt("session_time_min");
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.MINUTE, minutes);
+		sessions.put(new UserSession(name, ip), c.getTimeInMillis());
 	}
 
 }

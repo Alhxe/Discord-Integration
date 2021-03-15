@@ -1,13 +1,13 @@
 package dilogin.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
  * Contains the user's session information.
  */
-@Getter @Setter @RequiredArgsConstructor
+@Getter @Setter @AllArgsConstructor
 public class UserSession {
 	
 	/**

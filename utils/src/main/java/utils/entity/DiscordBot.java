@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 /**
  * Contains the main information of the bot.
@@ -58,7 +59,7 @@ public class DiscordBot {
 	 */
 	public void initBot(String token, Plugin plugin) {
 		try {
-			this.api = JDABuilder.createDefault(token).build();
+			this.api = JDABuilder.createDefault(token).enableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.DIRECT_MESSAGES).build();
 			api.awaitReady();
 			onConnectToDiscord(plugin);
 		} catch (LoginException e) {

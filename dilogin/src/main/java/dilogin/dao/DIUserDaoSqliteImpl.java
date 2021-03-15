@@ -1,4 +1,4 @@
-package dilogin.discord.event.dao;
+package dilogin.dao;
 
 import dilogin.entity.DIUser;
 

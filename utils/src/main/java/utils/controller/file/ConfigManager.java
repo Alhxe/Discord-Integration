@@ -36,8 +36,7 @@ public class ConfigManager implements FileController{
 	}
 
 	public String getString(String path) {
-		return this.yamlData.get(path).toString().replace("&", "").replace("%minecraft_servername%",
-				this.yamlData.get("server_name").toString());
+		return this.yamlData.get(path).toString().replace("&", "§");
 	}
 
 	public long getLong(String path) {

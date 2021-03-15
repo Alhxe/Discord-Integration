@@ -24,7 +24,7 @@ public class BukkitApplication extends JavaPlugin {
 	/**
 	 * Main DILogin plugin.
 	 */
-	private Plugin plugin;
+	private static Plugin plugin;
 
 	@Override
 	public void onEnable() {
@@ -77,7 +77,17 @@ public class BukkitApplication extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Init Bukkit events.
+	 */
 	private void initEvents() {
 		getServer().getPluginManager().registerEvents(new UserLoginEvent(), plugin);
+	}
+	
+	/**
+	 * @return Get Main Bukkit plugin.
+	 */
+	public static Plugin getPlugin() {
+		return plugin;
 	}
 }

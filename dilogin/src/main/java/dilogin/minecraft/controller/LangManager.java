@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 
 import dilogin.BukkitApplication;
 import dilogin.entity.DIUser;
+import net.dv8tion.jda.api.entities.User;
 
 /**
  * This class transforms the elements received from the lang file into
@@ -19,7 +20,6 @@ public class LangManager {
 	}
 
 	/**
-	 * 
 	 * @param path Variable searched.
 	 * @return Original message.
 	 */
@@ -30,7 +30,6 @@ public class LangManager {
 	}
 
 	/**
-	 * 
 	 * @param player Bukkit player.
 	 * @param path   Variable searched.
 	 * @return Message by changing the placeholders.
@@ -40,7 +39,6 @@ public class LangManager {
 	}
 
 	/**
-	 * 
 	 * @param user
 	 * @param player Bukkit player.
 	 * @param path   Variable searched.
@@ -51,4 +49,14 @@ public class LangManager {
 				String.valueOf(user.getPlayerDiscord().getName()) + "#" + user.getPlayerDiscord().getDiscriminator());
 	}
 
+	/**
+	 * @param user   Discord user.
+	 * @param player Bukkit player.
+	 * @param path   Variable searched.
+	 * @return Message by changing the placeholders.
+	 */
+	public static String getString(User user, Player player, String path) {
+		return getString(player, path).replace("%discriminated_discord_name%",
+				String.valueOf(user.getName()) + "#" + user.getDiscriminator());
+	}
 }

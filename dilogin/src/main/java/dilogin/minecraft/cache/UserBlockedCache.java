@@ -7,7 +7,7 @@ import java.util.TreeSet;
  * Contains the list of temporarily blocked users.
  */
 public class UserBlockedCache {
-	
+
 	/**
 	 * Prohibits instantiation of the class.
 	 */
@@ -36,6 +36,14 @@ public class UserBlockedCache {
 	 */
 	public static void remove(String playerName) {
 		blockedUsers.remove(playerName);
+	}
+
+	/**
+	 * @param playerName Bukkit Player's name.
+	 * @return True if player is blocked.
+	 */
+	public static boolean contains(String playerName) {
+		return blockedUsers.contains(playerName);
 	}
 
 }
