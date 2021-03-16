@@ -3,7 +3,7 @@ package di.dilogin.minecraft.cache;
 import java.util.HashMap;
 import java.util.Optional;
 
-import net.dv8tion.jda.api.entities.Message;
+import di.dilogin.entity.TmpMessage;
 
 /**
  * Contains users who are in the process of registering / logging in
@@ -20,19 +20,19 @@ public class TmpCache {
 	/**
 	 * List of users pending login.
 	 */
-	private static HashMap<String, Message> loginUserList = new HashMap<>();
+	private static final HashMap<String, TmpMessage> loginUserList = new HashMap<>();
 
 	/**
 	 * List of users pending registration.
 	 */
-	private static HashMap<String, Message> registerUserList = new HashMap<>();
+	private static final HashMap<String, TmpMessage> registerUserList = new HashMap<>();
 
 	/**
 	 * Add a player to the pending registration list.
 	 * 
 	 * @param playerName Bukkit player's name.
 	 */
-	public static void addRegister(String playerName, Message message) {
+	public static void addRegister(String playerName, TmpMessage message) {
 		registerUserList.put(playerName, message);
 	}
 
@@ -41,7 +41,7 @@ public class TmpCache {
 	 * 
 	 * @param playerName Bukkit player's name.
 	 */
-	public static void addLogin(String playerName, Message message) {
+	public static void addLogin(String playerName, TmpMessage message) {
 		loginUserList.put(playerName, message);
 	}
 
@@ -87,7 +87,7 @@ public class TmpCache {
 	 * @param playerName Bukkit player's name.
 	 * @return Gets the possible message.
 	 */
-	public static Optional<Message> getRegisterMessage(String playerName) {
+	public static Optional<TmpMessage> getRegisterMessage(String playerName) {
 		return Optional.ofNullable(registerUserList.get(playerName));
 	}
 
@@ -95,8 +95,36 @@ public class TmpCache {
 	 * @param playerName Bukkit player's name.
 	 * @return Gets the possible message.
 	 */
-	public static Optional<Message> getLoginMessage(String playerName) {
+	public static Optional<TmpMessage> getLoginMessage(String playerName) {
 		return Optional.ofNullable(loginUserList.get(playerName));
+	}
+
+	/**
+	 * @param id Message id sent in the registration request.
+	 * @return Possible register message.
+	 */
+	public static Optional<TmpMessage> getRegisterMessage(long id) {
+		return registerUserList.values().stream().filter(tmpMessage -> tmpMessage.getMessage().getIdLong() == id)
+				.findFirst();
+	}
+
+	/**
+	 * @param id Message id sent in the login request.
+	 * @return Possible login message.
+	 */
+	public static Optional<TmpMessage> getLoginMessage(long id) {
+		return loginUserList.values().stream().filter(tmpMessage -> tmpMessage.getMessage().getIdLong() == id)
+				.findFirst();
+	}
+
+	/**
+	 * Delete all messages.
+	 */
+	public static void clearAll() {
+		loginUserList.values().forEach(tmpMessage->tmpMessage.getMessage().delete().queue());
+		loginUserList.clear();
+		registerUserList.values().forEach(tmpMessage->tmpMessage.getMessage().delete().queue());
+		registerUserList.clear();
 	}
 
 }

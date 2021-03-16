@@ -1,9 +1,8 @@
 package di.dilogin.minecraft.command;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,6 +14,7 @@ import di.dilogin.BukkitApplication;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.dao.DIUserDaoSqliteImpl;
+import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.internal.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -69,41 +69,56 @@ public class RegisterCommand implements CommandExecutor {
 			Optional<User> userOpt = Optional
 					.ofNullable(api.getCoreController().getDiscordApi().getUserByTag(nick.replace(" ", "")));
 			if (!userOpt.isPresent()) {
-				player.sendMessage(
-						LangManager.getString(player, "Internal error.").replace("%discriminated_discord_name%", nick));
+				player.sendMessage(LangManager.getString(player, "register_user_not_detected")
+						.replace("%discriminated_discord_name%", nick));
 				return false;
 			}
 
 			User user = userOpt.get();
 
+			if (userDao.getDiscordUserAccounts(user) >= api.getInternalController().getConfigManager()
+					.getInt("register_max_discord_accounts")) {
+				player.sendMessage(LangManager.getString(player, "register_max_accounts")
+						.replace("%discriminated_discord_name%", nick.replace(" ", "")));
+				return false;
+			}
+
 			player.sendMessage(LangManager.getString(user, player, "register_submit"));
 
 			MessageEmbed messageEmbed = getEmbedMessage(player, user);
 
-			user.openPrivateChannel().submit()
-					.thenAccept(channel -> channel.sendMessage(messageEmbed).submit().thenAccept(message -> {
-						message.addReaction(emoji).queue();
-						TmpCache.addRegister(player.getName(), message);
-					})).exceptionally(tw -> {
-						try {
-							TextChannel channel = api.getCoreController().getDiscordApi().getTextChannelById(
-									api.getInternalController().getConfigManager().getLong("channel"));
-
-							channel.sendMessage(user.getAsMention()).submit()
-									.thenAccept(message -> deleteMessage(message, 5));
-
-							Message message = channel.sendMessage(messageEmbed).submit().get();
-							message.addReaction(emoji).complete();
-							TmpCache.addRegister(player.getName(), message);
-
-						} catch (InterruptedException | ExecutionException e) {
-							e.printStackTrace();
-							Thread.currentThread().interrupt();
-						}
-						return null;
-					});
+			sendMessage(user, player, messageEmbed);
 		}
 		return true;
+	}
+
+	/**
+	 * Send message to user register.
+	 * 
+	 * @param user         Discord user.
+	 * @param player       Bukkit player.
+	 * @param messageEmbed Embed message.
+	 */
+	private void sendMessage(User user, Player player, MessageEmbed messageEmbed) {
+		user.openPrivateChannel().submit()
+				.thenAccept(channel -> channel.sendMessage(messageEmbed).submit().thenAccept(message -> {
+					message.addReaction(emoji).queue();
+					TmpCache.addRegister(player.getName(), new TmpMessage(player, user, message));
+				}).whenComplete((message, error) -> {
+					if (error == null)
+						return;
+
+					TextChannel serverchannel = api.getCoreController().getDiscordApi()
+							.getTextChannelById(api.getInternalController().getConfigManager().getLong("channel"));
+
+					serverchannel.sendMessage(user.getAsMention()).delay(Duration.ofSeconds(10))
+							.flatMap(Message::delete).queue();
+
+					Message servermessage = serverchannel.sendMessage(messageEmbed).submit().join();
+					servermessage.addReaction(emoji).queue();
+					TmpCache.addRegister(player.getName(), new TmpMessage(player, user, servermessage));
+
+				}));
 	}
 
 	/**
@@ -123,7 +138,8 @@ public class RegisterCommand implements CommandExecutor {
 					.getGuildById(api.getCoreController().getConfigManager().getLong("discord_server_id")));
 			if (optGuild.isPresent()) {
 				String url = optGuild.get().getIconUrl();
-				embedBuilder.setThumbnail(url);
+				if (url != null)
+					embedBuilder.setThumbnail(url);
 			}
 		}
 
@@ -161,25 +177,6 @@ public class RegisterCommand implements CommandExecutor {
 		} catch (Exception e) {
 			return false;
 		}
-	}
-
-	/**
-	 * Delete a message after a certain time.
-	 * 
-	 * @param message Message to be deleted.
-	 * @param seconds Time in which it will be erased.
-	 */
-	public static void deleteMessage(Message message, int seconds) {
-		Executors.newCachedThreadPool().submit(() -> {
-			int millis = seconds * 1000;
-			try {
-				Thread.sleep(millis);
-				message.delete().submit();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-				Thread.currentThread().interrupt();
-			}
-		});
 	}
 
 }

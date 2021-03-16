@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dilogin</artifactId>
   <name>DILogin</name>
-  <version>3.0.0-alpha3</version>
+  <version>3.0.1</version>
   <build>
     <plugins>
       <plugin>
@@ -58,4 +58,8 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+  <properties>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
 </project>

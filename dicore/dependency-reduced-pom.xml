@@ -23,7 +23,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>dicore.BukkitApplication</mainClass>
+                  <mainClass>di.dicore.BukkitApplication</mainClass>
                 </transformer>
               </transformers>
             </configuration>

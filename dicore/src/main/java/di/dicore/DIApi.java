@@ -39,4 +39,13 @@ public class DIApi {
 		this.internalController = new InternalController(plugin, coreController);
 	}
 
+	/**
+	 * Add a new event as listener.
+	 * 
+	 * @param listener Discord Listener.
+	 */
+	public void registerDiscordEvent(Object listener) {
+		this.coreController.getDiscordApi().addEventListener(listener);
+	}
+
 }

@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Optional;
 
-import di.dicore.BukkitApplication;
+import di.dilogin.BukkitApplication;
 import di.dilogin.entity.UserSession;
 
 /**
@@ -79,7 +79,7 @@ public class UserSessionCache {
 	 * @param ip   Player's ip.
 	 */
 	public static void addSession(String name, String ip) {
-		int minutes = BukkitApplication.getInternalController().getConfigManager().getInt("session_time_min");
+		int minutes = BukkitApplication.getDIApi().getInternalController().getConfigManager().getInt("session_time_min");
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.MINUTE, minutes);
 		sessions.put(new UserSession(name, ip), c.getTimeInMillis());

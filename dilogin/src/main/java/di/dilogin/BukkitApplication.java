@@ -6,9 +6,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import di.dicore.DIApi;
 import di.dilogin.controller.DBController;
+import di.dilogin.discord.event.UserReactionMessageEvent;
+import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.command.ForceLoginCommand;
 import di.dilogin.minecraft.command.RegisterCommand;
 import di.dilogin.minecraft.command.UnregisterCommand;
+import di.dilogin.minecraft.event.UserBlockEvents;
+import di.dilogin.minecraft.event.UserLeaveEvent;
 import di.dilogin.minecraft.event.UserLoginEvent;
 import di.internal.exception.NoApiException;
 
@@ -35,7 +39,13 @@ public class BukkitApplication extends JavaPlugin {
 		connectWithCoreApi();
 		initCommands();
 		initEvents();
+		initDiscordEvents();
 		DBController.getConnect();
+	}
+	
+	@Override
+	public void onDisable() {
+		TmpCache.clearAll();
 	}
 
 	/**
@@ -43,6 +53,13 @@ public class BukkitApplication extends JavaPlugin {
 	 */
 	public static DIApi getDIApi() {
 		return api;
+	}
+	
+	/**
+	 * @return Get Main Bukkit plugin.
+	 */
+	public static Plugin getPlugin() {
+		return plugin;
 	}
 
 	/**
@@ -84,12 +101,15 @@ public class BukkitApplication extends JavaPlugin {
 	 */
 	private void initEvents() {
 		getServer().getPluginManager().registerEvents(new UserLoginEvent(), plugin);
+		getServer().getPluginManager().registerEvents(new UserLeaveEvent(), plugin);
+		getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
 	}
 	
 	/**
-	 * @return Get Main Bukkit plugin.
+	 * Records Discord events.
 	 */
-	public static Plugin getPlugin() {
-		return plugin;
+	private void initDiscordEvents() {
+		api.registerDiscordEvent(new UserReactionMessageEvent());
 	}
+	
 }
