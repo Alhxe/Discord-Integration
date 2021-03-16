@@ -3,12 +3,16 @@ channel: CHANNEL_ID
 
 #Register/login options
 register_time_until_kick: 60
+register_max_discord_accounts: 3
 login_time_until_kick: 30
 
 #Messages
 discord_embed_color: '#466AC7'
 discord_embed_server_image: true
 discord_embed_timestamp: true
+#This is the emoji codepoint. You can find it on some page like https://emojipedia.org/
+#Find the emoji you want and scroll down until you find the "Codepoint" section.
+discord_embed_emoji: 'U+2B50'
 
 #Sessions
 sessions: true

@@ -11,7 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>dicore</artifactId>
 	<name>DICore</name>
-	<version>2.0.1</version>
+	<version>2.0.1-beta</version>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -21,8 +21,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.diproject</groupId>
-			<artifactId>internalutils</artifactId>
-			<version>1.0.2</version>
+			<artifactId>internal</artifactId>
+			<version>1.0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -64,7 +64,7 @@
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>dicore.BukkitApplication</mainClass>
+									<mainClass>di.dicore.BukkitApplication</mainClass>
 								</transformer>
 							</transformers>
 						</configuration>
