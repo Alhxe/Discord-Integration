@@ -13,7 +13,7 @@
 	</properties>
 
 	<modules>
-		<module>utils</module>
+		<module>internal</module>
 		<module>dicore</module>
 		<module>dilogin</module>
 	</modules>

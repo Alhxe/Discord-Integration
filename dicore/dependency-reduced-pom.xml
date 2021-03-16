@@ -8,6 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dicore</artifactId>
   <name>DICore</name>
+  <version>2.0.1</version>
   <build>
     <plugins>
       <plugin>

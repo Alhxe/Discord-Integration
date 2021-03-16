@@ -1,38 +1,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.diproject</groupId>
 		<artifactId>diproject</artifactId>
 		<version>2.0.0</version>
 	</parent>
 
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>dicore</artifactId>
-	<name>DICore</name>
-	<version>2.0.1-beta</version>
-
-	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>
+	<artifactId>dilogin</artifactId>
+	<version>3.0.0-alpha3</version>
+	<name>DILogin</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.diproject</groupId>
-			<artifactId>internal</artifactId>
-			<version>1.0.3</version>
+			<artifactId>dicore</artifactId>
+			<version>2.0.1-beta</version>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.25</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.25</version>
+			<groupId>org.xerial</groupId>
+			<artifactId>sqlite-jdbc</artifactId>
+			<version>3.34.0</version>
 		</dependency>
 	</dependencies>
 
@@ -64,7 +53,7 @@
 							<transformers>
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>di.dicore.BukkitApplication</mainClass>
+									<mainClass>dicore.BukkitApplication</mainClass>
 								</transformer>
 							</transformers>
 						</configuration>
@@ -74,4 +63,3 @@
 		</plugins>
 	</build>
 </project>
-

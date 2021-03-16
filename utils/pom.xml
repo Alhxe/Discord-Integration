@@ -9,8 +9,8 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>internalutils</artifactId>
-	<version>1.0.1</version>
-	<name>InternalUtils</name>
+	<artifactId>internal</artifactId>
+	<version>1.0.3</version>
+	<name>internal</name>
 
 </project>
