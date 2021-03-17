@@ -38,23 +38,24 @@ public class RegisterCommand implements DiscordCommand {
 
 	@Override
 	public void execute(String message, MessageReceivedEvent event) {
-		// Check if user exists.
+
+		event.getMessage().delete().delay(Duration.ofSeconds(20)).queue();
 		if (userDao.containsDiscordId(event.getAuthor().getIdLong())) {
 			event.getChannel().sendMessage(LangManager.getString("register_already_exists"))
-					.delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
+					.delay(Duration.ofSeconds(20)).flatMap(Message::delete).queue();
 			return;
 		}
-		
+
 		// Check account limits.
 		if (userDao.getDiscordUserAccounts(event.getAuthor()) >= api.getInternalController().getConfigManager()
 				.getInt("register_max_discord_accounts")) {
 			event.getChannel().sendMessage(LangManager.getString("register_max_accounts"))
-					.delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
+					.delay(Duration.ofSeconds(20)).flatMap(Message::delete).queue();
 			return;
 		}
 
 		// Check arguments.
-		if (message.equals("") || message.isEmpty() || message.isBlank()) {
+		if (message.equals("") || message.isEmpty()) {
 			event.getChannel().sendMessage(LangManager.getString("register_arguments")).delay(Duration.ofSeconds(10))
 					.flatMap(Message::delete).queue();
 			return;

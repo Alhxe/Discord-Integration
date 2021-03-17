@@ -42,7 +42,8 @@ public class UserLeaveEvent implements Listener {
 			Optional<TmpMessage> messageOpt = TmpCache.getRegisterMessage(event.getPlayer().getName());
 			if (messageOpt.isPresent()) {
 				Message message = messageOpt.get().getMessage();
-				message.delete().queue();
+				if (message != null)
+					message.delete().queue();
 				TmpCache.removeRegister(event.getPlayer().getName());
 			}
 		}
@@ -50,7 +51,8 @@ public class UserLeaveEvent implements Listener {
 			Optional<TmpMessage> messageOpt = TmpCache.getLoginMessage(event.getPlayer().getName());
 			if (messageOpt.isPresent()) {
 				Message message = messageOpt.get().getMessage();
-				message.delete().queue();
+				if (message != null)
+					message.delete().queue();
 				TmpCache.removeLogin(event.getPlayer().getName());
 			}
 		}
