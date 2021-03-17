@@ -1,0 +1,45 @@
+#Discord
+log_channel: CHANNEL_ID
+#send_to_pm: true NOT AVAIABLE YET
+
+#Modules
+kick: true
+ban: true
+mute: true
+warn: true
+
+#Avaiable internal placeholders %executor_name% | %executor_uuid% | %duration% | %reason% | %user_name% | %user_uuid% | %server%
+#kick
+embed_kick_title: '%user_name% has been kicked'
+embed_kick_timestamp: true
+embed_kick_color: '#466AC7'
+
+embed_kick_field_1_title: 'Executor'
+embed_kick_field_1_desc: '%executor_name%'
+embed_kick_field_1_inline: false
+
+embed_kick_field_2_title: 'Reason'
+embed_kick_field_2_desc: '%reason%'
+embed_kick_field_2_inline: false
+
+embed_kick_field_3_title: 'Duration'
+embed_kick_field_3_desc: '%duration%'
+embed_kick_field_3_inline: false
+
+#ban
+embed_ban_title: '%user_name% has been banned'
+embed_ban_description: 'Reason: %reason%'
+embed_ban_timestamp: true
+embed_ban_color: '#466AC7'
+
+#mute
+embed_mute_title: '%user_name% has been muted'
+embed_mute_description: 'Reason: %reason%'
+embed_mute_timestamp: true
+embed_mute_color: '#466AC7'
+
+#warn
+embed_warn_title: '%user_name% has been warned'
+embed_warn_description: 'Reason: %reason%'
+embed_warn_timestamp: true
+embed_warn_color: '#466AC7'

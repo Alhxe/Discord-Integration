@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import di.dilogin.BukkitApplication;
+import di.dilogin.dao.DIUserDao;
+import di.dilogin.dao.DIUserDaoSqliteImpl;
 import di.dilogin.entity.UserSession;
 
 /**
@@ -22,7 +24,12 @@ public class UserSessionCache {
 	/**
 	 * List of user sessions.
 	 */
-	private static HashMap<UserSession, Long> sessions = new HashMap<>();
+	private static final HashMap<UserSession, Long> sessions = new HashMap<>();
+
+	/**
+	 * User manager in the database.
+	 */
+	private static final DIUserDao userDao = new DIUserDaoSqliteImpl();
 
 	/**
 	 * Check if the user has a valid session.
@@ -44,6 +51,11 @@ public class UserSessionCache {
 
 		if (Calendar.getInstance().getTimeInMillis() > ((Long) sessions.get(user)).longValue())
 			return false;
+		
+		if (!userDao.contains(name)) {
+			sessions.remove(user);
+			return false;
+		}
 
 		return true;
 	}
@@ -79,7 +91,8 @@ public class UserSessionCache {
 	 * @param ip   Player's ip.
 	 */
 	public static void addSession(String name, String ip) {
-		int minutes = BukkitApplication.getDIApi().getInternalController().getConfigManager().getInt("session_time_min");
+		int minutes = BukkitApplication.getDIApi().getInternalController().getConfigManager()
+				.getInt("session_time_min");
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.MINUTE, minutes);
 		sessions.put(new UserSession(name, ip), c.getTimeInMillis());

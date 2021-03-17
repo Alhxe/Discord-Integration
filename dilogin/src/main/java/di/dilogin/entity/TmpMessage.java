@@ -30,5 +30,10 @@ public class TmpMessage {
 	 * Registration or login request message.
 	 */
 	private Message message;
+	
+	/**
+	 * Internal message code.
+	 */
+	private String code;
 
 }

@@ -6,9 +6,9 @@
     <version>2.0.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>dicore</artifactId>
+  <artifactId>dilitebanslogs</artifactId>
   <name>DICore</name>
-  <version>2.0.2</version>
+  <version>2.0.1</version>
   <build>
     <plugins>
       <plugin>
@@ -28,29 +28,6 @@
               </transformers>
             </configuration>
           </execution>
-          <execution>
-            <id>noLogger</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <filters>
-                <filter>
-                  <artifact>*:*</artifact>
-                  <excludes>
-                    <exclude>org/slf4j/**</exclude>
-                  </excludes>
-                </filter>
-              </filters>
-              <transformers>
-                <transformer>
-                  <mainClass>di.dicore.BukkitApplication</mainClass>
-                </transformer>
-              </transformers>
-              <finalName>${project.artifactId}-${project.version}-noslf4j</finalName>
-            </configuration>
-          </execution>
         </executions>
         <configuration>
           <filters>
@@ -67,7 +44,19 @@
       </plugin>
     </plugins>
   </build>
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
   <dependencies>
+    <dependency>
+      <groupId>com.gitlab.ruany</groupId>
+      <artifactId>LiteBansAPI</artifactId>
+      <version>0.3.4</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>

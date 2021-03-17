@@ -1,2 +1,3 @@
 #Global
 no_permission: 'You do not have permission!'
+no_args: 'You have to enter valid arguments!'

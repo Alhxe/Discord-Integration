@@ -6,10 +6,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import di.dicore.DIApi;
 import di.dilogin.controller.DBController;
+import di.dilogin.discord.command.RegisterCommand;
 import di.dilogin.discord.event.UserReactionMessageEvent;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.command.ForceLoginCommand;
-import di.dilogin.minecraft.command.RegisterCommand;
 import di.dilogin.minecraft.command.UnregisterCommand;
 import di.dilogin.minecraft.event.UserBlockEvents;
 import di.dilogin.minecraft.event.UserLeaveEvent;
@@ -40,6 +40,7 @@ public class BukkitApplication extends JavaPlugin {
 		initCommands();
 		initEvents();
 		initDiscordEvents();
+		initDiscordCommands();
 		DBController.getConnect();
 	}
 	
@@ -66,7 +67,6 @@ public class BukkitApplication extends JavaPlugin {
 	 * Add the commands to bukkit.
 	 */
 	private void initCommands() {
-		initUniqueCommand("register", (CommandExecutor) new RegisterCommand());
 		initUniqueCommand("forcelogin", (CommandExecutor) new ForceLoginCommand());
 		initUniqueCommand("unregister", (CommandExecutor) new UnregisterCommand());
 	}
@@ -87,7 +87,7 @@ public class BukkitApplication extends JavaPlugin {
 	/**
 	 * Connect with DIApi.
 	 */
-	private void connectWithCoreApi() {
+	private static void connectWithCoreApi() {
 		try {
 			api = new DIApi(plugin);
 		} catch (NoApiException e) {
@@ -110,6 +110,10 @@ public class BukkitApplication extends JavaPlugin {
 	 */
 	private void initDiscordEvents() {
 		api.registerDiscordEvent(new UserReactionMessageEvent());
+	}
+	
+	private void initDiscordCommands() {
+		api.registerDiscordCommand(new RegisterCommand());
 	}
 	
 }

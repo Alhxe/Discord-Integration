@@ -87,6 +87,20 @@ public class DIUserDaoSqliteImpl implements DIUserDao {
 		}
 		return false;
 	}
+	
+	@Override
+	public boolean containsDiscordId(long id) {
+		String query = "select * from user where discord_id = ?;";
+		try (PreparedStatement ps = conn.prepareStatement(query)) {
+			ps.setLong(1, id);
+			try (ResultSet rs = ps.executeQuery()) {
+				return rs.next();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 
 	@Override
 	public int getDiscordUserAccounts(User user) {

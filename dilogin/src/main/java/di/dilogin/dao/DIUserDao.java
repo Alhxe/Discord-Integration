@@ -32,15 +32,21 @@ public interface DIUserDao {
 	/**
 	 * Delete a user from the database.
 	 * 
-	 * @param playerName Bukkit player name.
+	 * @param playerName Bukkit player's name.
 	 */
 	void remove(String playerName);
 
 	/**
-	 * @param name Bukkit player name.
+	 * @param name Bukkit player's name.
 	 * @return True if player exists.
 	 */
 	boolean contains(String name);
+	
+	/**
+	 * @param id Discord player's id.
+	 * @return True if player exists.
+	 */
+	boolean containsDiscordId(long id);
 
 	/**
 	 * @param user Discord User

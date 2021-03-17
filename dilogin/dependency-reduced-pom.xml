@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dilogin</artifactId>
   <name>DILogin</name>
-  <version>3.0.1</version>
+  <version>3.0.2</version>
   <build>
     <plugins>
       <plugin>
@@ -45,6 +45,12 @@
     </plugins>
   </build>
   <dependencies>
+    <dependency>
+      <groupId>com.diproject</groupId>
+      <artifactId>dicore</artifactId>
+      <version>2.0.2</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>

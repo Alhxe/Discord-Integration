@@ -118,12 +118,20 @@ public class TmpCache {
 	}
 
 	/**
+	 * @param code Code registration.
+	 * @return Possible register message.
+	 */
+	public static Optional<TmpMessage> getRegisterMessageByCode(String code) {
+		return registerUserList.values().stream().filter(tmpMessage -> tmpMessage.getCode().equals(code)).findFirst();
+	}
+
+	/**
 	 * Delete all messages.
 	 */
 	public static void clearAll() {
-		loginUserList.values().forEach(tmpMessage->tmpMessage.getMessage().delete().queue());
+		loginUserList.values().forEach(tmpMessage -> tmpMessage.getMessage().delete().queue());
 		loginUserList.clear();
-		registerUserList.values().forEach(tmpMessage->tmpMessage.getMessage().delete().queue());
+		registerUserList.values().forEach(tmpMessage -> tmpMessage.getMessage().delete().queue());
 		registerUserList.clear();
 	}
 

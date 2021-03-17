@@ -4,6 +4,7 @@ import org.bukkit.plugin.Plugin;
 
 import di.internal.controller.CoreController;
 import di.internal.controller.InternalController;
+import di.internal.entity.DiscordCommand;
 import di.internal.exception.NoApiException;
 import lombok.Getter;
 
@@ -46,6 +47,15 @@ public class DIApi {
 	 */
 	public void registerDiscordEvent(Object listener) {
 		this.coreController.getDiscordApi().addEventListener(listener);
+	}
+
+	/**
+	 * Add a new command to command handler.
+	 * 
+	 * @param command Discord command.
+	 */
+	public void registerDiscordCommand(DiscordCommand command) {
+		this.coreController.getBot().getCommandHandler().registerCommand(command);
 	}
 
 }

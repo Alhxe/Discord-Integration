@@ -18,4 +18,25 @@
 	<version>1.0.3</version>
 	<name>internal</name>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>1.28</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.dv8tion</groupId>
+			<artifactId>JDA</artifactId>
+			<version>4.2.0_241</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-api</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
 </project>

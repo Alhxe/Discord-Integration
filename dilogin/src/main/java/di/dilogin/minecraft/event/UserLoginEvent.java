@@ -85,7 +85,7 @@ public class UserLoginEvent implements Listener {
 			Thread.sleep(seconds);
 			// In case the user has not finished completing the login.
 			if (TmpCache.containsLogin(playerName)) {
-				String message = LangManager.getString(event.getPlayer(), "register_kick_time");
+				String message = LangManager.getString(event.getPlayer(), "login_kick_time");
 				DILoginController.kickPlayer(event.getPlayer(), message);
 			}
 			return null;
@@ -96,8 +96,12 @@ public class UserLoginEvent implements Listener {
 	 * @param event Main register event.
 	 */
 	private void initRegisterRequest(PlayerJoinEvent event, String playerName) {
-		TmpCache.addRegister(playerName, null);
-		event.getPlayer().sendMessage(LangManager.getString(event.getPlayer(), "register_request"));
+		String code = CodeGenerator
+				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"));
+		String command = api.getCoreController().getBot().getPrefix() + "register " + code;
+		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(),null,null,code));
+		event.getPlayer().sendMessage(
+				LangManager.getString(event.getPlayer(), "register_request").replace("%register_command%", command));
 
 		long seconds = BukkitApplication.getDIApi().getInternalController().getConfigManager()
 				.getLong("register_time_until_kick") * 1000;
@@ -127,7 +131,7 @@ public class UserLoginEvent implements Listener {
 		user.openPrivateChannel().submit()
 				.thenAccept(channel -> channel.sendMessage(embed).submit().thenAccept(message -> {
 					message.addReaction(emoji).queue();
-					TmpCache.addLogin(player.getName(), new TmpMessage(player, user, message));
+					TmpCache.addLogin(player.getName(), new TmpMessage(player, user, message, null));
 				}).whenComplete((message, error) -> {
 					if (error == null)
 						return;
@@ -139,8 +143,59 @@ public class UserLoginEvent implements Listener {
 							.flatMap(Message::delete).queue();
 					Message servermessage = serverchannel.sendMessage(embed).submit().join();
 					servermessage.addReaction(emoji).queue();
-					TmpCache.addLogin(player.getName(), new TmpMessage(player, user, servermessage));
+					TmpCache.addLogin(player.getName(), new TmpMessage(player, user, servermessage, null));
 				}));
 	}
 
+}
+
+/**
+ * Code generator for registration.
+ */
+class CodeGenerator {
+
+	/**
+	 * Prohibits instantiation of the class.
+	 */
+	private CodeGenerator() {
+		throw new IllegalStateException();
+	}
+
+	/**
+	 * List of valid numbers for the code.
+	 */
+	private static final String NUMBERS = "0123456789";
+
+	/**
+	 * List of valid uppercase letters for the code.
+	 */
+	private static final String CAPITAL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+	/**
+	 * List of valid lowercase letters for the code.
+	 */
+	private static final String LOWER_CASE = "abcdefghijklmnopqrstuvwxyz";
+
+	/**
+	 * @param length Number of characters for the code.
+	 * @return Generated code.
+	 */
+	public static final String getCode(int length) {
+		return getCode(NUMBERS + CAPITAL_LETTERS + LOWER_CASE, length);
+	}
+
+	/**
+	 * Generate the code.
+	 * 
+	 * @param key    Total characters for code generation.
+	 * @param length Size that the code will have.
+	 * @return Generated code.
+	 */
+	private static String getCode(String key, int length) {
+		String code = "";
+		for (int i = 0; i < length; i++) {
+			code += (key.charAt((int) (Math.random() * key.length())));
+		}
+		return code;
+	}
 }
