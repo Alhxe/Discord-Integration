@@ -1,14 +1,18 @@
 #Register
-register_request: '&cTo register, use the command &6%register_command% &con our discord server.'
-register_arguments: 'Enter the registration code.'
+register_request: '&cTo register, use the command &6%register_command% &con our discord server or use here &6/register <discord_id>'
 register_already_exists: 'You are already registered.'
+register_arguments: 'Enter the discord user id.'
 register_success: 'This account has been successfully linked with %discriminated_discord_name%.'
 register_kick_time: 'You have taken too long to register.'
 register_max_accounts: 'You have reached the account limit.'
 register_code_not_found: 'The code you have entered is not valid.'
+register_user_not_detected: 'I have not found any user with id %user_discord_id%.'
+register_submit: 'I have sent you a message on Discord. Read it to be able to finish the registration.'
 
+register_discord_arguments: 'Enter the registration code.'
 register_discord_title: 'Register in %minecraft_servername%.'
 register_discord_success: 'Your account has been successfully linked with **%minecraft_username%**.'
+register_discord_desc: 'To complete your registration you just have to react to this message. Once you accept, **%minecraft_username%** s account will be linked with this Discord user.'
 
 #Login
 login_request: 'Log in from the message I sent you on Discord.'

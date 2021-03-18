@@ -41,8 +41,15 @@ public class DIUserDaoSqliteImpl implements DIUserDao {
 				Optional<Player> playerOpt = Utils.getUserPlayerByName(api.getInternalController().getPlugin(),
 						playerName);
 
-				if (userOpt.isPresent() && playerOpt.isPresent()) {
+				if (!playerOpt.isPresent()) {
+					BukkitApplication.getPlugin().getLogger().warning("Unable to get bukkit player named "+playerName);
+					return Optional.empty();
+				}
+				
+				if (userOpt.isPresent()) {
 					return Optional.of(new DIUser(playerOpt.get(), userOpt.get()));
+				} else {
+					BukkitApplication.getPlugin().getLogger().warning("Unable to get user named "+playerName);
 				}
 			}
 		} catch (SQLException e) {

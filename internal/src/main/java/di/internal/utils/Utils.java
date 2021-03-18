@@ -2,6 +2,7 @@ package di.internal.utils;
 
 import java.awt.Color;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
 import org.bukkit.entity.Player;
@@ -39,7 +40,19 @@ public class Utils {
 	 * @return Possible user based on their ID.
 	 */
 	public static Optional<User> getDiscordUserById(JDA api, long id) {
-		return Optional.ofNullable(api.getUserById(id));
+		Optional<User> cachedUserOpt = Optional.ofNullable(api.getUserById(id));
+		if (cachedUserOpt.isPresent())
+			return cachedUserOpt;
+
+		try {
+			Optional<User> userOpt = Optional.ofNullable(api.retrieveUserById(id).submit().get());
+			if (userOpt.isPresent())
+				return userOpt;
+
+		} catch (InterruptedException | ExecutionException e) {
+			System.out.println("Unable to get user with id " + id);
+		}
+		return Optional.empty();
 	}
 
 	/**
@@ -50,7 +63,7 @@ public class Utils {
 	public static Optional<Player> getUserPlayerByName(Plugin plugin, String playerName) {
 		return Optional.ofNullable(plugin.getServer().getPlayer(playerName));
 	}
-	
+
 	/**
 	 * Delete a message after a certain time.
 	 * 

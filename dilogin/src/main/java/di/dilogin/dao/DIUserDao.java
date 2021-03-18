@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.User;
 public interface DIUserDao {
 
 	/**
+	 * @param playerName Bukkit player's name.
 	 * @return Returns the user from the database.
 	 */
 	Optional<DIUser> get(String playerName);
@@ -41,7 +42,7 @@ public interface DIUserDao {
 	 * @return True if player exists.
 	 */
 	boolean contains(String name);
-	
+
 	/**
 	 * @param id Discord player's id.
 	 * @return True if player exists.

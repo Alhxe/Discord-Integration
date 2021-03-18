@@ -62,9 +62,12 @@ public class CommandHandler extends ListenerAdapter {
 				return;
 			}
 		}
-
-		commands.get(command).execute(getMessageWithoutCommand(command, event.getMessage().getContentDisplay(), prefix),
-				event);
+		try {
+			commands.get(command)
+					.execute(getMessageWithoutCommand(command, event.getMessage().getContentDisplay(), prefix), event);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

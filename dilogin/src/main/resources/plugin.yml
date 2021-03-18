@@ -5,6 +5,9 @@ author: Alhxe
 api-version: 1.16
 depend: [DICore]
 commands:
+    register:
+        description: User register
+        usage: /register <discord_id>
     forcelogin:
         description: Force user login
         usage: /forcelogin <nick>

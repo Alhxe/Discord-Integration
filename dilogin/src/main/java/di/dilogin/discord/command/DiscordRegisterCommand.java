@@ -24,7 +24,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 /**
  * Command to register as a user.
  */
-public class RegisterCommand implements DiscordCommand {
+public class DiscordRegisterCommand implements DiscordCommand {
 
 	/**
 	 * User manager in the database.
@@ -56,7 +56,7 @@ public class RegisterCommand implements DiscordCommand {
 
 		// Check arguments.
 		if (message.equals("") || message.isEmpty()) {
-			event.getChannel().sendMessage(LangManager.getString("register_arguments")).delay(Duration.ofSeconds(10))
+			event.getChannel().sendMessage(LangManager.getString("register_discord_arguments")).delay(Duration.ofSeconds(10))
 					.flatMap(Message::delete).queue();
 			return;
 		}
