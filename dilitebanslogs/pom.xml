@@ -9,8 +9,8 @@
 	</parent>
 
 	<artifactId>dilitebanslogs</artifactId>
-	<name>DICore</name>
-	<version>2.0.1</version>
+	<name>DILitebansLogs</name>
+	<version>2.0.2</version>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>

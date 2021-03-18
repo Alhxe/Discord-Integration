@@ -124,7 +124,6 @@ public class EventsListener {
 	}
 
 	private static String getEntryString(Entry entry, String path) {
-		System.out.println(path);
 		return api.getInternalController().getConfigManager().getString(path)
 				.replace("%executor_name%", entry.getExecutorName()).replace("%duration%", entry.getDurationString())
 				.replace("%executor_uuid%", entry.getExecutorUUID()).replace("%reason%", getReason(entry.getReason()))
