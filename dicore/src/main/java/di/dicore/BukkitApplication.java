@@ -13,7 +13,7 @@ public class BukkitApplication extends JavaPlugin {
 	public void onEnable() {
 		getLogger().info("Plugin started");
 		Plugin plugin = getPlugin(getClass());
-		internalController = new CoreController(plugin);
+		internalController = new CoreController(plugin, this.getClassLoader());
 	
 	}
 

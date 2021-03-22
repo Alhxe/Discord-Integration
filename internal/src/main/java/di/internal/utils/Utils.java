@@ -1,6 +1,7 @@
 package di.internal.utils;
 
 import java.awt.Color;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -81,5 +82,20 @@ public class Utils {
 				Thread.currentThread().interrupt();
 			}
 		});
+	}
+
+	/**
+	 * @param fileName    File name.
+	 * @param classLoader Loader.
+	 * @return File from jar or resources.
+	 */
+	public static InputStream getFileFromResourceAsStream(ClassLoader classLoader, String fileName) {
+		InputStream inputStream = classLoader.getResourceAsStream(fileName);
+
+		if (inputStream == null) {
+			throw new IllegalArgumentException("File not found! " + fileName);
+		} else {
+			return inputStream;
+		}
 	}
 }

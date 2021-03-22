@@ -9,10 +9,11 @@ import di.internal.controller.file.YamlManager;
 import lombok.Getter;
 
 /**
- * This controller is in charge of configuring and obtaining the default files of the plugin.
+ * This controller is in charge of configuring and obtaining the default files
+ * of the plugin.
  */
 @Getter
-public class InternalController implements PluginController{
+public class InternalController implements PluginController {
 
 	/**
 	 * The driver for the plugin configuration file.
@@ -39,12 +40,13 @@ public class InternalController implements PluginController{
 	 * 
 	 * @param plugin         Bukkit plugin.
 	 * @param coreController Core controller.
+	 * @param classLoader    Class loader.
 	 */
-	public InternalController(Plugin plugin, CoreController coreController) {
+	public InternalController(Plugin plugin, CoreController coreController, ClassLoader classLoader) {
 		this.plugin = plugin;
 		this.dataFolder = getInternalPluginDataFolder(plugin, coreController);
 		this.configManager = new ConfigManager(this, dataFolder);
-		this.langManager = new YamlManager(this, "lang.yml", dataFolder);
+		this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader);
 	}
 
 	/**

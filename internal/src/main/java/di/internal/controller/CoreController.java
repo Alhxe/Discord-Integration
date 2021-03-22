@@ -16,7 +16,7 @@ import net.dv8tion.jda.api.JDA;
  * Internal Controller of Plugin.
  */
 @Getter
-public class CoreController implements PluginController{
+public class CoreController implements PluginController {
 
 	/**
 	 * The driver for the plugin configuration file.
@@ -27,7 +27,7 @@ public class CoreController implements PluginController{
 	 * The driver for the plugin lang file.
 	 */
 	private YamlManager langManager;
-	
+
 	/**
 	 * The bukkit plugin.
 	 */
@@ -46,14 +46,15 @@ public class CoreController implements PluginController{
 	/**
 	 * Main constructor;
 	 * 
-	 * @param plugin Bukkit plugin.
-	 * @throws NoApiException 
+	 * @param plugin      Bukkit plugin.
+	 * @param classLoader Class loader.
+	 * @throws NoApiException
 	 */
-	public CoreController(Plugin plugin) {
+	public CoreController(Plugin plugin, ClassLoader classLoader) {
 		this.plugin = plugin;
 		this.dataFolder = plugin.getDataFolder();
 		this.configManager = new ConfigManager(this, plugin.getDataFolder());
-		this.langManager = new YamlManager(this, "lang.yml", plugin.getDataFolder());
+		this.langManager = new YamlManager(this, "lang.yml", plugin.getDataFolder(), classLoader);
 		this.bot = initBot();
 	}
 

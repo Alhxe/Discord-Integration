@@ -28,16 +28,18 @@ public class DIApi {
 	 * Main Discord Integration Api. When this class is instantiated, the internal
 	 * controller of the core is obtained.
 	 * 
-	 * @param plugin Plugin from where it is instantiated. The goal is the logger.
+	 * @param plugin      Plugin from where it is instantiated. The goal is the
+	 *                    logger.
+	 * @param classLoader Class loader.
 	 * @throws NoApiException In case the internal controller of the core is not
 	 *                        instantiated, it will throw an error.
 	 */
-	public DIApi(Plugin plugin) throws NoApiException {
+	public DIApi(Plugin plugin, ClassLoader classLoader) throws NoApiException {
 		if (BukkitApplication.getInternalController() == null) {
 			throw new NoApiException(plugin);
 		}
 		this.coreController = BukkitApplication.getInternalController();
-		this.internalController = new InternalController(plugin, coreController);
+		this.internalController = new InternalController(plugin, coreController, classLoader);
 	}
 
 	/**

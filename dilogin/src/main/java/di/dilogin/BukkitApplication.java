@@ -12,6 +12,7 @@ import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.command.ForceLoginCommand;
 import di.dilogin.minecraft.command.RegisterCommand;
 import di.dilogin.minecraft.command.UnregisterCommand;
+import di.dilogin.minecraft.event.DetectInventoryOpen;
 import di.dilogin.minecraft.event.UserBlockEvents;
 import di.dilogin.minecraft.event.UserLeaveEvent;
 import di.dilogin.minecraft.event.UserLoginEvent;
@@ -44,7 +45,7 @@ public class BukkitApplication extends JavaPlugin {
 		initDiscordCommands();
 		DBController.getConnect();
 	}
-	
+
 	@Override
 	public void onDisable() {
 		TmpCache.clearAll();
@@ -56,7 +57,7 @@ public class BukkitApplication extends JavaPlugin {
 	public static DIApi getDIApi() {
 		return api;
 	}
-	
+
 	/**
 	 * @return Get Main Bukkit plugin.
 	 */
@@ -82,22 +83,21 @@ public class BukkitApplication extends JavaPlugin {
 	 */
 	private void initUniqueCommand(String command, CommandExecutor executor) {
 		getCommand(command).setExecutor(executor);
-		getCommand(command)
-				.setPermissionMessage(api.getCoreController().getLangManager().getString("no_permission"));
+		getCommand(command).setPermissionMessage(api.getCoreController().getLangManager().getString("no_permission"));
 	}
 
 	/**
 	 * Connect with DIApi.
 	 */
-	private static void connectWithCoreApi() {
+	private void connectWithCoreApi() {
 		try {
-			api = new DIApi(plugin);
+			api = new DIApi(plugin, this.getClassLoader());
 		} catch (NoApiException e) {
 			e.printStackTrace();
 			plugin.getPluginLoader().disablePlugin(plugin);
 		}
 	}
-	
+
 	/**
 	 * Init Bukkit events.
 	 */
@@ -105,17 +105,31 @@ public class BukkitApplication extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new UserLoginEvent(), plugin);
 		getServer().getPluginManager().registerEvents(new UserLeaveEvent(), plugin);
 		getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
+		
+		if (getVersion(getServer().getBukkitVersion()) < 12) // Only bearable before version 12
+			new DetectInventoryOpen(plugin);
 	}
-	
+
 	/**
 	 * Records Discord events.
 	 */
 	private void initDiscordEvents() {
 		api.registerDiscordEvent(new UserReactionMessageEvent());
 	}
-	
+
+	/**
+	 * Init discord commands.
+	 */
 	private void initDiscordCommands() {
 		api.registerDiscordCommand(new DiscordRegisterCommand());
 	}
-	
+
+	/**
+	 * @param version String version.
+	 * @return integer version.
+	 */
+	private int getVersion(String version) {
+		return Integer.parseInt(version.replace('.', ':').split(":")[1]);
+	}
+
 }

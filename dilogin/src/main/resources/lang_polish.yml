@@ -1,0 +1,37 @@
+#Register
+register_request: '&cAby zarejestrować się, użyj komendy &6%register_command% &cna naszym serwerze discord, ablo użyj &6/register <discord_id>'
+register_already_exists: 'Jesteś już zarejestrowany.'
+register_arguments: 'Wprowadź twój ID konta discord.'
+register_success: 'Twoje konto zostało pomyślnie połączone z kontem %discriminated_discord_name%.'
+register_kick_time: 'Upłynął czas rejestracji.'
+register_max_accounts: 'Osiągnąłeś limit zarejestrowanych kont.'
+register_code_not_found: 'Wprowadzony przez ciebie kod jest nieprawidłowy.'
+register_user_not_detected: 'Nie znaleziono konta %user_discord_id%.'
+register_submit: 'Wysłano tobie na dm wiadomość. Przeczytaj ją, aby dokończyć rejestrację.'
+
+register_discord_arguments: 'Wprowadź kod rejestracji.'
+register_discord_title: 'Rejestracja w %minecraft_servername%.'
+register_discord_success: 'Twoje konto zostało pomyślnie podłączone do nicku **%minecraft_username%**.'
+register_discord_desc: 'Aby zakończyć rejestrację, prosimy o kliknięcie w reakcję, a konto **%minecraft_username%** zostanie podłączone do twojego konta discord.'
+
+#Login
+login_request: 'Wiadomość logowania, została wysłana na twoje konto discord w wiadomości prywatnej.'
+login_success: '&cZalogowano się pomyślnie!'
+login_kick_time: 'Upłynął czas podłączania konta.'
+
+login_discord_title: 'Logowanie jako %minecraft_servername%.'
+login_discord_desc: 'Prośba o połączenie konta **%minecraft_username%**. To nie ty? Zgłoś to administracji.'
+login_discord_success: 'Konto **%minecraft_username%** zostało podłączone pomyślnie.'
+
+#GobalCommands
+no_player: 'Nie znaleziono kogoś takiego jak %nick%'
+user_not_registered: 'Użytkownik %minecraft_username% nie jest zarejestrowany.'
+
+#ForceLogin
+forcelogin_user_connected: 'Użytkownik jest już zalogowany.'
+forcelogin_success: 'Sesja %minecraft_username% została rozpoczęta.'
+login_discord_forced: 'Logowanie zostało wymuszone.'
+
+#Unregister
+unregister_kick: 'Twoje konto zostało odrejestrowane.'
+unregister_success: 'Konto %minecraft_username% zostało usunięte.'

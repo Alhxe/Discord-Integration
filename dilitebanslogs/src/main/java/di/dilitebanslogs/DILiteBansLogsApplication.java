@@ -60,9 +60,9 @@ public class DILiteBansLogsApplication extends JavaPlugin {
 	/**
 	 * Connect with DIApi.
 	 */
-	private static void connectWithCoreApi() {
+	private void connectWithCoreApi() {
 		try {
-			api = new DIApi(plugin);
+			api = new DIApi(plugin, this.getClassLoader());
 		} catch (NoApiException e) {
 			e.printStackTrace();
 			plugin.getPluginLoader().disablePlugin(plugin);
