@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import di.dicore.DIApi;
 import di.dilogin.controller.DBController;
+import di.dilogin.controller.DILoginController;
 import di.dilogin.discord.command.DiscordRegisterCommand;
 import di.dilogin.discord.event.UserReactionMessageEvent;
 import di.dilogin.minecraft.cache.TmpCache;
@@ -15,6 +16,7 @@ import di.dilogin.minecraft.command.UnregisterCommand;
 import di.dilogin.minecraft.event.DetectInventoryOpen;
 import di.dilogin.minecraft.event.UserBlockEvents;
 import di.dilogin.minecraft.event.UserLeaveEvent;
+import di.dilogin.minecraft.event.UserLoginAuthMeEvent;
 import di.dilogin.minecraft.event.UserLoginEvent;
 import di.internal.exception.NoApiException;
 
@@ -69,7 +71,7 @@ public class BukkitApplication extends JavaPlugin {
 	 * Add the commands to bukkit.
 	 */
 	private void initCommands() {
-		initUniqueCommand("register", (CommandExecutor) new RegisterCommand());
+		initUniqueCommand("diregister", (CommandExecutor) new RegisterCommand());
 		initUniqueCommand("forcelogin", (CommandExecutor) new ForceLoginCommand());
 		initUniqueCommand("unregister", (CommandExecutor) new UnregisterCommand());
 	}
@@ -102,12 +104,16 @@ public class BukkitApplication extends JavaPlugin {
 	 * Init Bukkit events.
 	 */
 	private void initEvents() {
-		getServer().getPluginManager().registerEvents(new UserLoginEvent(), plugin);
+		if (DILoginController.isAuthmeEnabled()) {
+			getPlugin().getLogger().info("Authme detected, starting plugin compatibility.");
+			getServer().getPluginManager().registerEvents(new UserLoginAuthMeEvent(), plugin);
+		} else {
+			getServer().getPluginManager().registerEvents(new UserLoginEvent(), plugin);
+			getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
+			if (getVersion(getServer().getBukkitVersion()) < 12) // Only bearable before version 12
+				new DetectInventoryOpen(plugin);
+		}
 		getServer().getPluginManager().registerEvents(new UserLeaveEvent(), plugin);
-		getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
-		
-		if (getVersion(getServer().getBukkitVersion()) < 12) // Only bearable before version 12
-			new DetectInventoryOpen(plugin);
 	}
 
 	/**

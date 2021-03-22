@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 
 import di.dicore.DIApi;
 import di.dilogin.BukkitApplication;
+import di.dilogin.entity.AuthmeHook;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.cache.UserBlockedCache;
 import di.internal.utils.Utils;
@@ -25,7 +26,7 @@ public class DILoginController {
 	private DILoginController() {
 		throw new IllegalStateException();
 	}
-	
+
 	/**
 	 * @return The basis for embed messages.
 	 */
@@ -66,6 +67,10 @@ public class DILoginController {
 		Runnable task = () -> player.kickPlayer(reason);
 		Bukkit.getScheduler().runTask(BukkitApplication.getPlugin(), task);
 	}
+	
+	public static boolean isAuthmeEnabled() {
+		return BukkitApplication.getPlugin().getServer().getPluginManager().isPluginEnabled("AuthMe");
+	}
 
 	/**
 	 * Start the player session.
@@ -73,9 +78,13 @@ public class DILoginController {
 	 * @param player Bukkit player.
 	 */
 	public static void loginUser(Player player) {
-		UserBlockedCache.remove(player.getName());
+		if (isAuthmeEnabled()) {
+			AuthmeHook.login(player);
+		} else {
+			UserBlockedCache.remove(player.getName());
+			player.sendMessage(LangManager.getString("login_success"));
+		}
 		TmpCache.removeLogin(player.getName());
-		player.sendMessage(LangManager.getString("login_success"));
 	}
 
 }

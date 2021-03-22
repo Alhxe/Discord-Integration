@@ -35,3 +35,6 @@ login_discord_forced: 'Login has been forced.'
 #Unregister
 unregister_kick: 'Your account has been unregistered.'
 unregister_success: '%minecraft_username% s account has been deleted.'
+
+#Authme
+register_opt_request: 'To link this account with your Discord user, use the %register_command% command on our Discord server.'

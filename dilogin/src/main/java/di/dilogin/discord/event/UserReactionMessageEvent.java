@@ -9,6 +9,8 @@ import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.dao.DIUserDaoSqliteImpl;
+import di.dilogin.entity.AuthmeHook;
+import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
@@ -22,19 +24,18 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
  * Class for handling discord login or registration events.
  */
 public class UserReactionMessageEvent extends ListenerAdapter {
-	
+
 	/**
 	 * Database user DAO.
 	 */
 	private final DIUserDao userDao = new DIUserDaoSqliteImpl();
-
 
 	@Override
 	public void onMessageReactionAdd(MessageReactionAddEvent event) {
 
 		if (event.getUser().isBot())
 			return;
-		
+
 		Optional<TmpMessage> registerOpt = TmpCache.getRegisterMessage(event.getMessageIdLong());
 		if (registerOpt.isPresent()) {
 			registerUser(event, registerOpt.get());
@@ -45,7 +46,7 @@ public class UserReactionMessageEvent extends ListenerAdapter {
 		if (loginOpt.isPresent())
 			loginUser(event, loginOpt.get());
 	}
-	
+
 	/**
 	 * In case of being present in a registration process, this is carried out.
 	 * 
@@ -62,15 +63,21 @@ public class UserReactionMessageEvent extends ListenerAdapter {
 
 		if (event.getMessageIdLong() != message.getIdLong())
 			return;
-
-		player.sendMessage(LangManager.getString(user, player, "register_success"));
+		
+		String password = CodeGenerator.getCode(8);
+		player.sendMessage(LangManager.getString(user, player, "register_success").replace("%authme_password%", password));
 		TmpCache.removeRegister(player.getName());
 		message.editMessage(getRegisterEmbed(user, player)).delay(Duration.ofSeconds(60)).flatMap(Message::delete)
 				.queue();
 		userDao.add(new DIUser(player, user));
-		DILoginController.loginUser(player);
+		
+		if (DILoginController.isAuthmeEnabled()) {
+			AuthmeHook.register(player, password);
+		} else {
+			DILoginController.loginUser(player);
+		}
 
-	}	
+	}
 
 	/**
 	 * In case of being present in a login process, this is carried out.
@@ -93,7 +100,7 @@ public class UserReactionMessageEvent extends ListenerAdapter {
 		DILoginController.loginUser(player);
 
 	}
-	
+
 	/**
 	 * @param user   Discord user.
 	 * @param player Bukkit player.

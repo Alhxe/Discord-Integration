@@ -66,10 +66,11 @@ public class RegisterCommand implements CommandExecutor {
 				return false;
 			}
 
-			Optional<User> userOpt = Utils.getDiscordUserById(api.getCoreController().getDiscordApi(), Long.parseLong(id));
+			Optional<User> userOpt = Utils.getDiscordUserById(api.getCoreController().getDiscordApi(),
+					Long.parseLong(id));
 			if (!userOpt.isPresent()) {
-				player.sendMessage(LangManager.getString(player, "register_user_not_detected")
-						.replace("%user_discord_id%", id));
+				player.sendMessage(
+						LangManager.getString(player, "register_user_not_detected").replace("%user_discord_id%", id));
 				return false;
 			}
 
@@ -77,8 +78,8 @@ public class RegisterCommand implements CommandExecutor {
 
 			if (userDao.getDiscordUserAccounts(user) >= api.getInternalController().getConfigManager()
 					.getInt("register_max_discord_accounts")) {
-				player.sendMessage(LangManager.getString(player, "register_max_accounts")
-						.replace("%user_discord_id%", id.replace(" ", "")));
+				player.sendMessage(LangManager.getString(player, "register_max_accounts").replace("%user_discord_id%",
+						id.replace(" ", "")));
 				return false;
 			}
 
@@ -87,6 +88,7 @@ public class RegisterCommand implements CommandExecutor {
 			MessageEmbed messageEmbed = getEmbedMessage(player, user);
 
 			sendMessage(user, player, messageEmbed);
+
 		}
 		return true;
 	}

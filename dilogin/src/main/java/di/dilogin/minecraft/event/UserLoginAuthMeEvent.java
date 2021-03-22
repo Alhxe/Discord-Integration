@@ -2,7 +2,6 @@ package di.dilogin.minecraft.event;
 
 import java.time.Duration;
 import java.util.Optional;
-import java.util.concurrent.Executors;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,8 +18,7 @@ import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
-import di.dilogin.minecraft.cache.UserBlockedCache;
-import di.dilogin.minecraft.cache.UserSessionCache;
+import fr.xephi.authme.events.LoginEvent;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -29,7 +27,7 @@ import net.dv8tion.jda.api.entities.User;
 /**
  * Handles events related to user login.
  */
-public class UserLoginEvent implements Listener {
+public class UserLoginAuthMeEvent implements Listener {
 
 	/**
 	 * User manager in the database.
@@ -49,25 +47,29 @@ public class UserLoginEvent implements Listener {
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent event) {
 		String playerName = event.getPlayer().getName();
-		String playerIp = event.getPlayer().getAddress().getAddress().toString();
+		if (!userDao.contains(playerName)) {
+			String code = CodeGenerator
+					.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"));
+			TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(), null, null, code));
+		} else {
+			initLoginRequest(event, playerName);
+		}
+	}
 
-		// It checks if the user has a valid session
-		if (DILoginController.isSessionEnabled() && UserSessionCache.isValid(playerName, playerIp))
-			return;
+	@EventHandler
+	public void onAuth(final LoginEvent event) {
 
-		// We block the user while waiting for their registration or login
-		UserBlockedCache.add(event.getPlayer().getName());
+		String playerName = event.getPlayer().getName();
 
 		// If the user is registered
-		if (userDao.contains(playerName)) {
-			initLoginRequest(event, playerName);
-		} else {
+		if (!userDao.contains(playerName)) {
 			initRegisterRequest(event, playerName);
 		}
 	}
 
 	/**
 	 * @param event Main login event.
+	 * @param playerName Player's name.
 	 */
 	private void initLoginRequest(PlayerJoinEvent event, String playerName) {
 		TmpCache.addLogin(playerName, null);
@@ -76,46 +78,22 @@ public class UserLoginEvent implements Listener {
 			return;
 
 		DIUser user = userOpt.get();
-		long seconds = BukkitApplication.getDIApi().getInternalController().getConfigManager()
-				.getLong("login_time_until_kick") * 1000;
 
 		event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
 		sendLoginMessageRequest(user.getPlayerBukkit(), user.getPlayerDiscord());
-
-		Executors.newCachedThreadPool().submit(() -> {
-			Thread.sleep(seconds);
-			// In case the user has not finished completing the login.
-			if (TmpCache.containsLogin(playerName)) {
-				String message = LangManager.getString(event.getPlayer(), "login_kick_time");
-				DILoginController.kickPlayer(event.getPlayer(), message);
-			}
-			return null;
-		});
 	}
 
 	/**
 	 * @param event Main register event.
+	 * @param playerName player's name.
 	 */
-	private void initRegisterRequest(PlayerJoinEvent event, String playerName) {
+	private void initRegisterRequest(LoginEvent event, String playerName) {
 		String code = CodeGenerator
 				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"));
 		String command = api.getCoreController().getBot().getPrefix() + "register " + code;
-		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(),null,null,code));
+		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(), null, null, code));
 		event.getPlayer().sendMessage(
-				LangManager.getString(event.getPlayer(), "register_request").replace("%register_command%", command));
-
-		long seconds = BukkitApplication.getDIApi().getInternalController().getConfigManager()
-				.getLong("register_time_until_kick") * 1000;
-
-		Executors.newCachedThreadPool().submit(() -> {
-			Thread.sleep(seconds);
-			// In case the user has not finished completing the registration.
-			if (TmpCache.containsRegister(playerName)) {
-				String message = LangManager.getString(event.getPlayer(), "register_kick_time");
-				DILoginController.kickPlayer(event.getPlayer(), message);
-			}
-			return null;
-		});
+				LangManager.getString(event.getPlayer(), "register_opt_request").replace("%register_command%", command));
 	}
 
 	/**
