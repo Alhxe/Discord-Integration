@@ -83,7 +83,9 @@ public class YamlManager implements FileController {
 			Map<String, Object> custom = (Map<String, Object>) new Yaml()
 					.load(new FileInputStream(this.customConfigFile));
 			Map<String, Object> original = (Map<String, Object>) new Yaml().load(file);
-
+			if (original==null)
+				return null;
+			
 			original.forEach((path, content) -> {
 				if (!custom.containsKey(path))
 					custom.put(path, content);
