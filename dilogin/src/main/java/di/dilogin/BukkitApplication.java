@@ -13,11 +13,12 @@ import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.command.ForceLoginCommand;
 import di.dilogin.minecraft.command.RegisterCommand;
 import di.dilogin.minecraft.command.UnregisterCommand;
-import di.dilogin.minecraft.event.DetectInventoryOpen;
 import di.dilogin.minecraft.event.UserBlockEvents;
 import di.dilogin.minecraft.event.UserLeaveEvent;
-import di.dilogin.minecraft.event.UserLoginAuthMeEvent;
-import di.dilogin.minecraft.event.UserLoginEvent;
+import di.dilogin.minecraft.event.UserTeleportEvents;
+import di.dilogin.minecraft.event.UserLoginEventImpl;
+import di.dilogin.minecraft.event.authme.AuthmeEvents;
+import di.dilogin.minecraft.event.authme.UserLoginEventAuthmeImpl;
 import di.internal.exception.NoApiException;
 
 /**
@@ -106,14 +107,14 @@ public class BukkitApplication extends JavaPlugin {
 	private void initEvents() {
 		if (DILoginController.isAuthmeEnabled()) {
 			getPlugin().getLogger().info("Authme detected, starting plugin compatibility.");
-			getServer().getPluginManager().registerEvents(new UserLoginAuthMeEvent(), plugin);
+			getServer().getPluginManager().registerEvents(new UserLoginEventAuthmeImpl(), plugin);
+			getServer().getPluginManager().registerEvents(new AuthmeEvents(), plugin);
 		} else {
-			getServer().getPluginManager().registerEvents(new UserLoginEvent(), plugin);
+			getServer().getPluginManager().registerEvents(new UserLoginEventImpl(), plugin);
 			getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
-			if (getVersion(getServer().getBukkitVersion()) < 12) // Only bearable before version 12
-				new DetectInventoryOpen(plugin);
 		}
 		getServer().getPluginManager().registerEvents(new UserLeaveEvent(), plugin);
+		getServer().getPluginManager().registerEvents(new UserTeleportEvents(), plugin);
 	}
 
 	/**
@@ -128,14 +129,6 @@ public class BukkitApplication extends JavaPlugin {
 	 */
 	private void initDiscordCommands() {
 		api.registerDiscordCommand(new DiscordRegisterCommand());
-	}
-
-	/**
-	 * @param version String version.
-	 * @return integer version.
-	 */
-	private int getVersion(String version) {
-		return Integer.parseInt(version.replace('.', ':').split(":")[1]);
 	}
 
 }

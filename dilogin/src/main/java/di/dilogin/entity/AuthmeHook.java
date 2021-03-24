@@ -27,7 +27,7 @@ public class AuthmeHook {
 	 * @param player Bukkit player.
 	 */
 	public static void login(Player player) {
-		if (authmeApi.isAuthenticated(player))
+		if (authmeApi.isRegistered(player.getName()))
 			authmeApi.forceLogin(player);
 	}
 

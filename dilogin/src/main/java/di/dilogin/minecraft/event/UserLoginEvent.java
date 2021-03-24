@@ -1,8 +1,6 @@
 package di.dilogin.minecraft.event;
 
 import java.time.Duration;
-import java.util.Optional;
-import java.util.concurrent.Executors;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,123 +13,71 @@ import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.dao.DIUserDaoSqliteImpl;
-import di.dilogin.entity.CodeGenerator;
-import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
-import di.dilogin.minecraft.cache.UserBlockedCache;
-import di.dilogin.minecraft.cache.UserSessionCache;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
 /**
- * Handles events related to user login.
+ * Contains the necessary methods for login events.
  */
-public class UserLoginEvent implements Listener {
+public interface UserLoginEvent extends Listener {
 
 	/**
-	 * User manager in the database.
+	 * User manager.
 	 */
-	private final DIUserDao userDao = new DIUserDaoSqliteImpl();
+	static final DIUserDao userDao = new DIUserDaoSqliteImpl();
 
 	/**
 	 * Main api.
 	 */
-	private final DIApi api = BukkitApplication.getDIApi();
+	static final DIApi api = BukkitApplication.getDIApi();
 
 	/**
 	 * Reactions emoji.
 	 */
-	private final String emoji = api.getInternalController().getConfigManager().getString("discord_embed_emoji");
-
+	static final String EMOJI = api.getInternalController().getConfigManager().getString("discord_embed_emoji");
+	
+	/**
+	 * Catch the main event when a user connects.
+	 * 
+	 * @param event Player Join Event.
+	 */
 	@EventHandler
-	public void onPlayerJoin(final PlayerJoinEvent event) {
-		String playerName = event.getPlayer().getName();
-		String playerIp = event.getPlayer().getAddress().getAddress().toString();
-
-		// It checks if the user has a valid session
-		if (DILoginController.isSessionEnabled() && UserSessionCache.isValid(playerName, playerIp))
-			return;
-
-		// We block the user while waiting for their registration or login
-		UserBlockedCache.add(event.getPlayer().getName());
-
-		// If the user is registered
-		if (userDao.contains(playerName)) {
-			initLoginRequest(event, playerName);
-		} else {
-			initRegisterRequest(event, playerName);
-		}
-	}
+	void onPlayerJoin(final PlayerJoinEvent event);
 
 	/**
-	 * @param event Main login event.
+	 * Contains the main flow of login.
+	 * 
+	 * @param event      Main login event.
+	 * @param playerName Player's name.
 	 */
-	private void initLoginRequest(PlayerJoinEvent event, String playerName) {
-		TmpCache.addLogin(playerName, null);
-		Optional<DIUser> userOpt = userDao.get(playerName);
-		if (!userOpt.isPresent())
-			return;
-
-		DIUser user = userOpt.get();
-		long seconds = BukkitApplication.getDIApi().getInternalController().getConfigManager()
-				.getLong("login_time_until_kick") * 1000;
-
-		event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
-		sendLoginMessageRequest(user.getPlayerBukkit(), user.getPlayerDiscord());
-
-		Executors.newCachedThreadPool().submit(() -> {
-			Thread.sleep(seconds);
-			// In case the user has not finished completing the login.
-			if (TmpCache.containsLogin(playerName)) {
-				String message = LangManager.getString(event.getPlayer(), "login_kick_time");
-				DILoginController.kickPlayer(event.getPlayer(), message);
-			}
-			return null;
-		});
-	}
+	void initPlayerLoginRequest(PlayerJoinEvent event, String playerName);
 
 	/**
-	 * @param event Main register event.
+	 * Contains the main flow of register.
+	 * 
+	 * @param event      Main register event.
+	 * @param playerName Player's name.
 	 */
-	private void initRegisterRequest(PlayerJoinEvent event, String playerName) {
-		String code = CodeGenerator
-				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"));
-		String command = api.getCoreController().getBot().getPrefix() + "register " + code;
-		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(),null,null,code));
-		event.getPlayer().sendMessage(
-				LangManager.getString(event.getPlayer(), "register_request").replace("%register_command%", command));
-
-		long seconds = BukkitApplication.getDIApi().getInternalController().getConfigManager()
-				.getLong("register_time_until_kick") * 1000;
-
-		Executors.newCachedThreadPool().submit(() -> {
-			Thread.sleep(seconds);
-			// In case the user has not finished completing the registration.
-			if (TmpCache.containsRegister(playerName)) {
-				String message = LangManager.getString(event.getPlayer(), "register_kick_time");
-				DILoginController.kickPlayer(event.getPlayer(), message);
-			}
-			return null;
-		});
-	}
-
+	void initPlayerRegisterRequest(PlayerJoinEvent event, String playerName);
+	
 	/**
 	 * Send message to login.
 	 * 
 	 * @param player Bukkit player.
 	 * @param user   Discord user.
 	 */
-	private void sendLoginMessageRequest(Player player, User user) {
+	default void sendLoginMessageRequest(Player player, User user) {
 		MessageEmbed embed = DILoginController.getEmbedBase()
 				.setTitle(LangManager.getString(player, "login_discord_title"))
 				.setDescription(LangManager.getString(user, player, "login_discord_desc")).build();
 
 		user.openPrivateChannel().submit()
 				.thenAccept(channel -> channel.sendMessage(embed).submit().thenAccept(message -> {
-					message.addReaction(emoji).queue();
+					message.addReaction(EMOJI).queue();
 					TmpCache.addLogin(player.getName(), new TmpMessage(player, user, message, null));
 				}).whenComplete((message, error) -> {
 					if (error == null)
@@ -143,9 +89,8 @@ public class UserLoginEvent implements Listener {
 					serverchannel.sendMessage(user.getAsMention()).delay(Duration.ofSeconds(10))
 							.flatMap(Message::delete).queue();
 					Message servermessage = serverchannel.sendMessage(embed).submit().join();
-					servermessage.addReaction(emoji).queue();
+					servermessage.addReaction(EMOJI).queue();
 					TmpCache.addLogin(player.getName(), new TmpMessage(player, user, servermessage, null));
 				}));
 	}
-
 }

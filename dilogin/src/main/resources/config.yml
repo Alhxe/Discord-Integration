@@ -7,6 +7,15 @@ register_max_discord_accounts: 3
 register_code_length: 5
 login_time_until_kick: 30
 
+#Teleport options
+teleport: true
+teleport_x: -207
+teleport_y: 90
+teleport_z: 272
+teleport_world: world
+teleport_yaw: 2.4
+teleport_pitch: 12.9
+
 #Messages
 discord_embed_color: '#466AC7'
 discord_embed_server_image: true

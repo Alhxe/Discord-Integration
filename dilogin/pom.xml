@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>dilogin</artifactId>
-	<version>3.0.4</version>
+	<version>3.0.5</version>
 	<name>DILogin</name>
 
 	<properties>
@@ -47,6 +47,11 @@
 			<artifactId>authme</artifactId>
 			<version>5.6.0-SNAPSHOT</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.6</version>
 		</dependency>
 	</dependencies>
 

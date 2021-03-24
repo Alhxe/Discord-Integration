@@ -1,0 +1,90 @@
+package di.dilogin.minecraft.event;
+
+import java.util.Optional;
+import java.util.concurrent.Executors;
+
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerJoinEvent;
+
+import di.dilogin.BukkitApplication;
+import di.dilogin.controller.DILoginController;
+import di.dilogin.controller.LangManager;
+import di.dilogin.entity.CodeGenerator;
+import di.dilogin.entity.DIUser;
+import di.dilogin.entity.TmpMessage;
+import di.dilogin.minecraft.cache.TmpCache;
+import di.dilogin.minecraft.cache.UserBlockedCache;
+import di.dilogin.minecraft.cache.UserSessionCache;
+
+public class UserLoginEventImpl implements UserLoginEvent {
+
+	@Override
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event) {
+		String playerName = event.getPlayer().getName();
+		String playerIp = event.getPlayer().getAddress().getAddress().toString();
+
+		// It checks if the user has a valid session
+		if (DILoginController.isSessionEnabled() && UserSessionCache.isValid(playerName, playerIp))
+			return;
+
+		// We block the user while waiting for their registration or login
+		UserBlockedCache.add(event.getPlayer().getName());
+
+		// If the user is registered
+		if (userDao.contains(playerName)) {
+			initPlayerLoginRequest(event, playerName);
+		} else {
+			initPlayerRegisterRequest(event, playerName);
+		}
+	}
+
+	@Override
+	public void initPlayerLoginRequest(PlayerJoinEvent event, String playerName) {
+		TmpCache.addLogin(playerName, null);
+		Optional<DIUser> userOpt = userDao.get(playerName);
+		if (!userOpt.isPresent())
+			return;
+
+		DIUser user = userOpt.get();
+		long seconds = BukkitApplication.getDIApi().getInternalController().getConfigManager()
+				.getLong("login_time_until_kick") * 1000;
+
+		event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
+		sendLoginMessageRequest(user.getPlayerBukkit(), user.getPlayerDiscord());
+
+		Executors.newCachedThreadPool().submit(() -> {
+			Thread.sleep(seconds);
+			// In case the user has not finished completing the login.
+			if (TmpCache.containsLogin(playerName)) {
+				String message = LangManager.getString(event.getPlayer(), "login_kick_time");
+				DILoginController.kickPlayer(event.getPlayer(), message);
+			}
+			return null;
+		});
+	}
+
+	@Override
+	public void initPlayerRegisterRequest(PlayerJoinEvent event, String playerName) {
+		String code = CodeGenerator
+				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"));
+		String command = api.getCoreController().getBot().getPrefix() + "register " + code;
+		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(), null, null, code));
+		event.getPlayer().sendMessage(
+				LangManager.getString(event.getPlayer(), "register_request").replace("%register_command%", command));
+
+		long seconds = BukkitApplication.getDIApi().getInternalController().getConfigManager()
+				.getLong("register_time_until_kick") * 1000;
+
+		Executors.newCachedThreadPool().submit(() -> {
+			Thread.sleep(seconds);
+			// In case the user has not finished completing the registration.
+			if (TmpCache.containsRegister(playerName)) {
+				String message = LangManager.getString(event.getPlayer(), "register_kick_time");
+				DILoginController.kickPlayer(event.getPlayer(), message);
+			}
+			return null;
+		});
+	}
+
+}

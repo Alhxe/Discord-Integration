@@ -1,37 +1,37 @@
 #Register
-register_request: '&cTo register, use the command &6%register_command% &con our discord server.'
-register_arguments: 'Enter the registration code.'
-register_user_not_detected: 'Ich konnte keinen Nutzer mit dem Namen %discriminated_discord_name% finden.'
-register_already_exists: 'Du bist bereits registriert.'
-register_success: 'Dieser Account wurde erfolgreich mit %discriminated_discord_name% verlinkt.'
-register_kick_time: 'Du hast zu lange gebraucht um dich zu registrieren.'
-register_max_accounts: 'You have reached the account limit.'
-register_code_not_found: 'The code you have entered is not valid.'
+register_request: "&cTo register, use the command &6%register_command% &con our discord server."
+register_arguments: "Enter the registration code."
+register_user_not_detected: "Ich konnte keinen Nutzer mit dem Namen %discriminated_discord_name% finden."
+register_already_exists: "Du bist bereits registriert."
+register_success: "Dieser Account wurde erfolgreich mit %discriminated_discord_name% verlinkt."
+register_kick_time: "Du hast zu lange gebraucht um dich zu registrieren."
+register_max_accounts: "You have reached the account limit."
+register_code_not_found: "The code you have entered is not valid."
 
-register_discord_arguments: 'Enter the registration code.'
-register_discord_title: 'Registriere dich in %minecraft_servername%.'
-register_discord_success: 'Dein Account wurde erfolgreich mit **%minecraft_username%** verlinkt.'
-register_discord_desc: 'To complete your registration you just have to react to this message. Once you accept, **%minecraft_username%** s account will be linked with this Discord user.'
+register_discord_arguments: "Enter the registration code."
+register_discord_title: "Registriere dich in %minecraft_servername%."
+register_discord_success: "Dein Account wurde erfolgreich mit **%minecraft_username%** verlinkt."
+register_discord_desc: "To complete your registration you just have to react to this message. Once you accept, **%minecraft_username%** s account will be linked with this Discord user."
 
 #Login
-login_request: 'Logge dich mit meiner Nachricht auf Discord ein.'
-login_success: '&cErfolgreich eingeloggt!'
-login_kick_time: 'Du hast zu lange gebraucht um dich einzuloggen.'
+login_request: "Logge dich mit meiner Nachricht auf Discord ein."
+login_success: "&cErfolgreich eingeloggt!"
+login_kick_time: "Du hast zu lange gebraucht um dich einzuloggen."
 
-login_discord_title: 'Login in %minecraft_servername%.'
-login_discord_desc: 'Login Anfrage vom Minecraft Account **%minecraft_username%**. Nicht du? Melde dies auf unserem Server'
-login_discord_success: '**%minecraft_username%** Login wurde angenommen.'
+login_discord_title: "Login in %minecraft_servername%."
+login_discord_desc: "Login Anfrage vom Minecraft Account **%minecraft_username%**. Nicht du? Melde dies auf unserem Server"
+login_discord_success: "**%minecraft_username%** Login wurde angenommen."
 
 
 #GobalCommands
-no_player: 'Kein Nutzer mit dem Namen %nick% gefunden '
-user_not_registered: 'Nutzer %minecraft_username% ist nicht registriert.'
+no_player: "Kein Nutzer mit dem Namen %nick% gefunden "
+user_not_registered: "Nutzer %minecraft_username% ist nicht registriert."
 
 #ForceLogin
-forcelogin_user_connected: 'Nutzer ist bereits eingeloggt.'
-forcelogin_success: 'Die %minecraft_username% session hat gestartet.'
-login_discord_forced: 'Login wurde erzwungen.'
+forcelogin_user_connected: "Nutzer ist bereits eingeloggt."
+forcelogin_success: "Die %minecraft_username% session hat gestartet."
+login_discord_forced: "Login wurde erzwungen."
 
 #Unregister
-unregister_kick: 'Deine Registrierung wurde aufgehoben.'
-unregister_success: 'Der Minecraft Nutzer %minecraft_username% wurde gelöscht.'
+unregister_kick: "Deine Registrierung wurde aufgehoben."
+unregister_success: "Der Minecraft Nutzer %minecraft_username% wurde gelöscht."

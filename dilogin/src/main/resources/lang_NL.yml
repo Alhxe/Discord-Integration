@@ -1,37 +1,37 @@
 #Register
-register_request: '&cOm te registreren, gebruik de command &6%register_command% &cin onze discord server of doe hier &6/register <discord_id>'
-register_already_exists: 'Je bent al geregistreerd'
-register_arguments: 'Voer de discord gebruikers ID in.'
-register_success: 'Dit account is succesvol gekoppeld met %discriminated_discord_name%.'
-register_kick_time: 'Het duurde te lang voordat er een registratie plaatsvond.'
-register_max_accounts: 'Je hebt het maximale aantal accounts bereikt.'
-register_code_not_found: 'De code die je hebt ingevoerd is ongeldig.'
-register_user_not_detected: 'Ik heb geen gebruiker gevonden met id %user_discord_id%.'
-register_submit: 'Ik heb je een bericht gestuurd op Discord. Lees het om de registratie te kunnen voltooien.'
+register_request: "&cOm te registreren, gebruik de command &6%register_command% &cin onze discord server of doe hier &6/register <discord_id>"
+register_already_exists: "Je bent al geregistreerd"
+register_arguments: "Voer de discord gebruikers ID in."
+register_success: "Dit account is succesvol gekoppeld met %discriminated_discord_name%."
+register_kick_time: "Het duurde te lang voordat er een registratie plaatsvond."
+register_max_accounts: "Je hebt het maximale aantal accounts bereikt."
+register_code_not_found: "De code die je hebt ingevoerd is ongeldig."
+register_user_not_detected: "Ik heb geen gebruiker gevonden met id %user_discord_id%."
+register_submit: "Ik heb je een bericht gestuurd op Discord. Lees het om de registratie te kunnen voltooien."
 
-register_discord_arguments: 'Voer de registratiecode in.'
-register_discord_title: 'Registreren in %minecraft_servername%.'
-register_discord_success: 'Uw account is succesvol gekoppeld met **%minecraft_username%**.'
-register_discord_desc: 'Om uw registratie te voltooien hoeft u alleen maar te reageren op dit bericht. Wanneer je dit accepteerd zal het account van **%minecraft_username%** worden gekoppeld aan deze discord gebruiker.'
+register_discord_arguments: "Voer de registratiecode in."
+register_discord_title: "Registreren in %minecraft_servername%."
+register_discord_success: "Uw account is succesvol gekoppeld met **%minecraft_username%**."
+register_discord_desc: "Om uw registratie te voltooien hoeft u alleen maar te reageren op dit bericht. Wanneer je dit accepteerd zal het account van **%minecraft_username%** worden gekoppeld aan deze discord gebruiker."
 
 #Login
-login_request: 'Log in via het bericht dat verstuurd is op discord.'
-login_success: '&cLogin succesvol!'
-login_kick_time: 'Het inloggen duurde te lang.'
+login_request: "Log in via het bericht dat verstuurd is op discord."
+login_success: "&cLogin succesvol!"
+login_kick_time: "Het inloggen duurde te lang."
 
-login_discord_title: 'Login in %minecraft_servername%.'
-login_discord_desc: 'Verzoek om te connecten naar de server van **%minecraft_username%** account. Ben jij dat niet? Meld het op onze server.'
-login_discord_success: '**%minecraft_username%** account login is goedgekeurd.'
+login_discord_title: "Login in %minecraft_servername%."
+login_discord_desc: "Verzoek om te connecten naar de server van **%minecraft_username%** account. Ben jij dat niet? Meld het op onze server."
+login_discord_success: "**%minecraft_username%** account login is goedgekeurd."
 
 #GobalCommands
-no_player: 'Geen gebruiker gevonden met de gebruikersnaam %nick%'
-user_not_registered: 'Gebruiker %minecraft_username% is niet geregistreerd.'
+no_player: "Geen gebruiker gevonden met de gebruikersnaam %nick%"
+user_not_registered: "Gebruiker %minecraft_username% is niet geregistreerd."
 
 #ForceLogin
-forcelogin_user_connected: 'Deze gebruiker is al ingelogd.'
-forcelogin_success: 'De %minecraft_username% sessie is gestart.'
-login_discord_forced: 'Login is geforceerd.'
+forcelogin_user_connected: "Deze gebruiker is al ingelogd."
+forcelogin_success: "De %minecraft_username% sessie is gestart."
+login_discord_forced: "Login is geforceerd."
 
 #Unregister
-unregister_kick: 'Je account is niet meer geregistreerd.'
-unregister_success: 'Het account van %minecraft_username% s account is verwijderd.'
+unregister_kick: "Je account is niet meer geregistreerd."
+unregister_success: "Het account van %minecraft_username% s account is verwijderd."

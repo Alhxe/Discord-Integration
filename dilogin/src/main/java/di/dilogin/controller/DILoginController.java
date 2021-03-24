@@ -11,6 +11,7 @@ import di.dilogin.BukkitApplication;
 import di.dilogin.entity.AuthmeHook;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.cache.UserBlockedCache;
+import di.dilogin.minecraft.event.custom.DILoginEvent;
 import di.internal.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -67,7 +68,7 @@ public class DILoginController {
 		Runnable task = () -> player.kickPlayer(reason);
 		Bukkit.getScheduler().runTask(BukkitApplication.getPlugin(), task);
 	}
-	
+
 	public static boolean isAuthmeEnabled() {
 		return BukkitApplication.getPlugin().getServer().getPluginManager().isPluginEnabled("AuthMe");
 	}
@@ -81,6 +82,7 @@ public class DILoginController {
 		if (isAuthmeEnabled()) {
 			AuthmeHook.login(player);
 		} else {
+			Bukkit.getPluginManager().callEvent(new DILoginEvent(player));
 			UserBlockedCache.remove(player.getName());
 			player.sendMessage(LangManager.getString("login_success"));
 		}
