@@ -66,20 +66,23 @@ public class UserTeleportEvents implements Listener {
 	}
 
 	private Optional<Location> getTeleportLocation() {
-		ConfigManager confManager = api.getInternalController().getConfigManager();
-		Double x = Double.parseDouble(confManager.getString("teleport_x"));
-		Double y = Double.parseDouble(confManager.getString("teleport_y"));
-		Double z = Double.parseDouble(confManager.getString("teleport_z"));
-		String worldName = confManager.getString("teleport_world");
-		Float yaw = Float.parseFloat(confManager.getString("teleport_yaw"));
-		Float pitch = Float.parseFloat(confManager.getString("teleport_pitch"));
+		if (isTeleportEnabled) {
+			ConfigManager confManager = api.getInternalController().getConfigManager();
+			Double x = Double.parseDouble(confManager.getString("teleport_x"));
+			Double y = Double.parseDouble(confManager.getString("teleport_y"));
+			Double z = Double.parseDouble(confManager.getString("teleport_z"));
+			String worldName = confManager.getString("teleport_world");
+			Float yaw = Float.parseFloat(confManager.getString("teleport_yaw"));
+			Float pitch = Float.parseFloat(confManager.getString("teleport_pitch"));
 
-		Optional<World> world = Optional
-				.ofNullable(api.getInternalController().getPlugin().getServer().getWorld(worldName));
+			Optional<World> world = Optional
+					.ofNullable(api.getInternalController().getPlugin().getServer().getWorld(worldName));
 
-		if (!world.isPresent())
-			throw new IllegalArgumentException("No world named " + worldName);
+			if (!world.isPresent())
+				throw new IllegalArgumentException("No world named " + worldName);
 
-		return Optional.of(new Location(world.get(), x, y, z, yaw, pitch));
+			return Optional.of(new Location(world.get(), x, y, z, yaw, pitch));
+		} 
+		return Optional.empty();
 	}
 }
