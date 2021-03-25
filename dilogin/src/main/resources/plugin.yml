@@ -1,6 +1,6 @@
 name: DILogin
 main: di.dilogin.BukkitApplication
-version: 3.0.5-beta
+version: 3.0.5
 author: Alhxe
 api-version: 1.16
 depend: [DICore]

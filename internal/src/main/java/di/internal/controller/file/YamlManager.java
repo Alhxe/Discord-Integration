@@ -63,7 +63,8 @@ public class YamlManager implements FileController {
 	 */
 	public String getString(String path) {
 		try {
-			return yamlData.get(path).toString().replace("&", "§");
+			char specialChar = (char)167;
+			return yamlData.get(path).toString().replace('&', specialChar);
 		} catch (NullPointerException e) {
 			e.printStackTrace();
 		}

@@ -82,7 +82,8 @@ public class DILoginController {
 		if (isAuthmeEnabled()) {
 			AuthmeHook.login(player);
 		} else {
-			Bukkit.getPluginManager().callEvent(new DILoginEvent(player));
+			Bukkit.getScheduler().runTask(BukkitApplication.getPlugin(),
+					() -> Bukkit.getPluginManager().callEvent(new DILoginEvent(player)));
 			UserBlockedCache.remove(player.getName());
 			player.sendMessage(LangManager.getString("login_success"));
 		}
