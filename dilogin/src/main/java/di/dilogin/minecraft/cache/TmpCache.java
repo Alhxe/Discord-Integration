@@ -104,8 +104,12 @@ public class TmpCache {
 	 * @return Possible register message.
 	 */
 	public static Optional<TmpMessage> getRegisterMessage(long id) {
-		return registerUserList.values().stream().filter(tmpMessage -> tmpMessage.getMessage().getIdLong() == id)
-				.findFirst();
+		try {
+			return registerUserList.values().stream().filter(tmpMessage -> tmpMessage.getMessage().getIdLong() == id)
+					.findFirst();
+		} catch (NullPointerException e) {
+			return Optional.empty();
+		}
 	}
 
 	/**
@@ -113,8 +117,12 @@ public class TmpCache {
 	 * @return Possible login message.
 	 */
 	public static Optional<TmpMessage> getLoginMessage(long id) {
-		return loginUserList.values().stream().filter(tmpMessage -> tmpMessage.getMessage().getIdLong() == id)
-				.findFirst();
+		try {
+			return loginUserList.values().stream().filter(tmpMessage -> tmpMessage.getMessage().getIdLong() == id)
+					.findFirst();
+		} catch (NullPointerException e) {
+			return Optional.empty();
+		}
 	}
 
 	/**
@@ -122,7 +130,12 @@ public class TmpCache {
 	 * @return Possible register message.
 	 */
 	public static Optional<TmpMessage> getRegisterMessageByCode(String code) {
-		return registerUserList.values().stream().filter(tmpMessage -> tmpMessage.getCode().equals(code)).findFirst();
+		try {
+			return registerUserList.values().stream().filter(tmpMessage -> tmpMessage.getCode().equals(code))
+					.findFirst();
+		} catch (NullPointerException e) {
+			return Optional.empty();
+		}
 	}
 
 	/**

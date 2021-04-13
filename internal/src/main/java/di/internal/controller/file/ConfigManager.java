@@ -36,7 +36,8 @@ public class ConfigManager implements FileController{
 	}
 
 	public String getString(String path) {
-		return this.yamlData.get(path).toString().replace("&", "§");
+		char specialChar = (char)167;
+		return this.yamlData.get(path).toString().replace('&', specialChar);
 	}
 
 	public long getLong(String path) {
