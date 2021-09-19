@@ -11,4 +11,4 @@ Read our wiki https://github.com/Alhxe/Discord-Integration/wiki
 
 Spigot: https://www.spigotmc.org/resources/discord-integration-project.86876/
 
-Discord: https://discord.gg/gd6RtfpMDk
+Discord: https://discord.gg/CT2vvQwkb5
