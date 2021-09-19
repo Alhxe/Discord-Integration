@@ -18,6 +18,7 @@ register_discord_desc: "To complete your registration you just have to react to 
 login_request: "Log in from the message I sent you on Discord."
 login_success: "&cLogin successfully!"
 login_kick_time: "You have taken too long to connect."
+login_without_role_required: "You do not have the necessary role to access the server."
 
 login_discord_title: "Login to %minecraft_servername%."
 login_discord_desc: "Request to connect to the server from **%minecraft_username%** account. Not you? Report it on our server."

@@ -15,6 +15,9 @@ import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.cache.UserBlockedCache;
 import di.dilogin.minecraft.cache.UserSessionCache;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 
 public class UserLoginEventImpl implements UserLoginEvent {
 
@@ -50,9 +53,12 @@ public class UserLoginEventImpl implements UserLoginEvent {
 		long seconds = BukkitApplication.getDIApi().getInternalController().getConfigManager()
 				.getLong("login_time_until_kick") * 1000;
 
-		event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
-		sendLoginMessageRequest(user.getPlayerBukkit(), user.getPlayerDiscord());
-
+		if (!isWhiteListed(user.getPlayerDiscord())) {
+			event.getPlayer().sendMessage(LangManager.getString(user, "login_without_role_required"));
+		} else {
+			event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
+			sendLoginMessageRequest(user.getPlayerBukkit(), user.getPlayerDiscord());
+		}
 		Executors.newCachedThreadPool().submit(() -> {
 			Thread.sleep(seconds);
 			// In case the user has not finished completing the login.
@@ -85,6 +91,19 @@ public class UserLoginEventImpl implements UserLoginEvent {
 			}
 			return null;
 		});
+	}
+
+	private boolean isWhiteListed(User user) {
+		Optional<Role> optRole = DILoginController.requiredRole();
+		if (optRole.isPresent()) {
+			Role role = optRole.get();
+			Member member = user.getJDA()
+					.getGuildById(BukkitApplication.getDIApi().getCoreController().getBot().getServerid())
+					.getMember(user);
+			if (!member.getRoles().contains(role))
+				return false;
+		}
+		return true;
 	}
 
 }

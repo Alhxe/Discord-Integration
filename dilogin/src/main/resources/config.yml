@@ -5,10 +5,12 @@ channel: CHANNEL_ID
 register_time_until_kick: 60
 register_max_discord_accounts: 3
 register_code_length: 5
+register_required_role_id: YOUR_ROLE_ID
 login_time_until_kick: 30
 
+
 #Teleport options
-teleport: true
+teleport: false
 teleport_x: -207
 teleport_y: 90
 teleport_z: 272

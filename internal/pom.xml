@@ -16,7 +16,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>internal</artifactId>
 	<name>internal</name>
-	<version>1.0.3</version>
+	<version>1.0.4</version>
 
 	<dependencies>
 		<dependency>

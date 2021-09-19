@@ -14,7 +14,9 @@ import di.dilogin.minecraft.cache.UserBlockedCache;
 import di.dilogin.minecraft.event.custom.DILoginEvent;
 import di.internal.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
 
 /**
  * Login plugin control.
@@ -88,6 +90,25 @@ public class DILoginController {
 			player.sendMessage(LangManager.getString("login_success"));
 		}
 		TmpCache.removeLogin(player.getName());
+	}
+
+	public static Optional<Role> requiredRole() {
+		DIApi api = BukkitApplication.getDIApi();
+		JDA jda = BukkitApplication.getDIApi().getCoreController().getDiscordApi();
+		Guild guild = jda.getGuildById(api.getCoreController().getBot().getServerid());
+
+		Optional<Long> optionalLong = api.getInternalController().getConfigManager()
+				.getOptionalLong("register_required_role_id");
+
+		if (!optionalLong.isPresent())
+			return Optional.empty();
+
+		Role role = guild.getRoleById(optionalLong.get());
+		if (role == null)
+			return Optional.empty();
+
+		return Optional.of(role);
+
 	}
 
 }

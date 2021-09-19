@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Map;
+import java.util.Optional;
 
 import org.yaml.snakeyaml.Yaml;
 
@@ -12,7 +13,7 @@ import di.internal.controller.PluginController;
 /**
  * Configuration file driver.
  */
-public class ConfigManager implements FileController{
+public class ConfigManager implements FileController {
 
 	private static final String FILENAME = "config.yml";
 
@@ -36,19 +37,27 @@ public class ConfigManager implements FileController{
 	}
 
 	public String getString(String path) {
-		char specialChar = (char)167;
+		char specialChar = (char) 167;
 		return this.yamlData.get(path).toString().replace('&', specialChar);
 	}
 
 	public long getLong(String path) {
 		return Long.parseLong(this.yamlData.get(path).toString());
 	}
-	
+
 	public boolean getBoolean(String path) {
 		return Boolean.parseBoolean(this.yamlData.get(path).toString());
 	}
-	
+
 	public int getInt(String path) {
 		return Integer.parseInt(this.yamlData.get(path).toString());
+	}
+
+	public Optional<Long> getOptionalLong(String path) {
+		try {
+			return Optional.ofNullable(Long.parseLong(this.yamlData.get(path).toString()));
+		} catch (NumberFormatException e) {
+			return Optional.empty();
+		}
 	}
 }
