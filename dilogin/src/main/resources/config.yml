@@ -5,8 +5,10 @@ channel: CHANNEL_ID
 register_time_until_kick: 60
 register_max_discord_accounts: 3
 register_code_length: 5
-register_required_role_id: YOUR_ROLE_ID
 login_time_until_kick: 30
+
+#If you don't want to activate this setting, just leave it as is
+register_required_role_id: YOUR_ROLE_ID
 
 
 #Teleport options

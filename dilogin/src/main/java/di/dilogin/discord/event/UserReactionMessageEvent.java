@@ -14,6 +14,7 @@ import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
+import di.dilogin.minecraft.util.Util;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -63,18 +64,23 @@ public class UserReactionMessageEvent extends ListenerAdapter {
 
 		if (event.getMessageIdLong() != message.getIdLong())
 			return;
-		
+
 		String password = CodeGenerator.getCode(8);
-		player.sendMessage(LangManager.getString(user, player, "register_success").replace("%authme_password%", password));
+		player.sendMessage(
+				LangManager.getString(user, player, "register_success").replace("%authme_password%", password));
 		TmpCache.removeRegister(player.getName());
 		message.editMessage(getRegisterEmbed(user, player)).delay(Duration.ofSeconds(60)).flatMap(Message::delete)
 				.queue();
 		userDao.add(new DIUser(player, user));
-		
+
 		if (DILoginController.isAuthmeEnabled()) {
 			AuthmeHook.register(player, password);
 		} else {
-			DILoginController.loginUser(player);
+			if (!Util.isWhiteListed(user)) {
+				player.sendMessage(LangManager.getString(player, "login_without_role_required"));
+			} else {
+				DILoginController.loginUser(player);
+			}
 		}
 
 	}
