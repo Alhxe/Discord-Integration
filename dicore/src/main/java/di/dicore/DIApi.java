@@ -31,15 +31,17 @@ public class DIApi {
 	 * @param plugin      Plugin from where it is instantiated. The goal is the
 	 *                    logger.
 	 * @param classLoader Class loader.
+	 * @param configFile  True if plugin has config file in DICore folder.
+	 * @param langFile    True if plugin has lang file in DICore folder.
 	 * @throws NoApiException In case the internal controller of the core is not
 	 *                        instantiated, it will throw an error.
 	 */
-	public DIApi(Plugin plugin, ClassLoader classLoader) throws NoApiException {
+	public DIApi(Plugin plugin, ClassLoader classLoader, boolean configFile, boolean langFile) throws NoApiException {
 		if (BukkitApplication.getInternalController() == null) {
 			throw new NoApiException(plugin);
 		}
 		this.coreController = BukkitApplication.getInternalController();
-		this.internalController = new InternalController(plugin, coreController, classLoader);
+		this.internalController = new InternalController(plugin, coreController, classLoader, true, true);
 	}
 
 	/**
@@ -59,5 +61,4 @@ public class DIApi {
 	public void registerDiscordCommand(DiscordCommand command) {
 		this.coreController.getBot().getCommandHandler().registerCommand(command);
 	}
-
 }

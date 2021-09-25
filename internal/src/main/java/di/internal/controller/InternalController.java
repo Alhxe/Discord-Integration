@@ -41,12 +41,19 @@ public class InternalController implements PluginController {
 	 * @param plugin         Bukkit plugin.
 	 * @param coreController Core controller.
 	 * @param classLoader    Class loader.
+	 * @param configFile     True if plugin has config file in DICore folder.
+	 * @param langFile       True if plugin has lang file in DICore folder.
 	 */
-	public InternalController(Plugin plugin, CoreController coreController, ClassLoader classLoader) {
+	public InternalController(Plugin plugin, CoreController coreController, ClassLoader classLoader, boolean configFile,
+			boolean langFile) {
 		this.plugin = plugin;
-		this.dataFolder = getInternalPluginDataFolder(plugin, coreController);
-		this.configManager = new ConfigManager(this, dataFolder);
-		this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader);
+
+		if (configFile && langFile)
+			this.dataFolder = getInternalPluginDataFolder(plugin, coreController);
+		if (configFile)
+			this.configManager = new ConfigManager(this, dataFolder);
+		if (langFile)
+			this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader);
 	}
 
 	/**

@@ -15,8 +15,8 @@ import di.dilogin.minecraft.command.RegisterCommand;
 import di.dilogin.minecraft.command.UnregisterCommand;
 import di.dilogin.minecraft.event.UserBlockEvents;
 import di.dilogin.minecraft.event.UserLeaveEvent;
-import di.dilogin.minecraft.event.UserTeleportEvents;
 import di.dilogin.minecraft.event.UserLoginEventImpl;
+import di.dilogin.minecraft.event.UserTeleportEvents;
 import di.dilogin.minecraft.event.authme.AuthmeEvents;
 import di.dilogin.minecraft.event.authme.UserLoginEventAuthmeImpl;
 import di.internal.exception.NoApiException;
@@ -94,7 +94,7 @@ public class BukkitApplication extends JavaPlugin {
 	 */
 	private void connectWithCoreApi() {
 		try {
-			api = new DIApi(plugin, this.getClassLoader());
+			api = new DIApi(plugin, this.getClassLoader(), true, true);
 		} catch (NoApiException e) {
 			e.printStackTrace();
 			plugin.getPluginLoader().disablePlugin(plugin);

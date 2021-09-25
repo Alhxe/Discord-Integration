@@ -12,11 +12,6 @@
 	<version>3.1.1</version>
 	<name>DILogin</name>
 
-	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>
-
 	<repositories>
 		<repository>
 			<id>codemc-repo</id>
@@ -28,7 +23,7 @@
 		<dependency>
 			<groupId>com.diproject</groupId>
 			<artifactId>dicore</artifactId>
-			<version>2.1.1</version>
+			<version>2.1.2-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
