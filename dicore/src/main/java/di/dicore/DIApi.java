@@ -41,7 +41,8 @@ public class DIApi {
 			throw new NoApiException(plugin);
 		}
 		this.coreController = BukkitApplication.getInternalController();
-		this.internalController = new InternalController(plugin, coreController, classLoader, true, true);
+		this.internalController = new InternalController(plugin, coreController, classLoader, configFile, langFile);
+		coreController.getPlugin().getLogger().info("DICore has successfully connected with " + plugin.getName());
 	}
 
 	/**
