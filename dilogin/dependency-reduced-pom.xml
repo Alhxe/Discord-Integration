@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dilogin</artifactId>
   <name>DILogin</name>
-  <version>3.1.2-SNAPSHOT3</version>
+  <version>3.1.2-SNAPSHOT4</version>
   <build>
     <plugins>
       <plugin>
@@ -54,7 +54,7 @@
     <dependency>
       <groupId>com.diproject</groupId>
       <artifactId>dicore</artifactId>
-      <version>2.1.2-SNAPSHOT3</version>
+      <version>2.1.2-SNAPSHOT4</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

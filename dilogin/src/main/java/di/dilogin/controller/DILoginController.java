@@ -8,15 +8,20 @@ import org.bukkit.entity.Player;
 
 import di.dicore.DIApi;
 import di.dilogin.BukkitApplication;
+import di.dilogin.dao.DIUserDao;
+import di.dilogin.dao.DIUserDaoSqlImpl;
 import di.dilogin.entity.AuthmeHook;
+import di.dilogin.entity.DIUser;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.cache.UserBlockedCache;
 import di.dilogin.minecraft.event.custom.DILoginEvent;
+import di.dilogin.minecraft.util.Util;
 import di.internal.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 
 /**
  * Login plugin control.
@@ -81,6 +86,9 @@ public class DILoginController {
 	 * @param player Bukkit player.
 	 */
 	public static void loginUser(Player player) {
+
+		syncroUserName(player);
+
 		if (isAuthmeEnabled()) {
 			AuthmeHook.login(player);
 		} else {
@@ -92,23 +100,35 @@ public class DILoginController {
 		TmpCache.removeLogin(player.getName());
 	}
 
-	public static Optional<Role> requiredRole() {
-		DIApi api = BukkitApplication.getDIApi();
-		JDA jda = BukkitApplication.getDIApi().getCoreController().getDiscordApi();
-		Guild guild = jda.getGuildById(api.getCoreController().getBot().getServerid());
+	/**
+	 * Syncro player's name.
+	 * 
+	 * @param player Minecraft player.
+	 */
+	private static void syncroUserName(Player player) {
+		if (Util.isSyncronizeOptionEnabled()) {
+			DIUserDao userDao = new DIUserDaoSqlImpl();
+			Optional<DIUser> optDIUser = userDao.get(player.getName());
 
-		Optional<Long> optionalLong = api.getInternalController().getConfigManager()
-				.getOptionalLong("register_required_role_id");
+			if (!optDIUser.isPresent())
+				return;
 
-		if (!optionalLong.isPresent())
-			return Optional.empty();
+			DIApi api = BukkitApplication.getDIApi();
+			JDA jda = BukkitApplication.getDIApi().getCoreController().getDiscordApi();
+			Guild guild = jda.getGuildById(api.getCoreController().getBot().getServerid());
+			User user = optDIUser.get().getPlayerDiscord();
 
-		Role role = guild.getRoleById(optionalLong.get());
-		if (role == null)
-			return Optional.empty();
+			Member member = guild.retrieveMember(user, true).complete();
+			Member bot = guild.retrieveMember(jda.getSelfUser()).complete();
 
-		return Optional.of(role);
-
+			if (bot.canInteract(member)) {
+				user.getJDA().getGuildById(BukkitApplication.getDIApi().getCoreController().getBot().getServerid())
+						.getMember(user).modifyNickname(player.getName()).queue();
+			} else {
+				api.getInternalController().getPlugin().getLogger()
+						.info("Cannot change the nickname of " + player.getName() + ". Insufficient permissions.");
+			}
+		}
 	}
 
 }

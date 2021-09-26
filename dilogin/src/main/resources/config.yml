@@ -7,9 +7,6 @@ register_max_discord_accounts: 3
 register_code_length: 5
 login_time_until_kick: 30
 
-#If you don't want to activate this setting, just leave it as is
-register_required_role_id: YOUR_ROLE_ID
-
 #Database (sqlite or mysql)
 database: 'sqlite'
 
@@ -40,3 +37,13 @@ discord_embed_emoji: 'U+2B50'
 #Sessions
 sessions: true
 session_time_min: 5
+
+#If you don't want to activate this setting, just leave it as is
+#This option makes that only users with a certain role can log in.
+register_required_role_id: YOUR_ROLE_ID
+
+#Synchronization of the discord name with that of minecraft.
+#When the player logs into the server, their Discord name will be changed to their Minecraft name.
+#Remember bot need to have more permissions than regular users.
+syncro_enable: false
+
