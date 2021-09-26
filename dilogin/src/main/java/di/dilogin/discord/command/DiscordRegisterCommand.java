@@ -10,7 +10,7 @@ import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
-import di.dilogin.dao.DIUserDaoSqliteImpl;
+import di.dilogin.dao.DIUserDaoSqlImpl;
 import di.dilogin.entity.AuthmeHook;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
@@ -31,7 +31,7 @@ public class DiscordRegisterCommand implements DiscordCommand {
 	/**
 	 * User manager in the database.
 	 */
-	private final DIUserDao userDao = new DIUserDaoSqliteImpl();
+	private final DIUserDao userDao = new DIUserDaoSqlImpl();
 
 	/**
 	 * Main api.

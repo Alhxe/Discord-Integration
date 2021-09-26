@@ -7,7 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import di.dilogin.dao.DIUserDao;
-import di.dilogin.dao.DIUserDaoSqliteImpl;
+import di.dilogin.dao.DIUserDaoSqlImpl;
 import fr.xephi.authme.events.UnregisterByAdminEvent;
 import fr.xephi.authme.events.UnregisterByPlayerEvent;
 
@@ -19,7 +19,7 @@ public class AuthmeEvents implements Listener {
 	/**
 	 * User management.
 	 */
-	private DIUserDao userDao = new DIUserDaoSqliteImpl();
+	private DIUserDao userDao = new DIUserDaoSqlImpl();
 
 	@EventHandler
 	void onUnregisterByAdminEvent(UnregisterByAdminEvent event) {

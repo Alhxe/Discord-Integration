@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
-import di.dilogin.dao.DIUserDaoSqliteImpl;
+import di.dilogin.dao.DIUserDaoSqlImpl;
 import di.dilogin.entity.AuthmeHook;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
@@ -29,7 +29,7 @@ public class UserReactionMessageEvent extends ListenerAdapter {
 	/**
 	 * Database user DAO.
 	 */
-	private final DIUserDao userDao = new DIUserDaoSqliteImpl();
+	private final DIUserDao userDao = new DIUserDaoSqlImpl();
 
 	@Override
 	public void onMessageReactionAdd(MessageReactionAddEvent event) {

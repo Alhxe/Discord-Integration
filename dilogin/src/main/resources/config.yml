@@ -10,6 +10,15 @@ login_time_until_kick: 30
 #If you don't want to activate this setting, just leave it as is
 register_required_role_id: YOUR_ROLE_ID
 
+#Database (sqlite or mysql)
+database: 'sqlite'
+
+#Uncomment the following if you use MYSQL
+#database_username: 'user'
+#database_password: 'pass'
+#database_host: 'host'
+#database_port: '3306'
+#database_table: 'dilogin'
 
 #Teleport options
 teleport: false

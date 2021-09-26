@@ -10,7 +10,7 @@ import di.dicore.DIApi;
 import di.dilogin.BukkitApplication;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
-import di.dilogin.dao.DIUserDaoSqliteImpl;
+import di.dilogin.dao.DIUserDaoSqlImpl;
 
 /**
  * Command to unregister the account.
@@ -20,7 +20,7 @@ public class UnregisterCommand implements CommandExecutor {
 	/**
 	 * User manager in the database.
 	 */
-	private final DIUserDao userDao = new DIUserDaoSqliteImpl();
+	private final DIUserDao userDao = new DIUserDaoSqlImpl();
 
 	/**
 	 * Main plugin.

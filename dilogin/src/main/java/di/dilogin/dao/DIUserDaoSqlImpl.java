@@ -18,7 +18,7 @@ import net.dv8tion.jda.api.entities.User;
 /**
  * Implementation of {@DIUserDao}.
  */
-public class DIUserDaoSqliteImpl implements DIUserDao {
+public class DIUserDaoSqlImpl implements DIUserDao {
 
 	/**
 	 * Database connection.

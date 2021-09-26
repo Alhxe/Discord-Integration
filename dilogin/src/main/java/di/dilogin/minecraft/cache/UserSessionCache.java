@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import di.dilogin.BukkitApplication;
 import di.dilogin.dao.DIUserDao;
-import di.dilogin.dao.DIUserDaoSqliteImpl;
+import di.dilogin.dao.DIUserDaoSqlImpl;
 import di.dilogin.entity.UserSession;
 
 /**
@@ -29,7 +29,7 @@ public class UserSessionCache {
 	/**
 	 * User manager in the database.
 	 */
-	private static final DIUserDao userDao = new DIUserDaoSqliteImpl();
+	private static final DIUserDao userDao = new DIUserDaoSqlImpl();
 
 	/**
 	 * Check if the user has a valid session.
