@@ -85,9 +85,9 @@ public class DILoginController {
 	 * 
 	 * @param player Bukkit player.
 	 */
-	public static void loginUser(Player player) {
-
-		syncroUserName(player);
+	public static void loginUser(Player player, User user) {
+		if (user != null)
+			syncroUserName(player, user);
 
 		if (isAuthmeEnabled()) {
 			AuthmeHook.login(player);
@@ -105,7 +105,7 @@ public class DILoginController {
 	 * 
 	 * @param player Minecraft player.
 	 */
-	private static void syncroUserName(Player player) {
+	private static void syncroUserName(Player player, User user) {
 		if (Util.isSyncronizeOptionEnabled()) {
 			DIUserDao userDao = new DIUserDaoSqlImpl();
 			Optional<DIUser> optDIUser = userDao.get(player.getName());
@@ -116,14 +116,12 @@ public class DILoginController {
 			DIApi api = BukkitApplication.getDIApi();
 			JDA jda = BukkitApplication.getDIApi().getCoreController().getDiscordApi();
 			Guild guild = jda.getGuildById(api.getCoreController().getBot().getServerid());
-			User user = optDIUser.get().getPlayerDiscord();
 
 			Member member = guild.retrieveMember(user, true).complete();
-			Member bot = guild.retrieveMember(jda.getSelfUser()).complete();
+			Member bot = guild.retrieveMember(jda.getSelfUser(), true).complete();
 
 			if (bot.canInteract(member)) {
-				user.getJDA().getGuildById(BukkitApplication.getDIApi().getCoreController().getBot().getServerid())
-						.getMember(user).modifyNickname(player.getName()).queue();
+				member.modifyNickname(player.getName()).queue();
 			} else {
 				api.getInternalController().getPlugin().getLogger()
 						.info("Cannot change the nickname of " + player.getName() + ". Insufficient permissions.");

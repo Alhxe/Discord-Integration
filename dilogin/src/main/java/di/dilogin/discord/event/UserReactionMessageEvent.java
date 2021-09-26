@@ -79,7 +79,7 @@ public class UserReactionMessageEvent extends ListenerAdapter {
 			if (!Util.isWhiteListed(user)) {
 				player.sendMessage(LangManager.getString(player, "login_without_role_required"));
 			} else {
-				DILoginController.loginUser(player);
+				DILoginController.loginUser(player, user);
 			}
 		}
 
@@ -103,7 +103,7 @@ public class UserReactionMessageEvent extends ListenerAdapter {
 			return;
 
 		message.editMessage(getLoginEmbed(user, player)).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
-		DILoginController.loginUser(player);
+		DILoginController.loginUser(player, user);
 
 	}
 

@@ -53,7 +53,7 @@ public class ForceLoginCommand implements CommandExecutor {
 			return false;
 		}
 		editMessage(player);
-		DILoginController.loginUser(player);
+		DILoginController.loginUser(player, null);
 		sender.sendMessage(LangManager.getString(player, "forcelogin_success"));
 		return true;
 

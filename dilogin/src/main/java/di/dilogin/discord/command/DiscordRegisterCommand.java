@@ -87,7 +87,7 @@ public class DiscordRegisterCommand implements DiscordCommand {
 		if (DILoginController.isAuthmeEnabled()) {
 			AuthmeHook.register(player, password);
 		} else {
-			DILoginController.loginUser(player);
+			DILoginController.loginUser(player, event.getAuthor());
 		}
 
 	}
