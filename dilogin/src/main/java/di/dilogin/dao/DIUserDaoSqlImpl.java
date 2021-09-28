@@ -36,20 +36,23 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 		try (PreparedStatement ps = conn.prepareStatement(query)) {
 			ps.setString(1, playerName);
 			try (ResultSet rs = ps.executeQuery()) {
-				long id = rs.getLong(1);
-				Optional<User> userOpt = Utils.getDiscordUserById(api.getCoreController().getDiscordApi(), id);
-				Optional<Player> playerOpt = Utils.getUserPlayerByName(api.getInternalController().getPlugin(),
-						playerName);
+				if (rs.next()) {
+					long id = rs.getLong(1);
+					Optional<User> userOpt = Utils.getDiscordUserById(api.getCoreController().getDiscordApi(), id);
+					Optional<Player> playerOpt = Utils.getUserPlayerByName(api.getInternalController().getPlugin(),
+							playerName);
 
-				if (!playerOpt.isPresent()) {
-					BukkitApplication.getPlugin().getLogger().warning("Unable to get bukkit player named "+playerName);
-					return Optional.empty();
-				}
-				
-				if (userOpt.isPresent()) {
-					return Optional.of(new DIUser(playerOpt.get(), userOpt.get()));
-				} else {
-					BukkitApplication.getPlugin().getLogger().warning("Unable to get user named "+playerName);
+					if (!playerOpt.isPresent()) {
+						BukkitApplication.getPlugin().getLogger()
+								.warning("Unable to get bukkit player named " + playerName);
+						return Optional.empty();
+					}
+
+					if (userOpt.isPresent()) {
+						return Optional.of(new DIUser(playerOpt.get(), userOpt.get()));
+					} else {
+						BukkitApplication.getPlugin().getLogger().warning("Unable to get user named " + playerName);
+					}
 				}
 			}
 		} catch (SQLException e) {
@@ -87,21 +90,23 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 		try (PreparedStatement ps = conn.prepareStatement(query)) {
 			ps.setString(1, name);
 			try (ResultSet rs = ps.executeQuery()) {
-				return rs.next();
+				if (rs.next())
+					return true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean containsDiscordId(long id) {
 		String query = "select * from user where discord_id = ?;";
 		try (PreparedStatement ps = conn.prepareStatement(query)) {
 			ps.setLong(1, id);
 			try (ResultSet rs = ps.executeQuery()) {
-				return rs.next();
+				if (rs.next())
+					return true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -115,7 +120,8 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 		try (PreparedStatement ps = conn.prepareStatement(query)) {
 			ps.setLong(1, user.getIdLong());
 			try (ResultSet rs = ps.executeQuery()) {
-				return rs.getInt("total");
+				if (rs.next())
+					return rs.getInt("total");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

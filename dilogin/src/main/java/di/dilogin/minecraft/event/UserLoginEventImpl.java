@@ -16,6 +16,11 @@ import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.cache.UserBlockedCache;
 import di.dilogin.minecraft.cache.UserSessionCache;
 import di.dilogin.minecraft.util.Util;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.TranslatableComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 
 public class UserLoginEventImpl implements UserLoginEvent {
 
@@ -74,8 +79,21 @@ public class UserLoginEventImpl implements UserLoginEvent {
 				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"));
 		String command = api.getCoreController().getBot().getPrefix() + "register " + code;
 		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(), null, null, code));
-		event.getPlayer().sendMessage(
-				LangManager.getString(event.getPlayer(), "register_request").replace("%register_command%", command));
+
+		int v = Util.getServerVersion(api.getInternalController().getPlugin().getServer());
+		System.out.println("Version " + v);
+		if (v < 16)
+			event.getPlayer().sendMessage(LangManager.getString(event.getPlayer(), "register_request")
+					.replace("%register_command%", command));
+
+		if (v >= 16) {
+			TextComponent tc = new TextComponent(LangManager.getString(event.getPlayer(), "register_request")
+					.replace("%register_command%", command));
+			tc.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, command));
+			tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+					new Text(LangManager.getString(event.getPlayer(), "register_request_copy"))));
+			event.getPlayer().spigot().sendMessage(tc);
+		}
 
 		long seconds = BukkitApplication.getDIApi().getInternalController().getConfigManager()
 				.getLong("register_time_until_kick") * 1000;

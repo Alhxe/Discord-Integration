@@ -1,5 +1,6 @@
 #Register
 register_request: "&cTo register, use the command &6%register_command% &con our discord server or use here &6/register <discord_id>"
+register_request_copy: "Copy command on clipboard"
 register_already_exists: "You are already registered."
 register_arguments: "Enter the discord user id."
 register_success: "This account has been successfully linked with %discriminated_discord_name%."
