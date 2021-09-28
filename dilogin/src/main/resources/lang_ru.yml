@@ -1,0 +1,41 @@
+#Register
+register_request: "&cДля регистрации используйте &6%register_command% &cна нашем Discord сервере или используйте команду &6/register <discord_id>"
+register_already_exists: "Вы уже зарегистрированы."
+register_arguments: "Введите ID пользователя Discord."
+register_success: "Этот аккаунт успешно связан с %discriminated_discord_name%."
+register_kick_time: "Истекло время для регистрации."
+register_max_accounts: "Вы достигли максимального количества регистраций для этого аккаунта."
+register_code_not_found: "Вы ввели неверный код."
+register_user_not_detected: "Не найден ни один пользователь с ID %user_discord_id%."
+register_submit: "Вам отправлено сообщение в Discord. Прочитайте его для завершения регистрации."
+
+register_discord_arguments: "Введите код регистрации."
+register_discord_title: "Зарегистрируйтесь на сервере %minecraft_servername%."
+register_discord_success: "Ваш аккаунт успешно связан с **%minecraft_username%**."
+register_discord_desc: "Для завершения регистрации отреагируйте на это сообщение. Сделав это, аккаунт **%minecraft_username%** будет привязан к этому Discord пользователю."
+
+#Login
+login_request: "Войдите на сервер с помощью сообщения в Discord."
+login_success: "&cУспешный вход!"
+login_kick_time: "Истекло время для входа."
+login_without_role_required: "У вас нет необходимой роли для входа на сервер."
+
+login_discord_title: "Вход на %minecraft_servername%."
+login_discord_desc: "Запрос на подключение к серверу с аккаунта **%minecraft_username%**. *Если это не вы, срочно обратитесь к администрации.*"
+login_discord_success: "Вход с аккаунта **%minecraft_username%** одобрен."
+
+#GobalCommands
+no_player: "Не найдено игрока с ником %nick%"
+user_not_registered: "Игрок %minecraft_username% не зарегистрирован."
+
+#ForceLogin
+forcelogin_user_connected: "Игрок уже вошёл в аккаунт."
+forcelogin_success: "Сессия %minecraft_username% началась."
+login_discord_forced: "Вы автоматически вошли в аккаунт."
+
+#Unregister
+unregister_kick: "Ваш аккаунт удалён."
+unregister_success: "Аккаунт %minecraft_username% был удалён."
+
+#Authme
+register_opt_request: "Чтобы связать этот аккаунт с вашим Discord, используйте %register_command% на нашем Discord сервере."
