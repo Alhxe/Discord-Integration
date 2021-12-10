@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>dicore</artifactId>
   <name>DICore</name>
-  <version>2.1.2-SNAPSHOT5</version>
+  <version>2.2.0</version>
   <build>
     <plugins>
       <plugin>
@@ -77,7 +77,7 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.17-R0.1-SNAPSHOT</version>
+      <version>1.18-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
