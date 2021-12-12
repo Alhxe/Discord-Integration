@@ -30,12 +30,12 @@ public class DBConnectionSqliteImpl implements DBConnection {
 			initDB();
 		return connection;
 	}
-	
+
 	/**
 	 * Main constructor.
 	 */
 	public DBConnectionSqliteImpl() {
-		//No args required
+		// No args required
 	}
 
 	/**

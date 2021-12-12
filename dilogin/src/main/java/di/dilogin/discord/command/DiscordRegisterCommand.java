@@ -94,7 +94,8 @@ public class DiscordRegisterCommand implements DiscordCommand {
 
 	@Override
 	public String getAlias() {
-		return "register";
+		
+		return api.getInternalController().getConfigManager().getString("register_command");
 	}
 
 	/**

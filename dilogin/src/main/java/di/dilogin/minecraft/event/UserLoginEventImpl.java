@@ -77,7 +77,7 @@ public class UserLoginEventImpl implements UserLoginEvent {
 	public void initPlayerRegisterRequest(PlayerJoinEvent event, String playerName) {
 		String code = CodeGenerator
 				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
-		String command = api.getCoreController().getBot().getPrefix() + "register " + code;
+		String command = api.getCoreController().getBot().getPrefix() + api.getInternalController().getConfigManager().getString("register_command") + " " + code;
 		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(), null, null, code));
 
 		int v = Util.getServerVersion(api.getInternalController().getPlugin().getServer());
