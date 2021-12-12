@@ -1,5 +1,7 @@
 package di.dilogin.minecraft.command;
 
+import java.util.Optional;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,6 +13,7 @@ import di.dilogin.BukkitApplication;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.dao.DIUserDaoSqlImpl;
+import di.dilogin.entity.DIUser;
 
 /**
  * Command to unregister the account.
@@ -41,18 +44,15 @@ public class UnregisterCommand implements CommandExecutor {
 		}
 
 		String nick = args[0];
-		Player player = plugin.getServer().getPlayer(nick);
+		Optional<DIUser> optUser = userDao.get(nick);
 
-		if (player == null) {
+		if (!optUser.isPresent()) {
 			sender.sendMessage(LangManager.getString("no_player").replace("%nick%", nick));
 			return true;
 		}
-		if (!userDao.contains(player.getName())) {
-			sender.sendMessage(LangManager.getString(player, "user_not_registered"));
-			return true;
-		}
-
-		userDao.remove(player.getName());
+		DIUser user = optUser.get();
+		Player player = user.getPlayerBukkit();
+		userDao.remove(user);
 		sender.sendMessage(LangManager.getString(player, "unregister_success"));
 		player.kickPlayer(LangManager.getString(player, "unregister_kick"));
 		return true;
