@@ -25,9 +25,9 @@ public class DBController {
 		String db = BukkitApplication.getDIApi().getInternalController().getConfigManager().getString("database");
 		if(db.equalsIgnoreCase("mysql")) {
 			conn = new DBConnectionMysqlImpl();
-		} else  {
+		} else {
 			conn = new DBConnectionSqliteImpl();
-		} 
+		}
 	}
 
 }
