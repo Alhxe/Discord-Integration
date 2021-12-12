@@ -73,7 +73,7 @@ public class DiscordRegisterCommand implements DiscordCommand {
 
 		Player player = tmpMessageOpt.get().getPlayer();
 		// Create password.
-		String password = CodeGenerator.getCode(8);
+		String password = CodeGenerator.getCode(8, api);
 		player.sendMessage(LangManager.getString(event.getAuthor(), player, "register_success")
 				.replace("%authme_password%", password));
 		// Send message to discord.

@@ -44,7 +44,7 @@ public class UserLoginEventAuthmeImpl implements UserLoginEvent {
 	@Override
 	public void initPlayerRegisterRequest(PlayerJoinEvent event, String playerName) {
 		String code = CodeGenerator
-				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"));
+				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
 		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(), null, null, code));
 	}
 
@@ -74,7 +74,7 @@ public class UserLoginEventAuthmeImpl implements UserLoginEvent {
 	 */
 	public void initPlayerAuthmeRegisterRequest(LoginEvent event, String playerName) {
 		String code = CodeGenerator
-				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"));
+				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
 		String command = api.getCoreController().getBot().getPrefix() + "register " + code;
 		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(), null, null, code));
 		event.getPlayer().sendMessage(LangManager.getString(event.getPlayer(), "register_opt_request")

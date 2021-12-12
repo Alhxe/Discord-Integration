@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.bukkit.entity.Player;
 
+import di.dicore.DIApi;
+import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
@@ -30,6 +32,8 @@ public class UserReactionMessageEvent extends ListenerAdapter {
 	 * Database user DAO.
 	 */
 	private final DIUserDao userDao = new DIUserDaoSqlImpl();
+	
+	private final DIApi api = BukkitApplication.getDIApi();
 
 	@Override
 	public void onMessageReactionAdd(MessageReactionAddEvent event) {
@@ -65,7 +69,7 @@ public class UserReactionMessageEvent extends ListenerAdapter {
 		if (event.getMessageIdLong() != message.getIdLong())
 			return;
 
-		String password = CodeGenerator.getCode(8);
+		String password = CodeGenerator.getCode(8, api);
 		player.sendMessage(
 				LangManager.getString(user, player, "register_success").replace("%authme_password%", password));
 		TmpCache.removeRegister(player.getName());

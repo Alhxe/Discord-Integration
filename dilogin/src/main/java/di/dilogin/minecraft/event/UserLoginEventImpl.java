@@ -76,12 +76,12 @@ public class UserLoginEventImpl implements UserLoginEvent {
 	@Override
 	public void initPlayerRegisterRequest(PlayerJoinEvent event, String playerName) {
 		String code = CodeGenerator
-				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"));
+				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
 		String command = api.getCoreController().getBot().getPrefix() + "register " + code;
 		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(), null, null, code));
 
 		int v = Util.getServerVersion(api.getInternalController().getPlugin().getServer());
-		System.out.println("Version " + v);
+		
 		if (v < 16)
 			event.getPlayer().sendMessage(LangManager.getString(event.getPlayer(), "register_request")
 					.replace("%register_command%", command));
