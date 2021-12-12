@@ -6,6 +6,8 @@ register_time_until_kick: 60
 register_max_discord_accounts: 3
 register_code_length: 5
 login_time_until_kick: 30
+#register_custom_characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+#Only the custom added characters will appear in the +register command.
 
 #Database (sqlite or mysql)
 database: 'sqlite'

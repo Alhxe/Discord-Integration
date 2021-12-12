@@ -60,4 +60,8 @@ public class ConfigManager implements FileController {
 			return Optional.empty();
 		}
 	}
+	
+	public boolean contains(String path) {
+		return this.yamlData.containsKey(path);
+	}
 }

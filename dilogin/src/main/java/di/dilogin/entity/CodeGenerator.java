@@ -1,4 +1,7 @@
 package di.dilogin.entity;
+
+import di.dicore.DIApi;
+
 /**
  * Code generator for registration.
  */
@@ -30,7 +33,10 @@ public class CodeGenerator {
 	 * @param length Number of characters for the code.
 	 * @return Generated code.
 	 */
-	public static final String getCode(int length) {
+	public static final String getCode(int length, DIApi api) {
+		if(api.getInternalController().getConfigManager().contains("register_custom_characters"))
+			return getCode(api.getInternalController().getConfigManager().getString("register_custom_characters"),length);
+		
 		return getCode(NUMBERS + CAPITAL_LETTERS + LOWER_CASE, length);
 	}
 
