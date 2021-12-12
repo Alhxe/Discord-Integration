@@ -5,3 +5,12 @@ discord_server_prefix: '+'
 
 #Minecraft
 server_name: 'YourServerName'
+
+#Bot status
+status_type: 1
+status_content: 'There are %minecraft_players% players'
+
+#Bot Status type:
+#0 -> None
+#1 -> Updates when a player connects/disconnects
+#2 -> Updates every 5 minutes

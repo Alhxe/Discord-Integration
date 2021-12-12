@@ -14,11 +14,12 @@ public class BukkitApplication extends JavaPlugin {
 		getLogger().info("Plugin started");
 		Plugin plugin = getPlugin(getClass());
 		internalController = new CoreController(plugin, this.getClassLoader());
-	
+		BotStatus.init();
 	}
 
 	@Override
 	public void onDisable() {
+		internalController.getBot().getApi().shutdownNow();
 		getLogger().info("Plugin disabled");
 	}
 
