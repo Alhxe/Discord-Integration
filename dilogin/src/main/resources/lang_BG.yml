@@ -1,0 +1,42 @@
+#Register
+register_request: "&cРЕДАКТИРАЙ plugins/DIcore/DILogin/lang.yml! За да се регистрираш, напиши &6%register_command% &cв канал &7#някойси&c в Discord сървъра на &f&lеди кого си&r"
+register_request_copy: "Копирай командата в клипборда"
+register_already_exists: "Вече си регистриран с друго Minecraft име, не можеш да имаш повече от един акаунт!"
+register_arguments: "Напиши Discord User ID-а си!"
+register_success: "Вече си регистриран и свързан с дискорд акаунт %discriminated_discord_name%!"
+register_kick_time: "Отне ти твърде много време да се регистрираш."
+register_max_accounts: "Достигнал си лимита на броя акаунти."
+register_code_not_found: "Кодът, който написа не е валиден! Опитай пак!"
+register_user_not_detected: "Не мога да намеря акаунт с ID %user_discord_id%."
+register_submit: "Изпратих ти лично съобщение в Дискорд с инструкции как да завършиш регистрацията си"
+
+register_discord_arguments: "Напиши регистрационния си код."
+register_discord_title: "Регистрация в **НАШИЯ MINECRAFT СЪРВЪР!**"
+register_discord_success: "Твоят дискорд акаунт беше успешно свързан с Minecraft име **%minecraft_username%**."
+register_discord_desc: "За да завършиш регистрацията си реагирай на това съобщение (кликни емоджито). Така, твоят Minecraft акаунт **%minecraft_username%** ще бъде свързан към този Дискорд акаунт."
+
+#Login
+login_request: "ЗА ДА ВЛЕЗЕШ ПРОВЕРИ ЛИЧНИТЕ СИ СЪОБЩЕНИЯ В DISCORD!"
+login_success: "&aТи влезе успешно! + напишете MOTD / правила тук"
+login_kick_time: "Отне ти твърде много време да влезеш!"
+login_without_role_required: "&c&lНЯМАШ WHITELIST!&r &6Трябва да имаш &cопределена Discord роля &6в &f&lопределен сървър &r&6 за да играеш тук."
+
+login_discord_title: "ВЛИЗАНЕ в **НАШИЯ MINECRAFT СЪРВЪР**"
+login_discord_desc: "Ти ли опитваш да влезеш в **НАШИЯ MINECRAFT СЪРВЪР** с Minecraft име **%minecraft_username%**? Ако да, кликни на емоджито долу! Ако не, докладвай че някой се опитва да ти влезе в акаунта!"
+login_discord_success: "Влизането в Minecraft сървъра с име **%minecraft_username%** беше одобрено."
+
+#GobalCommands
+no_player: "Няма потребител, чието име е %nick%"
+user_not_registered: "Потребител %minecraft_username% не е регистриран."
+
+#ForceLogin
+forcelogin_user_connected: "Потребителя вече е влязал."
+forcelogin_success: "Сесията като %minecraft_username% е стартирана!"
+login_discord_forced: "Debug: Login has been forced."
+
+#Unregister
+unregister_kick: "Твоя акаунт беше де-регистриран."
+unregister_success: "Акаунта на %minecraft_username% беше изтрит."
+
+#Authme
+register_opt_request: "&cРЕДАКТИРАЙ plugins/DIcore/DILogin/lang.yml! За да се регистрираш, напиши &6%register_command% &cв канал &7#някойси&c в Discord сървъра на &f&lеди кого си&r"
