@@ -27,7 +27,7 @@ public class UserPreLoginEvent implements Listener {
 		boolean isAnotherUserOnline = server.getOnlinePlayers().stream().filter(u->u.getName().equals(username)).findFirst().isPresent();
 		
 		if(isAnotherUserOnline)
-			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, "Your username is already logged into this server.");
+			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, api.getInternalController().getLangManager().getString("login_not_authorized"));
 		
 		event.allow();
 		return;
