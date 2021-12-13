@@ -28,6 +28,15 @@ public class LangManager {
 				"%minecraft_servername%",
 				BukkitApplication.getDIApi().getCoreController().getConfigManager().getString("server_name"));
 	}
+	
+	/**
+	 * @param nick Bukkit player name.
+	 * @param path   Variable searched.
+	 * @return Message by changing the placeholders.
+	 */
+	public static String getString(String nick, String path) {
+		return getString(path).replace("%minecraft_username%", nick);
+	}
 
 	/**
 	 * @param player Bukkit player.
@@ -45,7 +54,7 @@ public class LangManager {
 	 * @return Message by changing the placeholders.
 	 */
 	public static String getString(DIUser user, String path) {
-		return getString(user.getPlayerBukkit(), path).replace("%discriminated_discord_name%",
+		return getString(user.getPlayerBukkit().get(), path).replace("%discriminated_discord_name%",
 				String.valueOf(user.getPlayerDiscord().getName()) + "#" + user.getPlayerDiscord().getDiscriminator());
 	}
 

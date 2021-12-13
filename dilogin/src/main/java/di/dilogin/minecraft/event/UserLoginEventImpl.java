@@ -19,7 +19,6 @@ import di.dilogin.minecraft.util.Util;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.TranslatableComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 
 public class UserLoginEventImpl implements UserLoginEvent {
@@ -60,7 +59,7 @@ public class UserLoginEventImpl implements UserLoginEvent {
 			event.getPlayer().sendMessage(LangManager.getString(user, "login_without_role_required"));
 		} else {
 			event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
-			sendLoginMessageRequest(user.getPlayerBukkit(), user.getPlayerDiscord());
+			sendLoginMessageRequest(user.getPlayerBukkit().get(), user.getPlayerDiscord());
 		}
 		Executors.newCachedThreadPool().submit(() -> {
 			Thread.sleep(seconds);

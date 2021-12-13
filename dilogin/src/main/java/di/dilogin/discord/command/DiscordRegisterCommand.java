@@ -82,7 +82,7 @@ public class DiscordRegisterCommand implements DiscordCommand {
 		// Remove user from register cache.
 		TmpCache.removeRegister(player.getName());
 		// Add user to data base.
-		userDao.add(new DIUser(player, event.getAuthor()));
+		userDao.add(new DIUser(Optional.of(player), event.getAuthor()));
 
 		if (DILoginController.isAuthmeEnabled()) {
 			AuthmeHook.register(player, password);

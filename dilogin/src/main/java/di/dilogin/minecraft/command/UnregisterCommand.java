@@ -51,10 +51,13 @@ public class UnregisterCommand implements CommandExecutor {
 			return true;
 		}
 		DIUser user = optUser.get();
-		Player player = user.getPlayerBukkit();
-		userDao.remove(user);
-		sender.sendMessage(LangManager.getString(player, "unregister_success"));
+		Player player = sender.getServer().getPlayer(nick);
+		sender.sendMessage(LangManager.getString(nick, "unregister_success"));
+		
+		if(player!=null)
 		player.kickPlayer(LangManager.getString(player, "unregister_kick"));
+		
+		userDao.remove(user);
 		return true;
 	}
 

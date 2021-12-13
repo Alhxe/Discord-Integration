@@ -1,5 +1,7 @@
 package di.dilogin.entity;
 
+import java.util.Optional;
+
 import org.bukkit.entity.Player;
 
 import lombok.AllArgsConstructor;
@@ -17,9 +19,9 @@ import net.dv8tion.jda.api.entities.User;
 public class DIUser {
 
 	/**
-	 * Bukkit Player object.
+	 * Bukkit player. Can be null if player is offline.
 	 */
-	private Player playerBukkit;
+	private Optional<Player> playerBukkit;
 
 	/**
 	 * Discord Player object.

@@ -42,14 +42,8 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 					Optional<Player> playerOpt = Utils.getUserPlayerByName(api.getInternalController().getPlugin(),
 							playerName);
 
-					if (!playerOpt.isPresent()) {
-						BukkitApplication.getPlugin().getLogger()
-								.warning("Unable to get bukkit player named " + playerName);
-						return Optional.empty();
-					}
-
 					if (userOpt.isPresent()) {
-						return Optional.of(new DIUser(playerOpt.get(), userOpt.get()));
+						return Optional.of(new DIUser(playerOpt, userOpt.get()));
 					} else {
 						BukkitApplication.getPlugin().getLogger().warning("Unable to get user named " + playerName);
 					}
@@ -65,7 +59,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 	public void add(DIUser user) {
 		String query = "insert into user(username, discord_id) values(?,?);";
 		try (PreparedStatement ps = conn.prepareStatement(query)) {
-			ps.setString(1, user.getPlayerBukkit().getName());
+			ps.setString(1, user.getPlayerBukkit().get().getName());
 			ps.setLong(2, user.getPlayerDiscord().getIdLong());
 			ps.execute();
 		} catch (SQLException e) {
