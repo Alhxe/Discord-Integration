@@ -16,6 +16,7 @@ import di.dilogin.minecraft.command.UnregisterCommand;
 import di.dilogin.minecraft.event.UserBlockEvents;
 import di.dilogin.minecraft.event.UserLeaveEvent;
 import di.dilogin.minecraft.event.UserLoginEventImpl;
+import di.dilogin.minecraft.event.UserPreLoginEvent;
 import di.dilogin.minecraft.event.UserTeleportEvents;
 import di.dilogin.minecraft.event.authme.AuthmeEvents;
 import di.dilogin.minecraft.event.authme.UserLoginEventAuthmeImpl;
@@ -115,6 +116,7 @@ public class BukkitApplication extends JavaPlugin {
 		}
 		getServer().getPluginManager().registerEvents(new UserLeaveEvent(), plugin);
 		getServer().getPluginManager().registerEvents(new UserTeleportEvents(), plugin);
+		getServer().getPluginManager().registerEvents(new UserPreLoginEvent(), plugin);
 	}
 
 	/**
