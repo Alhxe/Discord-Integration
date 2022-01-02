@@ -1,7 +1,0 @@
-# % L
-Open project for Discord and Minecraft integration.
-%%
-Copyright (C) 2021 Discord Integration Project
-%%
-This project conforms to the license: https://github.com/Alhxe/Discord-Integration/blob/main/LICENSE
-# L %
