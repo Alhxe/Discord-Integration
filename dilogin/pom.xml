@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>dilogin</artifactId>
-	<version>3.3.0-beta2</version>
+	<version>3.3.0</version>
 	<name>DILogin</name>
 
 	<repositories>

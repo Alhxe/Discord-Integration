@@ -13,6 +13,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -34,7 +35,7 @@ import di.dilogin.minecraft.cache.UserBlockedCache;
 
 @SuppressWarnings("deprecation")
 public class UserBlockEvents implements Listener {
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerSendCommand(PlayerCommandPreprocessEvent event) {
 		String mensaje = event.getMessage();
@@ -196,6 +197,17 @@ public class UserBlockEvents implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onAnimation(PlayerAnimationEvent event) {
 		if (UserBlockedCache.contains(event.getPlayer().getName()))
+			event.setCancelled(true);
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onEntityInteractWithPlayer(EntityTargetLivingEntityEvent event) {
+		if (event.getTarget() == null)
+			return;
+		if (event.getTarget().getType() != EntityType.PLAYER)
+			return;
+		Player player = (Player) event.getTarget();
+		if (UserBlockedCache.contains(player.getName()))
 			event.setCancelled(true);
 	}
 }
