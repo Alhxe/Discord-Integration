@@ -49,3 +49,5 @@ register_required_role_id: YOUR_ROLE_ID
 #Remember bot need to have more permissions than regular users.
 syncro_enable: false
 
+#COMMANDS ALIAS
+register_command: 'register'
