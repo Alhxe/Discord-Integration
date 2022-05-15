@@ -40,3 +40,7 @@ local.properties
 .classpath
 .gitattributes
 .project
+.idea/
+*.iml
+dependency-reduced-pom.xml
+
