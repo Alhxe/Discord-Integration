@@ -2,5 +2,5 @@ name: DILitebansLogs
 main: di.dilitebanslogs.DILiteBansLogsApplication
 version: 2.3.0
 author: Alhxe
-api-version: 1.18
+api-version: 1.17
 depend: [DICore,LiteBans]
