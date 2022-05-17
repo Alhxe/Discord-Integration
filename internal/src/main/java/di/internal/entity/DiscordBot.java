@@ -64,8 +64,8 @@ public class DiscordBot {
 	 */
 	public void initBot(String token, Plugin plugin) {
 		try {
-			this.api = JDABuilder.createDefault(token)
-					.enableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.DIRECT_MESSAGES).build();
+			this.api = JDABuilder.createDefault(token).enableIntents(GatewayIntent.GUILD_PRESENCES,
+					GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MEMBERS).build();
 			api.awaitReady();
 			onConnectToDiscord(plugin);
 			checkPermissions(plugin);
@@ -111,12 +111,15 @@ public class DiscordBot {
 			return;
 
 		if (!bot.hasPermission(Permission.MESSAGE_WRITE))
-			plugin.getLogger().warning("The bot does not have writes permission on the server, this could cause a conflict!");
-		
+			plugin.getLogger()
+					.warning("The bot does not have writes permission on the server, this could cause a conflict!");
+
 		if (!bot.hasPermission(Permission.MESSAGE_MANAGE))
-			plugin.getLogger().warning("The bot is not allowed to handle messages on the server, this could lead to conflict!");
-		
+			plugin.getLogger()
+					.warning("The bot is not allowed to handle messages on the server, this could lead to conflict!");
+
 		if (!bot.hasPermission(Permission.MESSAGE_ADD_REACTION))
-			plugin.getLogger().warning("The bot does not have permission to add reactions on the server, this could cause conflict!");
+			plugin.getLogger().warning(
+					"The bot does not have permission to add reactions on the server, this could cause conflict!");
 	}
 }

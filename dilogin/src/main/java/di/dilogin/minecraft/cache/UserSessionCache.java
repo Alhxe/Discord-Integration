@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import di.dilogin.BukkitApplication;
+import di.dilogin.controller.DILoginController;
 import di.dilogin.dao.DIUserDao;
-import di.dilogin.dao.DIUserDaoSqlImpl;
 import di.dilogin.entity.UserSession;
 
 /**
@@ -29,7 +29,7 @@ public class UserSessionCache {
 	/**
 	 * User manager in the database.
 	 */
-	private static final DIUserDao userDao = new DIUserDaoSqlImpl();
+	private static final DIUserDao userDao = DILoginController.getDIUserDao();
 
 	/**
 	 * Check if the user has a valid session.

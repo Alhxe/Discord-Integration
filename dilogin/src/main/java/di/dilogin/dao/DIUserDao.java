@@ -15,6 +15,12 @@ public interface DIUserDao {
 	 * @return Returns the user from the database.
 	 */
 	Optional<DIUser> get(String playerName);
+	
+	/**
+	 * @param discord Discord user id.
+	 * @return Returns the user from the database.
+	 */
+	Optional<DIUser> get(long discordid);
 
 	/**
 	 * Add a user to the database.

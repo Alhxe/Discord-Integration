@@ -23,7 +23,7 @@ public class UserLeaveEvent implements Listener {
 	/**
 	 * User manager in the database.
 	 */
-	private final DIUserDao userDao = new DIUserDaoSqlImpl();
+	private final DIUserDao userDao = DILoginController.getDIUserDao();
 
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent event) {

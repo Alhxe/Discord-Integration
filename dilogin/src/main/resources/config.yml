@@ -49,5 +49,15 @@ register_required_role_id: YOUR_ROLE_ID
 #Remember bot need to have more permissions than regular users.
 syncro_enable: false
 
+#LUCKPERMS SYNCRO
+#Sync minecraft server roles with discord. When a role is given on the minecraft server, 
+#the corresponding one will be given on discord and vice versa.
+syncro_rol_enable: false
+syncro_rol_list:
+       - discord_rol_id: luckperms_group_name
+       - another_rol_id: another_luckperms_group_name
+	 #EXAMPLE
+	 #- 927608230627119184: admin
+
 #COMMANDS ALIAS
 register_command: 'register'

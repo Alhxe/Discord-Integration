@@ -15,7 +15,6 @@ import di.dilogin.entity.DIUser;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.cache.UserBlockedCache;
 import di.dilogin.minecraft.event.custom.DILoginEvent;
-import di.dilogin.minecraft.util.Util;
 import di.internal.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -33,6 +32,15 @@ public class DILoginController {
 	 */
 	private DILoginController() {
 		throw new IllegalStateException();
+	}
+
+	/**
+	 * 
+	 */
+	private static DIUserDao userDao = new DIUserDaoSqlImpl();
+
+	public static DIUserDao getDIUserDao() {
+		return userDao;
 	}
 
 	/**
@@ -57,15 +65,6 @@ public class DILoginController {
 	}
 
 	/**
-	 * Check if the session system is enabled.
-	 * 
-	 * @return True if the system is active.
-	 */
-	public static boolean isSessionEnabled() {
-		return BukkitApplication.getDIApi().getInternalController().getConfigManager().getBoolean("sessions");
-	}
-
-	/**
 	 * Kick a player synchronously.
 	 * 
 	 * @param player Player to kick.
@@ -76,8 +75,45 @@ public class DILoginController {
 		Bukkit.getScheduler().runTask(BukkitApplication.getPlugin(), task);
 	}
 
+	/**
+	 * Check if the session system is enabled.
+	 * 
+	 * @return True if the system is active.
+	 */
+	public static boolean isSessionEnabled() {
+		return BukkitApplication.getDIApi().getInternalController().getConfigManager().getBoolean("sessions");
+	}
+
+	/**
+	 * Check if the rol syncro system is enabled.
+	 * 
+	 * @return True if the system is active.
+	 */
+	public static boolean isSyncroRolEnabled() {
+		return BukkitApplication.getDIApi().getInternalController().getConfigManager().getBoolean("syncro_rol_enable");
+	}
+
+	/**
+	 * Check if syncro name option is enabled in cofig file.
+	 * 
+	 * @return true if its enabled.
+	 */
+	public static boolean isSyncronizeOptionEnabled() {
+		return BukkitApplication.getDIApi().getInternalController().getConfigManager().getBoolean("syncro_enable");
+	}
+
+	/**
+	 * @return true is Authme is enabled.
+	 */
 	public static boolean isAuthmeEnabled() {
 		return BukkitApplication.getPlugin().getServer().getPluginManager().isPluginEnabled("AuthMe");
+	}
+
+	/**
+	 * @return true is LuckPerms is enabled.
+	 */
+	public static boolean isLuckPermsEnabled() {
+		return BukkitApplication.getPlugin().getServer().getPluginManager().isPluginEnabled("LuckPerms");
 	}
 
 	/**
@@ -86,8 +122,11 @@ public class DILoginController {
 	 * @param player Bukkit player.
 	 */
 	public static void loginUser(Player player, User user) {
-		if (user != null)
-			syncroUserName(player, user);
+		if (user != null) {
+			if (isSyncronizeOptionEnabled()) {
+				syncroUserName(player, user);
+			}
+		}
 
 		if (isAuthmeEnabled()) {
 			AuthmeHook.login(player);
@@ -106,26 +145,23 @@ public class DILoginController {
 	 * @param player Minecraft player.
 	 */
 	private static void syncroUserName(Player player, User user) {
-		if (Util.isSyncronizeOptionEnabled()) {
-			DIUserDao userDao = new DIUserDaoSqlImpl();
-			Optional<DIUser> optDIUser = userDao.get(player.getName());
+		Optional<DIUser> optDIUser = userDao.get(player.getName());
 
-			if (!optDIUser.isPresent())
-				return;
+		if (!optDIUser.isPresent())
+			return;
 
-			DIApi api = BukkitApplication.getDIApi();
-			JDA jda = BukkitApplication.getDIApi().getCoreController().getDiscordApi();
-			Guild guild = jda.getGuildById(api.getCoreController().getBot().getServerid());
+		DIApi api = BukkitApplication.getDIApi();
+		JDA jda = BukkitApplication.getDIApi().getCoreController().getDiscordApi();
+		Guild guild = jda.getGuildById(api.getCoreController().getBot().getServerid());
 
-			Member member = guild.retrieveMember(user, true).complete();
-			Member bot = guild.retrieveMember(jda.getSelfUser(), true).complete();
+		Member member = guild.retrieveMember(user, true).complete();
+		Member bot = guild.retrieveMember(jda.getSelfUser(), true).complete();
 
-			if (bot.canInteract(member)) {
-				member.modifyNickname(player.getName()).queue();
-			} else {
-				api.getInternalController().getPlugin().getLogger()
-						.info("Cannot change the nickname of " + player.getName() + ". Insufficient permissions.");
-			}
+		if (bot.canInteract(member)) {
+			member.modifyNickname(player.getName()).queue();
+		} else {
+			api.getInternalController().getPlugin().getLogger()
+					.info("Cannot change the nickname of " + player.getName() + ". Insufficient permissions.");
 		}
 	}
 

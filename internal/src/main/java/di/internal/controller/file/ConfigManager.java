@@ -3,6 +3,7 @@ package di.internal.controller.file;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -21,7 +22,7 @@ public class ConfigManager implements FileController {
 	private File customConfigFile;
 
 	private Map<String, Object> yamlData;
-	
+
 	private PluginController pluginController;
 
 	@SuppressWarnings("unchecked")
@@ -69,11 +70,17 @@ public class ConfigManager implements FileController {
 		return this.yamlData.containsKey(path);
 	}
 
+	public List<Map<Object, Object>> getList(String path) {
+		Yaml yaml = new Yaml();
+		String value = get(path).replace("=", " : ");
+		return yaml.load(value);
+	}
+
 	private String get(String path) {
 		try {
 			return this.yamlData.get(path).toString();
 		} catch (Exception e) {
-			String message = "Failed to find in config file: "+path;
+			String message = "Failed to find in config file: " + path;
 			String message2 = "Regenerate the file to correct the problem or include the above mentioned line in the configuration file.";
 			pluginController.getPlugin().getLogger().log(Level.SEVERE, message);
 			pluginController.getPlugin().getLogger().log(Level.SEVERE, message2);

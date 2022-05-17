@@ -31,7 +31,7 @@ public class DiscordRegisterCommand implements DiscordCommand {
 	/**
 	 * User manager in the database.
 	 */
-	private final DIUserDao userDao = new DIUserDaoSqlImpl();
+	private final DIUserDao userDao = DILoginController.getDIUserDao();
 
 	/**
 	 * Main api.

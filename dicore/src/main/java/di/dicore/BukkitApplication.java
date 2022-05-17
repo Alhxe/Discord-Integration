@@ -19,7 +19,8 @@ public class BukkitApplication extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		internalController.getBot().getApi().shutdownNow();
+		if (internalController != null)
+			internalController.getBot().getApi().shutdownNow();
 		getLogger().info("Plugin disabled");
 	}
 

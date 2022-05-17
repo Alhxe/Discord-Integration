@@ -28,7 +28,7 @@ public interface UserLoginEvent extends Listener {
 	/**
 	 * User manager.
 	 */
-	static final DIUserDao userDao = new DIUserDaoSqlImpl();
+	static final DIUserDao userDao = DILoginController.getDIUserDao();
 
 	/**
 	 * Main api.

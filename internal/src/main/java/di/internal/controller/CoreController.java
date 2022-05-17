@@ -73,14 +73,22 @@ public class CoreController implements PluginController {
 	 * @return Finished bot object.
 	 */
 	private DiscordBot initBot() {
+		long serverid = 0;
+
 		String token = configManager.getString("bot_token");
-		long serverid = configManager.getLong("discord_server_id");
+		try {
+			serverid = configManager.getLong("discord_server_id");
+		} catch (Exception e) {
+			plugin.getLogger().log(Level.SEVERE,
+					"Failed to get server ID. Modify the config.yml file to be able to start the plugin.");
+		}
 		String prefix = configManager.getString("discord_server_prefix");
 
 		if (token == null || prefix == null || serverid == 0L) {
 			this.plugin.getLogger().log(Level.SEVERE,
 					"Failed to load the data required to start the bot. Did you enter the server ID, token and prefix correctly?");
-			this.plugin.getPluginLoader().disablePlugin((Plugin) this);
+			plugin.getServer().getPluginManager().disablePlugin(plugin);
+			return null;
 		}
 
 		this.plugin.getLogger().info("Starting Bot");

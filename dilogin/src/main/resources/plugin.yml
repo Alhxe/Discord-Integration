@@ -1,10 +1,10 @@
 name: DILogin
 main: di.dilogin.BukkitApplication
-version: 3.3.0
+version: 3.4.0-beta1
 author: Alhxe
 api-version: 1.17
 depend: [DICore]
-softdepend: [AuthMe, Multiverse-Core]
+softdepend: [AuthMe, Multiverse-Core, LuckPerms]
 commands:
     diregister:
         description: User register

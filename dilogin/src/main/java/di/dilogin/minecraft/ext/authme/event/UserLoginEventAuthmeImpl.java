@@ -1,4 +1,4 @@
-package di.dilogin.minecraft.event.authme;
+package di.dilogin.minecraft.ext.authme.event;
 
 import java.util.Optional;
 

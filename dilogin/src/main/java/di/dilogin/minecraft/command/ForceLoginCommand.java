@@ -28,7 +28,7 @@ public class ForceLoginCommand implements CommandExecutor {
 	/**
 	 * User manager in the database.
 	 */
-	private final DIUserDao userDao = new DIUserDaoSqlImpl();
+	private final DIUserDao userDao = DILoginController.getDIUserDao();
 
 	/**
 	 * Main plugin.

@@ -1,5 +1,7 @@
 package di.dilogin;
 
+import java.util.logging.Level;
+
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -8,6 +10,7 @@ import di.dicore.DIApi;
 import di.dilogin.controller.DBController;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.discord.command.DiscordRegisterCommand;
+import di.dilogin.discord.event.GuildMemberRoleEvent;
 import di.dilogin.discord.event.UserReactionMessageEvent;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.command.ForceLoginCommand;
@@ -18,8 +21,9 @@ import di.dilogin.minecraft.event.UserLeaveEvent;
 import di.dilogin.minecraft.event.UserLoginEventImpl;
 import di.dilogin.minecraft.event.UserPreLoginEvent;
 import di.dilogin.minecraft.event.UserTeleportEvents;
-import di.dilogin.minecraft.event.authme.AuthmeEvents;
-import di.dilogin.minecraft.event.authme.UserLoginEventAuthmeImpl;
+import di.dilogin.minecraft.ext.authme.event.AuthmeEvents;
+import di.dilogin.minecraft.ext.authme.event.UserLoginEventAuthmeImpl;
+import di.dilogin.minecraft.ext.luckperms.LuckPermsEvents;
 import di.internal.exception.NoApiException;
 
 /**
@@ -94,10 +98,15 @@ public class BukkitApplication extends JavaPlugin {
 	 * Connect with DIApi.
 	 */
 	private void connectWithCoreApi() {
-		try {
-			api = new DIApi(plugin, this.getClassLoader(), true, true);
-		} catch (NoApiException e) {
-			e.printStackTrace();
+		if (plugin.getServer().getPluginManager().getPlugin("DICore").isEnabled()) {
+			try {
+				api = new DIApi(plugin, this.getClassLoader(), true, true);
+			} catch (NoApiException e) {
+				e.printStackTrace();
+			}
+		} else {
+			plugin.getLogger().log(Level.SEVERE,
+					"Failed to connect to DICore plugin. Check if it has been turned on correctly.");
 			plugin.getPluginLoader().disablePlugin(plugin);
 		}
 	}
@@ -106,6 +115,10 @@ public class BukkitApplication extends JavaPlugin {
 	 * Init Bukkit events.
 	 */
 	private void initEvents() {
+		if (DILoginController.isLuckPermsEnabled()) {
+			getPlugin().getLogger().info("LuckPerms detected, starting plugin compatibility.");
+			new LuckPermsEvents();
+		}
 		if (DILoginController.isAuthmeEnabled()) {
 			getPlugin().getLogger().info("Authme detected, starting plugin compatibility.");
 			getServer().getPluginManager().registerEvents(new UserLoginEventAuthmeImpl(), plugin);
@@ -124,6 +137,9 @@ public class BukkitApplication extends JavaPlugin {
 	 */
 	private void initDiscordEvents() {
 		api.registerDiscordEvent(new UserReactionMessageEvent());
+		if (DILoginController.isSyncroRolEnabled()) {
+			api.registerDiscordEvent(new GuildMemberRoleEvent());
+		}
 	}
 
 	/**

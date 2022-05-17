@@ -134,4 +134,31 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 		}
 	}
 
+	@Override
+	public Optional<DIUser> get(long discordid) {
+		String query = "select username from user where discord_id = ?;";
+		try (PreparedStatement ps = conn.prepareStatement(query)) {
+			ps.setLong(1, discordid);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					String playername = rs.getString(1);
+					Optional<User> userOpt = Utils.getDiscordUserById(api.getCoreController().getDiscordApi(),
+							discordid);
+					Optional<Player> playerOpt = Utils.getUserPlayerByName(api.getInternalController().getPlugin(),
+							playername);
+
+					if (userOpt.isPresent()) {
+						return Optional.of(new DIUser(playerOpt, userOpt.get()));
+					} else {
+						BukkitApplication.getPlugin().getLogger()
+								.warning("Unable to get discord user with id " + discordid);
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return Optional.empty();
+	}
+
 }

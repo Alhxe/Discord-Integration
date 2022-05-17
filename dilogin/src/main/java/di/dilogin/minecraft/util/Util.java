@@ -1,11 +1,16 @@
 package di.dilogin.minecraft.util;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
 
 import org.bukkit.Server;
 
 import di.dicore.DIApi;
 import di.dilogin.BukkitApplication;
+import di.dilogin.controller.DILoginController;
+import di.dilogin.dao.DIUserDao;
+import di.dilogin.entity.DIUser;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -35,19 +40,6 @@ public class Util {
 				return false;
 		}
 		return true;
-	}
-
-	/**
-	 * Check if syncro option is enabled in cofig file.
-	 * 
-	 * @return true if its enabled.
-	 */
-	public static boolean isSyncronizeOptionEnabled() {
-		try {
-			return BukkitApplication.getDIApi().getInternalController().getConfigManager().getBoolean("syncro_enable");
-		} catch (Exception e) {
-			return false;
-		}
 	}
 
 	/**
@@ -89,8 +81,7 @@ public class Util {
 	 */
 	private static Optional<Role> requiredRole() {
 		DIApi api = BukkitApplication.getDIApi();
-		JDA jda = BukkitApplication.getDIApi().getCoreController().getDiscordApi();
-		Guild guild = jda.getGuildById(api.getCoreController().getBot().getServerid());
+		Guild guild = getGuild();
 
 		Optional<Long> optionalLong = api.getInternalController().getConfigManager()
 				.getOptionalLong("register_required_role_id");
@@ -105,4 +96,128 @@ public class Util {
 		return Optional.of(role);
 	}
 
+	/**
+	 * @param roleid Discord role id.
+	 * @return True if the server contains the requested role.
+	 */
+	public static boolean serverHasRole(String roleid) {
+		DIApi api = BukkitApplication.getDIApi();
+		Guild guild = getGuild();
+		Role role = guild.getRoleById(roleid);
+		if (role == null) {
+			String message = "Could not find ROL with id: " + roleid + ". Check the plugin settings to avoid problems.";
+			api.getInternalController().getPlugin().getLogger().log(Level.SEVERE, message);
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * @param roleid Discord role id.
+	 * @param player Bukkit player name.
+	 * @return True if the user has the role.
+	 */
+	public static boolean userHasRole(String roleid, String player) {
+		Optional<Member> optMember = getMember(player);
+		if (!optMember.isPresent())
+			return false;
+
+		Member member = optMember.get();
+		List<Role> roles = member.getRoles();
+
+		return roles.stream().filter(role -> role.getId().equals(roleid)) // filter by role name
+				.findFirst().isPresent();
+	}
+
+	/**
+	 * Give a role to a discord user.
+	 * 
+	 * @param roleid Role id.
+	 * @param player Bukkit player name.
+	 * @param reason Reason for giving a role.
+	 */
+	public static void giveRole(String roleid, String player, String reason) {
+		DIApi api = BukkitApplication.getDIApi();
+
+		Optional<Member> optMember = getMember(player);
+		if (!optMember.isPresent())
+			return;
+
+		Member member = optMember.get();
+		Guild guild = getGuild();
+		Role role = guild.getRoleById(roleid);
+
+		try {
+			guild.addRoleToMember(member, role).queue();
+			api.getInternalController().getPlugin().getLogger().info(
+					role.getName() + " role has been given to " + member.getUser().getAsTag() + ". Reason: " + reason);
+
+		} catch (Exception e) {
+			api.getInternalController().getPlugin().getLogger().log(Level.SEVERE,
+					" Could not give " + role.getName() + " role to " + member.getUser().getAsTag()
+							+ ". Reason:  Can't modify a role with higher or equal highest role than yourself");
+		}
+	}
+
+	/**
+	 * Remove a role to a discord user.
+	 * 
+	 * @param roleid Role id.
+	 * @param player Bukkit player name.
+	 * @param reason Reason for removing a role.
+	 */
+	public static void removeRole(String roleid, String player, String reason) {
+		DIApi api = BukkitApplication.getDIApi();
+
+		Optional<Member> optMember = getMember(player);
+		if (!optMember.isPresent())
+			return;
+
+		Member member = optMember.get();
+		Guild guild = getGuild();
+		Role role = guild.getRoleById(roleid);
+
+		try {
+			guild.removeRoleFromMember(member, role).queue();
+			api.getInternalController().getPlugin().getLogger().info(role.getName() + " role has been removed from "
+					+ member.getUser().getAsTag() + ". Reason: " + reason);
+
+		} catch (Exception e) {
+			api.getInternalController().getPlugin().getLogger().log(Level.SEVERE,
+					" Could not remove " + role.getName() + " role from " + member.getUser().getAsTag()
+							+ ". Reason:  Can't modify a role with higher or equal highest role than yourself");
+		}
+	}
+
+	/**
+	 * Get a member from the discord server.
+	 * 
+	 * @param player Bukkit player name.
+	 * @return Optional member.
+	 */
+	private static Optional<Member> getMember(String player) {
+		DIUserDao dao = DILoginController.getDIUserDao();
+		Guild guild = getGuild();
+
+		Optional<DIUser> DIUserOpt = dao.get(player);
+		if (!DIUserOpt.isPresent())
+			return Optional.empty();
+
+		List<Member> memberList = guild.findMembers(m -> m.getId().equals(DIUserOpt.get().getPlayerDiscord().getId()))
+				.get();
+
+		if (memberList.size() > 0)
+			return Optional.of(memberList.get(0));
+
+		return Optional.empty();
+	}
+
+	/**
+	 * @return the Discord server linked with the Minecraft server.
+	 */
+	private static Guild getGuild() {
+		DIApi api = BukkitApplication.getDIApi();
+		JDA jda = api.getCoreController().getDiscordApi();
+		return jda.getGuildById(api.getCoreController().getBot().getServerid());
+	}
 }

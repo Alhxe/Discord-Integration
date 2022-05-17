@@ -10,6 +10,7 @@ import org.bukkit.plugin.Plugin;
 
 import di.dicore.DIApi;
 import di.dilogin.BukkitApplication;
+import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.dao.DIUserDaoSqlImpl;
@@ -23,7 +24,7 @@ public class UnregisterCommand implements CommandExecutor {
 	/**
 	 * User manager in the database.
 	 */
-	private final DIUserDao userDao = new DIUserDaoSqlImpl();
+	private final DIUserDao userDao = DILoginController.getDIUserDao();
 
 	/**
 	 * Main plugin.
