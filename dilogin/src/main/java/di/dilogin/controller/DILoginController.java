@@ -152,7 +152,7 @@ public class DILoginController {
 
 		DIApi api = BukkitApplication.getDIApi();
 		JDA jda = BukkitApplication.getDIApi().getCoreController().getDiscordApi();
-		Guild guild = jda.getGuildById(api.getCoreController().getBot().getServerid());
+		Guild guild = api.getCoreController().getGuild();
 
 		Member member = guild.retrieveMember(user, true).complete();
 		Member bot = guild.retrieveMember(jda.getSelfUser(), true).complete();

@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 
 import di.dilogin.controller.DILoginController;
 import di.dilogin.dao.DIUserDao;
-import di.dilogin.dao.DIUserDaoSqlImpl;
 import fr.xephi.authme.events.UnregisterByAdminEvent;
 import fr.xephi.authme.events.UnregisterByPlayerEvent;
 

@@ -11,6 +11,7 @@ import di.internal.entity.DiscordBot;
 import di.internal.exception.NoApiException;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
 
 /**
  * Internal Controller of Plugin.
@@ -100,6 +101,14 @@ public class CoreController implements PluginController {
 	 */
 	public JDA getDiscordApi() {
 		return this.bot.getApi();
+	}
+	
+	/**
+	 * 
+	 * @return Main server guild.
+	 */
+	public Guild getGuild() {
+		return bot.getApi().getGuildById(bot.getServerid());
 	}
 
 }

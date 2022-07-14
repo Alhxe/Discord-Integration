@@ -56,8 +56,9 @@ syncro_rol_enable: false
 syncro_rol_list:
        - discord_rol_id: luckperms_group_name
        - another_rol_id: another_luckperms_group_name
-	 #EXAMPLE
-	 #- 927608230627119184: admin
+
+#EXAMPLE
+#- 927608230627119184: admin
 
 #COMMANDS ALIAS
 register_command: 'register'

@@ -13,7 +13,6 @@ import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
-import di.dilogin.dao.DIUserDaoSqlImpl;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
 import net.dv8tion.jda.api.entities.Message;
@@ -71,7 +70,7 @@ public class ForceLoginCommand implements CommandExecutor {
 				.setTitle(LangManager.getString(user, player, "login_discord_title"))
 				.setDescription(LangManager.getString(user, player, "login_discord_forced")).build();
 		
-		message.editMessage(embed).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
+		message.editMessageEmbeds(embed).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
 	}
 
 }

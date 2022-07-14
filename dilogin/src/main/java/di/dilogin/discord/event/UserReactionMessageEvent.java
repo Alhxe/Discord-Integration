@@ -72,7 +72,7 @@ public class UserReactionMessageEvent extends ListenerAdapter {
 		player.sendMessage(
 				LangManager.getString(user, player, "register_success").replace("%authme_password%", password));
 		TmpCache.removeRegister(player.getName());
-		message.editMessage(getRegisterEmbed(user, player)).delay(Duration.ofSeconds(60)).flatMap(Message::delete)
+		message.editMessageEmbeds(getRegisterEmbed(user, player)).delay(Duration.ofSeconds(60)).flatMap(Message::delete)
 				.queue();
 		userDao.add(new DIUser(Optional.of(player), user));
 
@@ -105,7 +105,7 @@ public class UserReactionMessageEvent extends ListenerAdapter {
 		if (event.getMessageIdLong() != message.getIdLong())
 			return;
 
-		message.editMessage(getLoginEmbed(user, player)).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
+		message.editMessageEmbeds(getLoginEmbed(user, player)).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
 		DILoginController.loginUser(player, user);
 
 	}

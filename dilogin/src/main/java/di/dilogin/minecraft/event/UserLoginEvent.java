@@ -12,7 +12,6 @@ import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
-import di.dilogin.dao.DIUserDaoSqlImpl;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
 import net.dv8tion.jda.api.entities.Message;
@@ -76,7 +75,7 @@ public interface UserLoginEvent extends Listener {
 				.setDescription(LangManager.getString(user, player, "login_discord_desc")).build();
 
 		user.openPrivateChannel().submit()
-				.thenAccept(channel -> channel.sendMessage(embed).submit().thenAccept(message -> {
+				.thenAccept(channel -> channel.sendMessageEmbeds(embed).submit().thenAccept(message -> {
 					message.addReaction(EMOJI).queue();
 					TmpCache.addLogin(player.getName(), new TmpMessage(player, user, message, null));
 				}).whenComplete((message, error) -> {
@@ -88,7 +87,7 @@ public interface UserLoginEvent extends Listener {
 
 					serverchannel.sendMessage(user.getAsMention()).delay(Duration.ofSeconds(10))
 							.flatMap(Message::delete).queue();
-					Message servermessage = serverchannel.sendMessage(embed).submit().join();
+					Message servermessage = serverchannel.sendMessageEmbeds(embed).submit().join();
 					servermessage.addReaction(EMOJI).queue();
 					TmpCache.addLogin(player.getName(), new TmpMessage(player, user, servermessage, null));
 				}));

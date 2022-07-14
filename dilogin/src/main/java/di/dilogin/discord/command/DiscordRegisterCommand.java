@@ -10,7 +10,6 @@ import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
-import di.dilogin.dao.DIUserDaoSqlImpl;
 import di.dilogin.entity.AuthmeHook;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
@@ -63,22 +62,23 @@ public class DiscordRegisterCommand implements DiscordCommand {
 			return;
 		}
 
-		// Check code.
-		Optional<TmpMessage> tmpMessageOpt = TmpCache.getRegisterMessageByCode(message);
-		if (!tmpMessageOpt.isPresent()) {
+		Optional<Player> playerOpt = catchRegister(message, event);
+
+		if (!playerOpt.isPresent()) {
 			event.getChannel().sendMessage(LangManager.getString("register_code_not_found"))
-					.delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
+			.delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
 			return;
 		}
 
-		Player player = tmpMessageOpt.get().getPlayer();
+		Player player = playerOpt.get();
+
 		// Create password.
 		String password = CodeGenerator.getCode(8, api);
 		player.sendMessage(LangManager.getString(event.getAuthor(), player, "register_success")
 				.replace("%authme_password%", password));
 		// Send message to discord.
 		MessageEmbed messageEmbed = getEmbedMessage(player, event.getAuthor());
-		event.getChannel().sendMessage(messageEmbed).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
+		event.getChannel().sendMessageEmbeds(messageEmbed).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
 		// Remove user from register cache.
 		TmpCache.removeRegister(player.getName());
 		// Add user to data base.
@@ -92,9 +92,66 @@ public class DiscordRegisterCommand implements DiscordCommand {
 
 	}
 
+	/**
+	 * Catch registration method.
+	 * 
+	 * @param message Args from the message.
+	 * @param event   Event of the message.
+	 * @return Player if exits and is not registered.
+	 */
+	public Optional<Player> catchRegister(String message, MessageReceivedEvent event) {
+		Optional<Player> player = Optional.empty();
+
+		player = registerByCode(message, event);
+
+		if (!player.isPresent())
+			player = registerByUserName(message, event);
+
+		return player;
+	}
+
+	/**
+	 * Register by code.
+	 * 
+	 * @param message Args from the message.
+	 * @param event   Event of the message.
+	 * @return Player if exits and is not registered.
+	 */
+	public Optional<Player> registerByCode(String message, MessageReceivedEvent event) {
+		// Check code.
+		Optional<TmpMessage> tmpMessageOpt = TmpCache.getRegisterMessageByCode(message);
+		if (!tmpMessageOpt.isPresent()) {
+			return Optional.empty();
+		}
+
+		return Optional.ofNullable(tmpMessageOpt.get().getPlayer());
+	}
+
+	/**
+	 * Register by username.
+	 * 
+	 * @param message Args from the message.
+	 * @param event   Event of the message.
+	 * @return Player if exits and is not registered.
+	 */
+	public Optional<Player> registerByUserName(String message, MessageReceivedEvent event) {
+
+		Optional<Player> playerOpt = Optional.ofNullable(api.getCoreController().getPlugin().getServer().getPlayer(message));
+
+		if (!playerOpt.isPresent())
+			return Optional.empty();
+		
+		if(userDao.contains(message)) {
+			event.getChannel().sendMessage(LangManager.getString("register_already_exists"))
+			.delay(Duration.ofSeconds(20)).flatMap(Message::delete).queue();
+			return Optional.empty();
+		}
+		return playerOpt;
+	}
+
 	@Override
 	public String getAlias() {
-		
+
 		return api.getInternalController().getConfigManager().getString("register_command");
 	}
 

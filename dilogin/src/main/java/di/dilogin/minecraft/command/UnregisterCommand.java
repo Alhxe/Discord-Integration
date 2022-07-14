@@ -13,7 +13,6 @@ import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
-import di.dilogin.dao.DIUserDaoSqlImpl;
 import di.dilogin.entity.DIUser;
 
 /**

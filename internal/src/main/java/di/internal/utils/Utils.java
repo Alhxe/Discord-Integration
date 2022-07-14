@@ -2,6 +2,8 @@ package di.internal.utils;
 
 import java.awt.Color;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -10,6 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 
@@ -53,6 +57,32 @@ public class Utils {
 		} catch (InterruptedException | ExecutionException e) {
 			System.out.println("Unable to get user with id " + id);
 		}
+		return Optional.empty();
+	}
+
+	public static Optional<User> getDiscordUserByUsernameAndTag(JDA api, Guild guild, String string) {
+		String name = string.substring(0, string.lastIndexOf('#'));
+		String tag = string.substring(string.lastIndexOf('#') + 1, string.length());
+		System.out.println("name: "+name + " - tag: "+tag);
+		Optional<Member> cachedUserOpt = Optional.ofNullable(guild.getMemberByTag(name, tag));
+		System.out.println("encontrado: "+cachedUserOpt);
+		if (cachedUserOpt.isPresent())
+			return Optional.of(cachedUserOpt.get().getUser());
+
+		List<User> userOpt = new ArrayList<>();
+		guild.retrieveMembersByPrefix(name, 100).onSuccess(members -> {
+			Member member = members.stream().filter(m -> m.getUser().getAsTag().equals(tag)).findFirst().orElse(null);
+			if (member != null) {
+				userOpt.add(member.getUser());
+			} else {
+				System.out.println("More than 100 names have been found that begin with " + string);
+				// there are either more than 100 users with the same name or the member is not
+				// int he server
+			}
+		});
+		if (userOpt.size() != 0)
+			return Optional.of(userOpt.get(0));
+
 		return Optional.empty();
 	}
 
