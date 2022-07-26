@@ -48,9 +48,6 @@ public class UserPreLoginEvent implements Listener {
 					api.getInternalController().getLangManager().getString("login_user_not_discord"));
 			return;
 		}
-
-		event.allow();
-		return;
 	}
 
 	/**
