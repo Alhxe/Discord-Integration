@@ -55,7 +55,7 @@ public class LangManager {
 	 */
 	public static String getString(DIUser user, String path) {
 		return getString(user.getPlayerBukkit().get(), path).replace("%discriminated_discord_name%",
-				String.valueOf(user.getPlayerDiscord().getName()) + "#" + user.getPlayerDiscord().getDiscriminator());
+				String.valueOf(user.getPlayerDiscord().get().getName()) + "#" + user.getPlayerDiscord().get().getDiscriminator());
 	}
 
 	/**

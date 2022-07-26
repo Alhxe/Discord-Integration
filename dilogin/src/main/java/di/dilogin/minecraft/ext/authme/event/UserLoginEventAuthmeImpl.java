@@ -38,7 +38,7 @@ public class UserLoginEventAuthmeImpl implements UserLoginEvent {
 		DIUser user = userOpt.get();
 
 		event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
-		sendLoginMessageRequest(user.getPlayerBukkit().get(), user.getPlayerDiscord());
+		sendLoginMessageRequest(user.getPlayerBukkit().get(), user.getPlayerDiscord().get());
 	}
 
 	@Override

@@ -21,6 +21,7 @@ login_success: "&cLogin successfully!"
 login_kick_time: "You have taken too long to connect."
 login_without_role_required: "You do not have the necessary role to access the server."
 login_not_authorized: "Your username is already logged into this server."
+login_user_not_discord: "Registered user not present on the server."
 
 login_discord_title: "Login to %minecraft_servername%."
 login_discord_desc: "Request to connect to the server from **%minecraft_username%** account. Not you? Report it on our server."

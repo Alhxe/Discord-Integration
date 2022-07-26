@@ -26,5 +26,5 @@ public class DIUser {
 	/**
 	 * Discord Player object.
 	 */
-	private User playerDiscord;
+	private Optional<User> playerDiscord;
 }

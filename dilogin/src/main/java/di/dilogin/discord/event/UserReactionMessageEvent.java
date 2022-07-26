@@ -74,7 +74,7 @@ public class UserReactionMessageEvent extends ListenerAdapter {
 		TmpCache.removeRegister(player.getName());
 		message.editMessageEmbeds(getRegisterEmbed(user, player)).delay(Duration.ofSeconds(60)).flatMap(Message::delete)
 				.queue();
-		userDao.add(new DIUser(Optional.of(player), user));
+		userDao.add(new DIUser(Optional.of(player), Optional.of(user)));
 
 		if (DILoginController.isAuthmeEnabled()) {
 			AuthmeHook.register(player, password);

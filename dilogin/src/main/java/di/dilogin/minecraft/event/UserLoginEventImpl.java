@@ -55,11 +55,11 @@ public class UserLoginEventImpl implements UserLoginEvent {
 		long seconds = BukkitApplication.getDIApi().getInternalController().getConfigManager()
 				.getLong("login_time_until_kick") * 1000;
 
-		if (!Util.isWhiteListed(user.getPlayerDiscord())) {
+		if (!Util.isWhiteListed(user.getPlayerDiscord().get())) {
 			event.getPlayer().sendMessage(LangManager.getString(user, "login_without_role_required"));
 		} else {
 			event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
-			sendLoginMessageRequest(user.getPlayerBukkit().get(), user.getPlayerDiscord());
+			sendLoginMessageRequest(user.getPlayerBukkit().get(), user.getPlayerDiscord().get());
 		}
 		Executors.newCachedThreadPool().submit(() -> {
 			Thread.sleep(seconds);

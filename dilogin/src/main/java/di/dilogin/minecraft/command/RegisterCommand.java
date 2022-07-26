@@ -62,9 +62,9 @@ public class RegisterCommand implements CommandExecutor {
 			Optional<User> userOpt = catchRegisterUserOption(args, player);
 			if (!userOpt.isPresent())
 				return false;
-			
+
 			User user = userOpt.get();
-			
+
 			if (userDao.getDiscordUserAccounts(user) >= api.getInternalController().getConfigManager()
 					.getInt("register_max_discord_accounts")) {
 				player.sendMessage(LangManager.getString(player, "register_max_accounts").replace("%user_discord_id%",
@@ -103,14 +103,14 @@ public class RegisterCommand implements CommandExecutor {
 					LangManager.getString(player, "register_user_not_detected").replace("%user_discord_id%", string));
 			return Optional.empty();
 		}
-			
+
 		return userOpt;
 	}
 
 	/**
 	 * Get the user if his registration method is by discord id.
 	 * 
-	 * @param string   Args from the command.
+	 * @param string Args from the command.
 	 * @param player Minecraft player.
 	 * @return Posible user.
 	 */
@@ -126,7 +126,7 @@ public class RegisterCommand implements CommandExecutor {
 	/**
 	 * Get the user if his registration method is by discord username.
 	 * 
-	 * @param string   Args from the command.
+	 * @param string Args from the command.
 	 * @param player Minecraft player.
 	 * @return Posible user.
 	 */
@@ -151,25 +151,45 @@ public class RegisterCommand implements CommandExecutor {
 	 */
 	private void sendMessage(User user, Player player, MessageEmbed messageEmbed) {
 		String code = TmpCache.getRegisterMessage(player.getName()).get().getCode();
-		user.openPrivateChannel().submit()
-				.thenAccept(channel -> channel.sendMessageEmbeds(messageEmbed).submit().thenAccept(message -> {
-					message.addReaction(emoji).queue();
-					TmpCache.addRegister(player.getName(), new TmpMessage(player, user, message, code));
-				}).whenComplete((message, error) -> {
-					if (error == null)
-						return;
 
-					TextChannel serverchannel = api.getCoreController().getDiscordApi()
-							.getTextChannelById(api.getInternalController().getConfigManager().getLong("channel"));
+		boolean hasMessagesOnlyChannel = api.getInternalController().getConfigManager()
+				.contains("messages_only_channel");
+		if (hasMessagesOnlyChannel)
+			hasMessagesOnlyChannel = api.getInternalController().getConfigManager().getBoolean("messages_only_channel");
 
-					serverchannel.sendMessage(user.getAsMention()).delay(Duration.ofSeconds(10))
-							.flatMap(Message::delete).queue();
+		if (hasMessagesOnlyChannel) {
+			sendServerMessage(user, player, messageEmbed, code);
+		} else {
+			user.openPrivateChannel().submit()
+					.thenAccept(channel -> channel.sendMessageEmbeds(messageEmbed).submit().thenAccept(message -> {
+						message.addReaction(emoji).queue();
+						TmpCache.addRegister(player.getName(), new TmpMessage(player, user, message, code));
+					}).whenComplete((message, error) -> {
+						if (error == null)
+							return;
 
-					Message servermessage = serverchannel.sendMessageEmbeds(messageEmbed).submit().join();
-					servermessage.addReaction(emoji).queue();
-					TmpCache.addRegister(player.getName(), new TmpMessage(player, user, servermessage, code));
+						sendServerMessage(user, player, messageEmbed, code);
+					}));
+		}
+	}
 
-				}));
+	/**
+	 * Send embed message to the main discord channel.
+	 * 
+	 * @param player Bukkit player.
+	 * @param user   Discord user.
+	 * @param embed  Embed message.
+	 * @param code   The code to register.
+	 */
+	private void sendServerMessage(User user, Player player, MessageEmbed messageEmbed, String code) {
+		TextChannel serverchannel = api.getCoreController().getDiscordApi()
+				.getTextChannelById(api.getInternalController().getConfigManager().getLong("channel"));
+
+		serverchannel.sendMessage(user.getAsMention()).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
+
+		Message servermessage = serverchannel.sendMessageEmbeds(messageEmbed).submit().join();
+		servermessage.addReaction(emoji).queue();
+		TmpCache.addRegister(player.getName(), new TmpMessage(player, user, servermessage, code));
 	}
 
 	/**

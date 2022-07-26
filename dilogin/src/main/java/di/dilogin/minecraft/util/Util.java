@@ -203,7 +203,7 @@ public class Util {
 		if (!DIUserOpt.isPresent())
 			return Optional.empty();
 
-		List<Member> memberList = guild.findMembers(m -> m.getId().equals(DIUserOpt.get().getPlayerDiscord().getId()))
+		List<Member> memberList = guild.findMembers(m -> m.getId().equals(DIUserOpt.get().getPlayerDiscord().get().getId()))
 				.get();
 
 		if (memberList.size() > 0)
