@@ -1,5 +1,4 @@
 name: DICore
 main: di.dicore.BukkitApplication
-version: 2.4.2
-api-version: 1.17
+version: 2.4.3
 loadbefore: [DiscordSRV]
