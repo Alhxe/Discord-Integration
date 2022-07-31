@@ -37,6 +37,11 @@ public class UserLoginEventAuthmeImpl implements UserLoginEvent {
 
 		DIUser user = userOpt.get();
 
+		if (!user.getPlayerBukkit().isPresent()&&!user.getPlayerDiscord().isPresent()){
+			api.getCoreController().getPlugin().getLogger().severe("Failed to get user in database: "+playerName);
+			return;
+		}
+
 		event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
 		sendLoginMessageRequest(user.getPlayerBukkit().get(), user.getPlayerDiscord().get());
 	}

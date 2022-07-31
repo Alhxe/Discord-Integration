@@ -125,8 +125,7 @@ public class Util {
 		Member member = optMember.get();
 		List<Role> roles = member.getRoles();
 
-		return roles.stream().filter(role -> role.getId().equals(roleid)) // filter by role name
-				.findFirst().isPresent();
+		return roles.stream().anyMatch(role -> role.getId().equals(roleid));
 	}
 
 	/**
@@ -206,7 +205,7 @@ public class Util {
 		List<Member> memberList = guild.findMembers(m -> m.getId().equals(DIUserOpt.get().getPlayerDiscord().get().getId()))
 				.get();
 
-		if (memberList.size() > 0)
+		if (!memberList.isEmpty())
 			return Optional.of(memberList.get(0));
 
 		return Optional.empty();

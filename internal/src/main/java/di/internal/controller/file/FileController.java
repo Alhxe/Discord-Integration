@@ -1,10 +1,6 @@
 package di.internal.controller.file;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.logging.Level;
@@ -23,14 +19,12 @@ public interface FileController {
 		File outDir = new File(folder, resourcePath.substring(0, (lastIndex >= 0) ? lastIndex : 0));
 		if (!outDir.exists())
 			outDir.mkdirs();
-		try {
+		try (OutputStream out = new FileOutputStream(outFile)) {
 			if (!outFile.exists() || replace) {
-				OutputStream out = new FileOutputStream(outFile);
 				byte[] buf = new byte[1024];
 				int len;
 				while ((len = in.read(buf)) > 0)
 					out.write(buf, 0, len);
-				out.close();
 				in.close();
 			} else {
 				plugin.getLogger().log(Level.WARNING, "Could not save " + outFile.getName() + " to " + outFile

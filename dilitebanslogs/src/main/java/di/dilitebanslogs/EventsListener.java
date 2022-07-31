@@ -65,22 +65,22 @@ public class EventsListener {
 
 	private static void kick(Entry entry) {
 		MessageEmbed embed = getEmbed(entry, "kick");
-		channel.sendMessage(embed).queue();
+		channel.sendMessageEmbeds(embed).queue();
 	}
 
 	private static void ban(Entry entry) {
 		MessageEmbed embed = getEmbed(entry, "ban");
-		channel.sendMessage(embed).queue();
+		channel.sendMessageEmbeds(embed).queue();
 	}
 
 	private static void mute(Entry entry) {
 		MessageEmbed embed = getEmbed(entry, "mute");
-		channel.sendMessage(embed).queue();
+		channel.sendMessageEmbeds(embed).queue();
 	}
 
 	private static void warn(Entry entry) {
 		MessageEmbed embed = getEmbed(entry, "warn");
-		channel.sendMessage(embed).queue();
+		channel.sendMessageEmbeds(embed).queue();
 	}
 
 	/**
@@ -90,14 +90,10 @@ public class EventsListener {
 	 */
 	private static MessageEmbed getEmbed(Entry entry, String type) {
 		EmbedBuilder embed = (new EmbedBuilder()).setColor(getColor(type));
-		try {
-			embed.setTitle(getEntryString(entry, "embed_" + type + "_title"));
-		} catch (Exception e) {
-		}
-		try {
-			embed.appendDescription(getEntryString(entry, "embed_" + type + "_description"));
-		} catch (Exception e) {
-		}
+
+		embed.setTitle(getEntryString(entry, "embed_" + type + "_title"));
+		embed.appendDescription(getEntryString(entry, "embed_" + type + "_description"));
+
 		for (int i = 1; i < 10; i++) {
 			try {
 				String title = getEntryString(entry, "embed_" + type + "_field_" + i + "_title");

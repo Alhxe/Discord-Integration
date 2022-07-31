@@ -100,9 +100,7 @@ public class DiscordRegisterCommand implements DiscordCommand {
 	 * @return Player if exits and is not registered.
 	 */
 	public Optional<Player> catchRegister(String message, MessageReceivedEvent event) {
-		Optional<Player> player = Optional.empty();
-
-		player = registerByCode(message, event);
+		Optional<Player> player = registerByCode(message, event);
 
 		if (!player.isPresent())
 			player = registerByUserName(message, event);

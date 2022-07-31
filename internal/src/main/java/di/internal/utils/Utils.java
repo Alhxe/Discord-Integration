@@ -56,11 +56,12 @@ public class Utils {
 
 		} catch (InterruptedException | ExecutionException e) {
 			System.out.println("Unable to get user with id " + id);
+			Thread.currentThread().interrupt();
 		}
 		return Optional.empty();
 	}
 
-	public static Optional<User> getDiscordUserByUsernameAndTag(JDA api, Guild guild, String string) {
+	public static Optional<User> getDiscordUserByUsernameAndTag(Guild guild, String string) {
 		String name = string.substring(0, string.lastIndexOf('#'));
 		String tag = string.substring(string.lastIndexOf('#') + 1, string.length());
 		System.out.println("name: "+name + " - tag: "+tag);
@@ -80,7 +81,7 @@ public class Utils {
 				// int he server
 			}
 		});
-		if (userOpt.size() != 0)
+		if (!userOpt.isEmpty())
 			return Optional.of(userOpt.get(0));
 
 		return Optional.empty();

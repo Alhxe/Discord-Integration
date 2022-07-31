@@ -38,22 +38,10 @@ public class UserLeaveEvent implements Listener {
 		}
 
 		if (isInRegister) {
-			Optional<TmpMessage> messageOpt = TmpCache.getRegisterMessage(event.getPlayer().getName());
-			if (messageOpt.isPresent()) {
-				Message message = messageOpt.get().getMessage();
-				if (message != null)
-					message.delete().queue();
-				TmpCache.removeRegister(event.getPlayer().getName());
-			}
+			inRegister(event);
 		}
 		if (isInLogin) {
-			Optional<TmpMessage> messageOpt = TmpCache.getLoginMessage(event.getPlayer().getName());
-			if (messageOpt.isPresent()) {
-				Message message = messageOpt.get().getMessage();
-				if (message != null)
-					message.delete().queue();
-				TmpCache.removeLogin(event.getPlayer().getName());
-			}
+			inLogin(event);
 		}
 
 		if (UserBlockedCache.contains(event.getPlayer().getName())) {
@@ -61,6 +49,26 @@ public class UserLeaveEvent implements Listener {
 		} else if (DILoginController.isSessionEnabled()) {
 			UserSessionCache.addSession(event.getPlayer().getName(),
 					event.getPlayer().getAddress().getAddress().toString());
+		}
+	}
+
+	private void inLogin(PlayerQuitEvent event) {
+		Optional<TmpMessage> messageOpt = TmpCache.getLoginMessage(event.getPlayer().getName());
+		if (messageOpt.isPresent()) {
+			Message message = messageOpt.get().getMessage();
+			if (message != null)
+				message.delete().queue();
+			TmpCache.removeLogin(event.getPlayer().getName());
+		}
+	}
+
+	private void inRegister(PlayerQuitEvent event) {
+		Optional<TmpMessage> messageOpt = TmpCache.getRegisterMessage(event.getPlayer().getName());
+		if (messageOpt.isPresent()) {
+			Message message = messageOpt.get().getMessage();
+			if (message != null)
+				message.delete().queue();
+			TmpCache.removeRegister(event.getPlayer().getName());
 		}
 	}
 }

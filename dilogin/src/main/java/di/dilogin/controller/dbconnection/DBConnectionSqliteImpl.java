@@ -46,8 +46,14 @@ public class DBConnectionSqliteImpl implements DBConnection {
 		try {
 			File dataFolder = new File(
 					BukkitApplication.getDIApi().getInternalController().getDataFolder().getAbsolutePath(), "users.db");
-			if (!dataFolder.exists())
-				dataFolder.createNewFile();
+			if (!dataFolder.exists()) {
+				boolean success = dataFolder.createNewFile();
+				if (!success) {
+					BukkitApplication.getPlugin().getLogger().severe("Failed to create database file");
+					Plugin plugin = BukkitApplication.getPlugin();
+					plugin.getPluginLoader().disablePlugin(plugin);
+				}
+			}
 			Class.forName("org.sqlite.JDBC");
 			connection = DriverManager.getConnection("jdbc:sqlite:" + dataFolder);
 			initTables();

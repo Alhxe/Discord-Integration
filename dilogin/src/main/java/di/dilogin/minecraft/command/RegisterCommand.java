@@ -90,13 +90,12 @@ public class RegisterCommand implements CommandExecutor {
 	 * @return Posible user.
 	 */
 	private Optional<User> catchRegisterUserOption(String[] args, Player player) {
-		Optional<User> userOpt = Optional.empty();
 		String string = arrayToString(args);
 
-		userOpt = registerById(string, player);
+		Optional<User> userOpt = registerById(string);
 
 		if (!userOpt.isPresent())
-			userOpt = registerByName(string, player);
+			userOpt = registerByName(string);
 
 		if (!userOpt.isPresent()) {
 			player.sendMessage(
@@ -111,35 +110,30 @@ public class RegisterCommand implements CommandExecutor {
 	 * Get the user if his registration method is by discord id.
 	 * 
 	 * @param string Args from the command.
-	 * @param player Minecraft player.
 	 * @return Posible user.
 	 */
-	private Optional<User> registerById(String string, Player player) {
+	private Optional<User> registerById(String string) {
 		String id = string;
 		if (!idIsValid(id))
 			return Optional.empty();
 
-		Optional<User> userOpt = Utils.getDiscordUserById(api.getCoreController().getDiscordApi(), Long.parseLong(id));
-		return userOpt;
+		return Utils.getDiscordUserById(api.getCoreController().getDiscordApi(), Long.parseLong(id));
 	}
 
 	/**
 	 * Get the user if his registration method is by discord username.
 	 * 
 	 * @param string Args from the command.
-	 * @param player Minecraft player.
 	 * @return Posible user.
 	 */
-	private Optional<User> registerByName(String string, Player player) {
+	private Optional<User> registerByName(String string) {
 		String name = string;
 		if (!usernameAndTagIsValid(name))
 			return Optional.empty();
 
 		Guild guild = api.getCoreController().getGuild();
-		Optional<User> userOpt = Utils.getDiscordUserByUsernameAndTag(api.getCoreController().getDiscordApi(), guild,
-				name);
+		return Utils.getDiscordUserByUsernameAndTag(guild, name);
 
-		return userOpt;
 	}
 
 	/**
@@ -150,6 +144,11 @@ public class RegisterCommand implements CommandExecutor {
 	 * @param messageEmbed Embed message.
 	 */
 	private void sendMessage(User user, Player player, MessageEmbed messageEmbed) {
+		if (!TmpCache.getRegisterMessage(player.getName()).isPresent()){
+			api.getInternalController().getPlugin().getLogger().severe("Error while sending message to user register");
+			return;
+		}
+
 		String code = TmpCache.getRegisterMessage(player.getName()).get().getCode();
 
 		boolean hasMessagesOnlyChannel = api.getInternalController().getConfigManager()
@@ -178,7 +177,7 @@ public class RegisterCommand implements CommandExecutor {
 	 * 
 	 * @param player Bukkit player.
 	 * @param user   Discord user.
-	 * @param embed  Embed message.
+	 * @param messageEmbed  Embed message.
 	 * @param code   The code to register.
 	 */
 	private void sendServerMessage(User user, Player player, MessageEmbed messageEmbed, String code) {
@@ -238,7 +237,7 @@ public class RegisterCommand implements CommandExecutor {
 	/**
 	 * Check if the user entered exists.
 	 * 
-	 * @param name Discord ID.
+	 * @param id Discord ID.
 	 * @return True if id is valid.
 	 */
 	private static boolean idIsValid(String id) {
@@ -253,7 +252,7 @@ public class RegisterCommand implements CommandExecutor {
 	/**
 	 * Check if the discord user name and tag is valid.
 	 * 
-	 * @param name Discord username with discriminator.
+	 * @param string Discord username with discriminator.
 	 * @return True if username with tag is valid.
 	 */
 	private static boolean usernameAndTagIsValid(String string) {

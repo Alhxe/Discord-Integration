@@ -2,6 +2,8 @@ package di.dilogin.entity;
 
 import di.dicore.DIApi;
 
+import java.util.Random;
+
 /**
  * Code generator for registration.
  */
@@ -30,6 +32,11 @@ public class CodeGenerator {
 	private static final String LOWER_CASE = "abcdefghijklmnopqrstuvwxyz";
 
 	/**
+	 * Random generator.
+	 */
+	private static Random random = new Random();
+
+	/**
 	 * @param length Number of characters for the code.
 	 * @return Generated code.
 	 */
@@ -48,10 +55,10 @@ public class CodeGenerator {
 	 * @return Generated code.
 	 */
 	private static String getCode(String key, int length) {
-		String code = "";
+		StringBuilder code = new StringBuilder();
 		for (int i = 0; i < length; i++) {
-			code += (key.charAt((int) (Math.random() * key.length())));
+			code.append(key.charAt(random.nextInt(key.length())));
 		}
-		return code;
+		return code.toString();
 	}
 }

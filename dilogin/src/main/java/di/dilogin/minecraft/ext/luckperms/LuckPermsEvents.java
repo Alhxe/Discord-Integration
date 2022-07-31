@@ -34,7 +34,7 @@ public class LuckPermsEvents {
 	}
 
 	private void info(NodeMutateEvent event) {
-		System.out.println(event.getEventType());
+		plugin.getLogger().info("NodeMutateEvent: " + event.getEventType());
 	}
 
 	private void removeRole(NodeRemoveEvent event) {

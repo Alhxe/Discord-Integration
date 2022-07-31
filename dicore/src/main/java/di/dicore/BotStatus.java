@@ -44,9 +44,7 @@ public class BotStatus implements Listener {
 	// Every 5 minutes
 	private static void fireOnTime() {
 		ScheduledExecutorService threadPool = Executors.newSingleThreadScheduledExecutor();
-		threadPool.scheduleWithFixedDelay(() -> {
-		   fire();
-		}, 0, 5, TimeUnit.MINUTES);
+		threadPool.scheduleWithFixedDelay(BotStatus::fire, 0, 5, TimeUnit.MINUTES);
 	}
 	
 	// When player joins server
@@ -68,7 +66,7 @@ public class BotStatus implements Listener {
 	
 	// Change content
 	private static String getContent() {
-		return content.replaceAll("%minecraft_players%", String.valueOf(controller.getPlugin().getServer().getOnlinePlayers().size()));
+		return content.replace("%minecraft_players%", String.valueOf(controller.getPlugin().getServer().getOnlinePlayers().size()));
 	}
 
 }

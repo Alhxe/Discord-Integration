@@ -52,6 +52,12 @@ public class UserLoginEventImpl implements UserLoginEvent {
 			return;
 
 		DIUser user = userOpt.get();
+
+		if (!user.getPlayerBukkit().isPresent()&&!user.getPlayerDiscord().isPresent()){
+			api.getCoreController().getPlugin().getLogger().severe("Failed to get user in database: "+playerName);
+			return;
+		}
+
 		long seconds = BukkitApplication.getDIApi().getInternalController().getConfigManager()
 				.getLong("login_time_until_kick") * 1000;
 

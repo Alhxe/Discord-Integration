@@ -24,6 +24,10 @@ import net.luckperms.api.node.types.InheritanceNode;
  */
 public class LuckPermsController {
 
+	private LuckPermsController() {
+		throw new IllegalStateException("Utility class");
+	}
+
 	private static LuckPerms api;
 
 	private static final DIApi diapi = BukkitApplication.getDIApi();
@@ -40,9 +44,9 @@ public class LuckPermsController {
 	public static boolean isUserInGroup(Player player, String group) {
 		List<User> a = getUsersInGroup(group).join();
 		for (User u : a) {
-			System.out.println(u.getFriendlyName());
+			diapi.getCoreController().getPlugin().getLogger().info(u.getFriendlyName());
 		}
-		return getUsersInGroup(group).join().stream().filter(u->u.getFriendlyName().equalsIgnoreCase(player.getName())).findFirst().isPresent();
+		return getUsersInGroup(group).join().stream().anyMatch(u->u.getFriendlyName().equalsIgnoreCase(player.getName()));
 	}
 	
 	public static User getLuckPermsUser(Player player) {
@@ -67,13 +71,13 @@ public class LuckPermsController {
 
 	public static List<String> getMinecraftRoleFromDiscordRole(String role) {
 		List<String> result = new ArrayList<>();
-		rolMap.stream().filter(r -> r.containsKey(role)).forEach(r -> r.values().stream().forEach(s -> result.add(s)));
+		rolMap.stream().filter(r -> r.containsKey(role)).forEach(r -> r.values().stream().forEach(result::add));
 		return result;
 	}
 
 	public static List<String> getDiscordRoleFromMinecraftRole(String role) {
 		List<String> result = new ArrayList<>();
-		rolMap.stream().filter(r -> r.containsValue(role)).forEach(r -> r.keySet().forEach(s -> result.add(s)));
+		rolMap.stream().filter(r -> r.containsValue(role)).forEach(r -> r.keySet().forEach(result::add));
 		return result;
 	}
 

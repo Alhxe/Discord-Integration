@@ -34,8 +34,7 @@ public class UserPreLoginEvent implements Listener {
 		String username = event.getName();
 		Server server = api.getCoreController().getPlugin().getServer();
 
-		boolean isAnotherUserOnline = server.getOnlinePlayers().stream().filter(u -> u.getName().equals(username))
-				.findFirst().isPresent();
+		boolean isAnotherUserOnline = server.getOnlinePlayers().stream().anyMatch(u -> u.getName().equals(username));
 
 		if (isAnotherUserOnline) {
 			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
@@ -46,7 +45,6 @@ public class UserPreLoginEvent implements Listener {
 		if (!checkRegisteredUser(username)) {
 			event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
 					api.getInternalController().getLangManager().getString("login_user_not_discord"));
-			return;
 		}
 	}
 

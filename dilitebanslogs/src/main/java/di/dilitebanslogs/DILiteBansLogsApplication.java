@@ -30,7 +30,7 @@ public class DILiteBansLogsApplication extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		getLogger().info("Starting plugin");
-		plugin = (Plugin) getPlugin(getClass());
+		plugin = getPlugin(getClass());
 		connectWithCoreApi();
 		connectWithChannel();
 		initEvents();
@@ -79,7 +79,7 @@ public class DILiteBansLogsApplication extends JavaPlugin {
 				.ofNullable(api.getCoreController().getDiscordApi().getTextChannelById(CHANNEL_ID));
 
 		if (!textChannelOpt.isPresent()) {
-			getPlugin().getLogger().log(Level.SEVERE, "No channel found with " + CHANNEL_ID + " ID.");
+			getPlugin().getLogger().log(Level.SEVERE, String.format("No channel found with %s ID.",CHANNEL_ID));
 			getPlugin().getPluginLoader().disablePlugin(plugin);
 			return;
 		}

@@ -137,10 +137,8 @@ public class DILoginController {
 	 * @param player Bukkit player.
 	 */
 	public static void loginUser(Player player, User user) {
-		if (user != null) {
-			if (isSyncronizeOptionEnabled()) {
+		if (user != null && isSyncronizeOptionEnabled()) {
 				syncroUserName(player, user);
-			}
 		}
 
 		if (isAuthmeEnabled()) {

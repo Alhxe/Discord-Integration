@@ -31,9 +31,9 @@ public class GuildMemberRoleEvent extends ListenerAdapter {
 
 		for (Role role : event.getRoles()) {
 			for (String group : LuckPermsController.getMinecraftRoleFromDiscordRole(role.getId())) {
-				if (!LuckPermsController.isUserInGroup(user.getPlayerBukkit().get(), group))
-					LuckPermsController.addGroup(user.getPlayerBukkit().get(), group,
-							"Get " + role + " role in discord.");
+					if (user.getPlayerBukkit().isPresent() && !LuckPermsController.isUserInGroup(user.getPlayerBukkit().get(), group))
+						LuckPermsController.addGroup(user.getPlayerBukkit().get(), group,
+								"Get " + role + " role in discord.");
 			}
 		}
 	}
@@ -51,9 +51,9 @@ public class GuildMemberRoleEvent extends ListenerAdapter {
 
 		for (Role role : event.getRoles()) {
 			for (String group : LuckPermsController.getMinecraftRoleFromDiscordRole(role.getId())) {
-				if (LuckPermsController.isUserInGroup(user.getPlayerBukkit().get(), group))
-					LuckPermsController.removeGroup(user.getPlayerBukkit().get(), group,
-							"Removed " + role + " role in discord.");
+					if (user.getPlayerBukkit().isPresent() && LuckPermsController.isUserInGroup(user.getPlayerBukkit().get(), group))
+						LuckPermsController.removeGroup(user.getPlayerBukkit().get(), group,
+								"Removed " + role + " role in discord.");
 			}
 		}
 	}

@@ -41,7 +41,11 @@ public class UserDataController {
 
 	public static void removeFile(String uuid) {
 		File file = new File(dataFolder.getAbsolutePath(), uuid + ".json");
-		file.delete();
+		boolean isDeleted = file.delete();
+
+		if(!isDeleted) {
+			BukkitApplication.getDIApi().getInternalController().getPlugin().getLogger().warning("Could not delete file: " + file.getAbsolutePath());
+		}
 	}
 
 	public static boolean isFilePresent(String uuid) {

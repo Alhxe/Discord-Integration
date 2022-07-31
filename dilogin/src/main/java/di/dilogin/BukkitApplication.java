@@ -79,9 +79,9 @@ public class BukkitApplication extends JavaPlugin {
 	 * Add the commands to bukkit.
 	 */
 	private void initCommands() {
-		initUniqueCommand("diregister", (CommandExecutor) new RegisterCommand());
-		initUniqueCommand("forcelogin", (CommandExecutor) new ForceLoginCommand());
-		initUniqueCommand("unregister", (CommandExecutor) new UnregisterCommand());
+		initUniqueCommand("diregister", new RegisterCommand());
+		initUniqueCommand("forcelogin", new ForceLoginCommand());
+		initUniqueCommand("unregister", new UnregisterCommand());
 	}
 
 	/**

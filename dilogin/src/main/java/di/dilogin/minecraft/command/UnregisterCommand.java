@@ -55,7 +55,7 @@ public class UnregisterCommand implements CommandExecutor {
 		sender.sendMessage(LangManager.getString(nick, "unregister_success"));
 		
 		if(player!=null)
-		player.kickPlayer(LangManager.getString(player, "unregister_kick"));
+			player.kickPlayer(LangManager.getString(player, "unregister_kick"));
 		
 		userDao.remove(user);
 		return true;

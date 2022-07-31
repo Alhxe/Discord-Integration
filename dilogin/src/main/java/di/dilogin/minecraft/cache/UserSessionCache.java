@@ -49,7 +49,7 @@ public class UserSessionCache {
 		if (!user.getIp().equals(ip))
 			return false;
 
-		if (Calendar.getInstance().getTimeInMillis() > ((Long) sessions.get(user)).longValue())
+		if (Calendar.getInstance().getTimeInMillis() > (sessions.get(user)).longValue())
 			return false;
 		
 		if (!userDao.contains(name)) {

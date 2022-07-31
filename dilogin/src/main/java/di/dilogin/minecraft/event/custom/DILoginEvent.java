@@ -17,10 +17,6 @@ public final class DILoginEvent extends Event {
 	
 	private Player player;
 
-	public static HandlerList getHandlerList() {
-		return HANDLERS_LIST;
-	}
-
 	@Override
 	public HandlerList getHandlers() {
 		return HANDLERS_LIST;

@@ -59,9 +59,13 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 	public void add(DIUser user) {
 		String query = "insert into user(username, discord_id) values(?,?);";
 		try (PreparedStatement ps = conn.prepareStatement(query)) {
-			ps.setString(1, user.getPlayerBukkit().get().getName());
-			ps.setLong(2, user.getPlayerDiscord().get().getIdLong());
-			ps.execute();
+			if (user.getPlayerBukkit().isPresent() && user.getPlayerDiscord().isPresent()) {
+				ps.setString(1, user.getPlayerBukkit().get().getName());
+				ps.setLong(2, user.getPlayerDiscord().get().getIdLong());
+				ps.execute();
+			} else {
+				BukkitApplication.getPlugin().getLogger().warning("Unable to add user " + user.toString());
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -71,8 +75,12 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 	public void remove(DIUser user) {
 		String query = "delete from user where discord_id = ?;";
 		try (PreparedStatement ps = conn.prepareStatement(query)) {
-			ps.setLong(1, user.getPlayerDiscord().get().getIdLong());
-			ps.execute();
+			if (user.getPlayerDiscord().isPresent()) {
+				ps.setLong(1, user.getPlayerDiscord().get().getIdLong());
+				ps.execute();
+			} else {
+				BukkitApplication.getPlugin().getLogger().warning("Unable to remove user " + user.toString());
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
