@@ -21,9 +21,11 @@ import di.dilogin.minecraft.event.UserLeaveEvent;
 import di.dilogin.minecraft.event.UserLoginEventImpl;
 import di.dilogin.minecraft.event.UserPreLoginEvent;
 import di.dilogin.minecraft.event.UserTeleportEvents;
-import di.dilogin.minecraft.ext.authme.event.AuthmeEvents;
-import di.dilogin.minecraft.ext.authme.event.UserLoginEventAuthmeImpl;
+import di.dilogin.minecraft.ext.authme.AuthmeEvents;
+import di.dilogin.minecraft.ext.authme.UserLoginEventAuthmeImpl;
 import di.dilogin.minecraft.ext.luckperms.LuckPermsEvents;
+import di.dilogin.minecraft.ext.nlogin.UnregisterNLoginEvents;
+import di.dilogin.minecraft.ext.nlogin.UserLoginEventNLoginImpl;
 import di.internal.exception.NoApiException;
 
 /**
@@ -123,6 +125,16 @@ public class BukkitApplication extends JavaPlugin {
 			getPlugin().getLogger().info("Authme detected, starting plugin compatibility.");
 			getServer().getPluginManager().registerEvents(new UserLoginEventAuthmeImpl(), plugin);
 			getServer().getPluginManager().registerEvents(new AuthmeEvents(), plugin);
+		} else if (DILoginController.isNLoginEnabled()) { //
+			getPlugin().getLogger().info("nLogin detected, starting plugin compatibility.");
+			try {
+				Class.forName("com.nickuc.login.api.nLoginAPIHolder");
+				getServer().getPluginManager().registerEvents(new UnregisterNLoginEvents(), plugin);
+				getServer().getPluginManager().registerEvents(new UserLoginEventNLoginImpl(), plugin);
+			} catch (ClassNotFoundException e) {
+				getLogger().severe("You are using the old version of nLogin.");
+				getLogger().severe("Please upgrade to version 10.");
+			}
 		} else {
 			getServer().getPluginManager().registerEvents(new UserLoginEventImpl(), plugin);
 			getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);

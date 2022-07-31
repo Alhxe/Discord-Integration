@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import com.nickuc.login.api.nLoginAPI;
+
 import di.dicore.DIApi;
 import di.dilogin.BukkitApplication;
 import di.dilogin.dao.DIUserDao;
@@ -42,6 +44,11 @@ public class DILoginController {
 	public static DIUserDao getDIUserDao() {
 		return userDao;
 	}
+
+	/**
+	 * Main API
+	 */
+	private static final DIApi api = BukkitApplication.getDIApi();
 
 	/**
 	 * @return The basis for embed messages.
@@ -108,12 +115,20 @@ public class DILoginController {
 	public static boolean isAuthmeEnabled() {
 		return BukkitApplication.getPlugin().getServer().getPluginManager().isPluginEnabled("AuthMe");
 	}
+	
+	/**
+	 * @return true is nLogin is enabled.
+	 */
+	public static boolean isNLoginEnabled() {
+		return BukkitApplication.getPlugin().getServer().getPluginManager().isPluginEnabled("nLogin");
+	}
 
 	/**
 	 * @return true is LuckPerms is enabled.
 	 */
 	public static boolean isLuckPermsEnabled() {
-		return BukkitApplication.getPlugin().getServer().getPluginManager().isPluginEnabled("LuckPerms");
+		return BukkitApplication.getPlugin().getServer().getPluginManager().isPluginEnabled("LuckPerms")
+				&& api.getInternalController().getConfigManager().getBoolean("syncro_rol_enable");
 	}
 
 	/**
@@ -130,7 +145,9 @@ public class DILoginController {
 
 		if (isAuthmeEnabled()) {
 			AuthmeHook.login(player);
-		} else {
+		} else if (DILoginController.isNLoginEnabled()) {
+			nLoginAPI.getApi().forceLogin(player.getName());
+		}else {
 			Bukkit.getScheduler().runTask(BukkitApplication.getPlugin(),
 					() -> Bukkit.getPluginManager().callEvent(new DILoginEvent(player)));
 			UserBlockedCache.remove(player.getName());
