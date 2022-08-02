@@ -24,6 +24,10 @@ public class UserLeaveEvent implements Listener {
 	 */
 	private final DIUserDao userDao = DILoginController.getDIUserDao();
 
+	/**
+	 * Main event body.
+	 * @param event It is the object that includes the event information.
+	 */
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent event) {
 		boolean session = DILoginController.isSessionEnabled();
@@ -52,6 +56,10 @@ public class UserLeaveEvent implements Listener {
 		}
 	}
 
+	/**
+	 * Runs when a user is logged in.
+	 * @param event It is the object that includes the event information.
+	 */
 	private void inLogin(PlayerQuitEvent event) {
 		Optional<TmpMessage> messageOpt = TmpCache.getLoginMessage(event.getPlayer().getName());
 		if (messageOpt.isPresent()) {
@@ -62,6 +70,10 @@ public class UserLeaveEvent implements Listener {
 		}
 	}
 
+	/**
+	 * Runs when a user is registering.
+	 * @param event It is the object that includes the event information.
+	 */
 	private void inRegister(PlayerQuitEvent event) {
 		Optional<TmpMessage> messageOpt = TmpCache.getRegisterMessage(event.getPlayer().getName());
 		if (messageOpt.isPresent()) {

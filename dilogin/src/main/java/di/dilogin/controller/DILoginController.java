@@ -3,6 +3,8 @@ package di.dilogin.controller;
 import java.time.Instant;
 import java.util.Optional;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -12,7 +14,7 @@ import di.dicore.DIApi;
 import di.dilogin.BukkitApplication;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.dao.DIUserDaoSqlImpl;
-import di.dilogin.entity.AuthmeHook;
+import di.dilogin.minecraft.ext.authme.AuthmeHook;
 import di.dilogin.entity.DIUser;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.cache.UserBlockedCache;
@@ -25,28 +27,26 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
 /**
- * Login plugin control.
+ * DILogin plugin control.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DILoginController {
 
 	/**
-	 * Prohibits instantiation of the class.
-	 */
-	private DILoginController() {
-		throw new IllegalStateException();
-	}
-
-	/**
-	 * 
+	 * Starts the implementation of the class that gets data from the users.
 	 */
 	private static DIUserDao userDao = new DIUserDaoSqlImpl();
 
+	/**
+	 *
+	 * @return the user dao, class that gets data from the users..
+	 */
 	public static DIUserDao getDIUserDao() {
 		return userDao;
 	}
 
 	/**
-	 * Main API
+	 * Get the main plugin api.
 	 */
 	private static final DIApi api = BukkitApplication.getDIApi();
 
@@ -138,7 +138,7 @@ public class DILoginController {
 	 */
 	public static void loginUser(Player player, User user) {
 		if (user != null && isSyncronizeOptionEnabled()) {
-				syncroUserName(player, user);
+				syncUserName(player, user);
 		}
 
 		if (isAuthmeEnabled()) {
@@ -159,7 +159,7 @@ public class DILoginController {
 	 * 
 	 * @param player Minecraft player.
 	 */
-	private static void syncroUserName(Player player, User user) {
+	private static void syncUserName(Player player, User user) {
 		Optional<DIUser> optDIUser = userDao.get(player.getName());
 
 		if (!optDIUser.isPresent())

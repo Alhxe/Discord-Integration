@@ -16,27 +16,37 @@ import fr.xephi.authme.events.UnregisterByPlayerEvent;
  */
 public class AuthmeEvents implements Listener {
 
-	/**
-	 * User management.
-	 */
-	private DIUserDao userDao = DILoginController.getDIUserDao();
+    /**
+     * User management.
+     */
+    private DIUserDao userDao = DILoginController.getDIUserDao();
 
-	@EventHandler
-	void onUnregisterByAdminEvent(UnregisterByAdminEvent event) {
-		unregister(event.getPlayerName());
-	}
+    /**
+     * Main unregister by admin event body.
+     *
+     * @param event It is the object that includes the event information.
+     */
+    @EventHandler
+    void onUnregisterByAdminEvent(UnregisterByAdminEvent event) {
+        unregister(event.getPlayerName());
+    }
 
-	@EventHandler
-	void onUnregisterByPlayerEvent(UnregisterByPlayerEvent event) {
-		Optional<Player> optPlayer = Optional.ofNullable(event.getPlayer());
-		if (optPlayer.isPresent())
-			unregister(optPlayer.get().getName());
-	}
+    /**
+     * Main unregister by player event body.
+     *
+     * @param event It is the object that includes the event information.
+     */
+    @EventHandler
+    void onUnregisterByPlayerEvent(UnregisterByPlayerEvent event) {
+        Optional<Player> optPlayer = Optional.ofNullable(event.getPlayer());
+        if (optPlayer.isPresent())
+            unregister(optPlayer.get().getName());
+    }
 
-	/**
-	 * Unregister user from DILogin.
-	 */
-	private void unregister(String playerName) {
-		userDao.remove(playerName);
-	}
+    /**
+     * Unregister user from DILogin.
+     */
+    private void unregister(String playerName) {
+        userDao.remove(playerName);
+    }
 }

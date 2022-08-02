@@ -10,6 +10,9 @@ import di.dicore.DIApi;
 import di.internal.exception.NoApiException;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+/**
+ * Main class of DILiteBansLogs plugin.
+ */
 public class DILiteBansLogsApplication extends JavaPlugin {
 
 	/**
@@ -27,6 +30,9 @@ public class DILiteBansLogsApplication extends JavaPlugin {
 	 */
 	private static TextChannel channel;
 
+	/**
+	 * Runs when the plugin is being powered on.
+	 */
 	@Override
 	public void onEnable() {
 		getLogger().info("Starting plugin");

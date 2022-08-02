@@ -29,6 +29,10 @@ public class UserPreLoginEvent implements Listener {
 	 */
 	private final DIUserDao userDao = DILoginController.getDIUserDao();
 
+	/**
+	 * Main event body.
+	 * @param event It is the object that includes the event information.
+	 */
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent event) {
 		String username = event.getName();

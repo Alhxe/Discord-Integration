@@ -20,73 +20,93 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
+/**
+ * Implementation of user login event to nLogin.
+ */
 public class UserLoginEventNLoginImpl implements UserLoginEvent {
 
-	@Override
-	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event) {
-		String playerName = event.getPlayer().getName();
-		if (userDao.contains(playerName))
-			initPlayerLoginRequest(event, playerName);
-	}
+    /**
+     * Contains the main flow of login.
+     *
+     * @param event Main login event.
+     */
+    @Override
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        String playerName = event.getPlayer().getName();
+        if (userDao.contains(playerName))
+            initPlayerLoginRequest(event, playerName);
+    }
 
-	@Override
-	public void initPlayerLoginRequest(PlayerJoinEvent event, String playerName) {
-		TmpCache.addLogin(playerName, null);
-		Optional<DIUser> userOpt = userDao.get(playerName);
-		if (!userOpt.isPresent())
-			return;
+    /**
+     * Send login request to the user.
+     *
+     * @param event      Main login event.
+     * @param playerName Player's name.
+     */
+    @Override
+    public void initPlayerLoginRequest(PlayerJoinEvent event, String playerName) {
+        TmpCache.addLogin(playerName, null);
+        Optional<DIUser> userOpt = userDao.get(playerName);
+        if (!userOpt.isPresent())
+            return;
 
-		DIUser user = userOpt.get();
+        DIUser user = userOpt.get();
 
-		if (!user.getPlayerBukkit().isPresent()&&!user.getPlayerDiscord().isPresent()){
-			api.getCoreController().getPlugin().getLogger().severe("Failed to get user in database: "+playerName);
-			return;
-		}
+        if (!user.getPlayerBukkit().isPresent() && !user.getPlayerDiscord().isPresent()) {
+            api.getCoreController().getPlugin().getLogger().severe("Failed to get user in database: " + playerName);
+            return;
+        }
 
-		event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
-		sendLoginMessageRequest(user.getPlayerBukkit().get(), user.getPlayerDiscord().get());
-	}
+        event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
+        sendLoginMessageRequest(user.getPlayerBukkit().get(), user.getPlayerDiscord().get());
+    }
 
-	@Override
-	public void initPlayerRegisterRequest(PlayerJoinEvent event, String playerName) {
-		// Can't register from nLogin with DILogin
-	}
+    /**
+     * Send register message request to the user.
+     *
+     * @param event      Main login event.
+     * @param playerName Player's name.
+     */
+    @Override
+    public void initPlayerRegisterRequest(PlayerJoinEvent event, String playerName) {
+        // Can't register from nLogin with DILogin
+    }
 
-	/**
-	 * Event when a user logs in with nLogin.
-	 * 
-	 * @param event LoginEvent.
-	 */
-	@EventHandler
-	public void onAuth(final AuthenticateEvent event) {
-		String playerName = event.getPlayer().getName();
+    /**
+     * Event when a user logs in with nLogin.
+     *
+     * @param event LoginEvent.
+     */
+    @EventHandler
+    public void onAuth(final AuthenticateEvent event) {
+        String playerName = event.getPlayer().getName();
 
-		if (!userDao.contains(playerName)) {
-			initPlayerNLoginRegisterRequest(event, playerName);
-		}
+        if (!userDao.contains(playerName)) {
+            initPlayerNLoginRegisterRequest(event, playerName);
+        }
 
-		Bukkit.getScheduler().runTask(api.getInternalController().getPlugin(),
-				() -> Bukkit.getPluginManager().callEvent(new DILoginEvent(event.getPlayer())));
-	}
+        Bukkit.getScheduler().runTask(api.getInternalController().getPlugin(),
+                () -> Bukkit.getPluginManager().callEvent(new DILoginEvent(event.getPlayer())));
+    }
 
-	/**
-	 * If the user logged in with nLogin is not registered with DILogin, it prompts
-	 * him to register.
-	 * 
-	 * @param event      nLogin login event.
-	 * @param playerName Player's name.
-	 */
-	@SuppressWarnings("deprecation")
-	public void initPlayerNLoginRegisterRequest(AuthenticateEvent event, String playerName) {
-		String code = CodeGenerator
-				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
-		String command = api.getCoreController().getBot().getPrefix() + api.getInternalController().getConfigManager().getString("register_command") + " " + code;
-		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(), null, null, code));
-		TextComponent message = new TextComponent(LangManager.getString(event.getPlayer(), "register_opt_request")
-				.replace("%register_command%", command));
-		message.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, code));
-		message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Copy").create()));
-		event.getPlayer().spigot().sendMessage(message);
-	}
+    /**
+     * If the user logged in with nLogin is not registered with DILogin, it prompts
+     * him to register.
+     *
+     * @param event      nLogin login event.
+     * @param playerName Player's name.
+     */
+    @SuppressWarnings("deprecation")
+    public void initPlayerNLoginRegisterRequest(AuthenticateEvent event, String playerName) {
+        String code = CodeGenerator
+                .getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
+        String command = api.getCoreController().getBot().getPrefix() + api.getInternalController().getConfigManager().getString("register_command") + " " + code;
+        TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(), null, null, code));
+        TextComponent message = new TextComponent(LangManager.getString(event.getPlayer(), "register_opt_request")
+                .replace("%register_command%", command));
+        message.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, code));
+        message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Copy").create()));
+        event.getPlayer().spigot().sendMessage(message);
+    }
 }

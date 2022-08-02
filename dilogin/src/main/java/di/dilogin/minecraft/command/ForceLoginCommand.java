@@ -34,6 +34,14 @@ public class ForceLoginCommand implements CommandExecutor {
 	 */
 	public final Plugin plugin = BukkitApplication.getPlugin();
 
+	/**
+	 * Main command body.
+	 * @param sender The sender of the command.
+	 * @param command The command.
+	 * @param label The label of the command.
+	 * @param args The arguments of the command.
+	 * @return True if the command was executed.
+	 */
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		String nick = args[0];
@@ -58,6 +66,10 @@ public class ForceLoginCommand implements CommandExecutor {
 
 	}
 
+	/**
+	 * Edit the message of the user.
+	 * @param player The minecraft player.
+	 */
 	public static void editMessage(Player player) {
 		Optional<TmpMessage> tmpMessageOpt = TmpCache.getLoginMessage(player.getName());
 		if (!tmpMessageOpt.isPresent())

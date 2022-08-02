@@ -8,18 +8,14 @@ import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.UserSession;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Contains the list of users with valid and active sessions.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserSessionCache {
-
-	/**
-	 * Prohibits instantiation of the class.
-	 */
-	private UserSessionCache() {
-		throw new IllegalStateException();
-	}
 
 	/**
 	 * List of user sessions.

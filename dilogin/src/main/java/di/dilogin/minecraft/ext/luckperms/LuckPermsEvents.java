@@ -16,10 +16,19 @@ import net.luckperms.api.event.node.NodeMutateEvent;
 import net.luckperms.api.event.node.NodeRemoveEvent;
 import net.luckperms.api.node.Node;
 
+/**
+ * Events from LuckPerms plugin.
+ */
 public class LuckPermsEvents {
 
+	/**
+	 * Main plugin instance.
+	 */
 	private final Plugin plugin = BukkitApplication.getPlugin();
 
+	/**
+	 * Declare events and register them.
+	 */
 	public LuckPermsEvents() {
 		LuckPerms api = LuckPermsController.getApi();
 
@@ -33,10 +42,18 @@ public class LuckPermsEvents {
 		}
 	}
 
+	/**
+	 * Info about node mutation.
+	 * @param event event to handle.
+	 */
 	private void info(NodeMutateEvent event) {
 		plugin.getLogger().info("NodeMutateEvent: " + event.getEventType());
 	}
 
+	/**
+	 * Event handler for NodeRemoveEvent.
+	 * @param event It is the object that includes the event information.
+	 */
 	private void removeRole(NodeRemoveEvent event) {
 		String playerName = event.getTarget().getFriendlyName();
 		Player player = plugin.getServer().getPlayer(playerName);
@@ -47,6 +64,10 @@ public class LuckPermsEvents {
 		internalRemoveRole(player, event.getNode());
 	}
 
+	/**
+	 * Event handler for NodeClearEvent.
+	 * @param event It is the object that includes the event information.
+	 */
 	private void clearRoles(NodeClearEvent event) {
 		String playerName = event.getTarget().getFriendlyName();
 		Player player = plugin.getServer().getPlayer(playerName);
@@ -60,6 +81,11 @@ public class LuckPermsEvents {
 
 	}
 
+	/**
+	 * Remove role from player.
+	 * @param player player to remove role.
+	 * @param node role info.
+	 */
 	private void internalRemoveRole(Player player, Node node) {
 		String group = node.getKey().replace("group.", "");
 		List<String> roleList = LuckPermsController.getDiscordRoleFromMinecraftRole(group);
@@ -75,6 +101,10 @@ public class LuckPermsEvents {
 		}
 	}
 
+	/**
+	 * Add role to player.
+	 * @param event It is the object that includes the event information.
+	 */
 	private void addRole(NodeAddEvent event) {
 		String playerName = event.getTarget().getFriendlyName();
 		Player player = plugin.getServer().getPlayer(playerName);

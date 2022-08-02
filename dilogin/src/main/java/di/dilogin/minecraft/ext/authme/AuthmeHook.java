@@ -1,20 +1,16 @@
-package di.dilogin.entity;
+package di.dilogin.minecraft.ext.authme;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.bukkit.entity.Player;
 
 import fr.xephi.authme.api.v3.AuthMeApi;
 
 /**
- * Class that interacts with the authme api
+ * Class that interacts with the authme api.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthmeHook {
-
-	/**
-	 * Prohibits instantiation of the class.
-	 */
-	private AuthmeHook() {
-		throw new IllegalStateException();
-	}
 
 	/**
 	 * Authme api.

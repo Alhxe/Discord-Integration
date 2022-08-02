@@ -27,17 +27,17 @@ public interface UserLoginEvent extends Listener {
 	/**
 	 * User manager.
 	 */
-	static final DIUserDao userDao = DILoginController.getDIUserDao();
+	DIUserDao userDao = DILoginController.getDIUserDao();
 
 	/**
 	 * Main api.
 	 */
-	static final DIApi api = BukkitApplication.getDIApi();
+	DIApi api = BukkitApplication.getDIApi();
 
 	/**
 	 * Reactions emoji.
 	 */
-	static final String EMOJI = api.getInternalController().getConfigManager().getString("discord_embed_emoji");
+	String EMOJI = api.getInternalController().getConfigManager().getString("discord_embed_emoji");
 
 	/**
 	 * Catch the main event when a user connects.

@@ -38,11 +38,11 @@ public class UserBlockEvents implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerSendCommand(PlayerCommandPreprocessEvent event) {
-		String mensaje = event.getMessage();
-		if (mensaje.indexOf(" ") == -1) {
-			if (mensaje.equalsIgnoreCase("/register"))
+		String message = event.getMessage();
+		if (!message.contains(" ")) {
+			if (message.equalsIgnoreCase("/register"))
 				return;
-		} else if (mensaje.split(" ")[0].equalsIgnoreCase("/register")) {
+		} else if (message.split(" ")[0].equalsIgnoreCase("/register")) {
 			return;
 		}
 		if (UserBlockedCache.contains(event.getPlayer().getName()))

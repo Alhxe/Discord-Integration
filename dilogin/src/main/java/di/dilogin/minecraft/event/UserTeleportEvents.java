@@ -32,6 +32,10 @@ public class UserTeleportEvents implements Listener {
 	 */
 	private final Optional<Location> teleportLocation = getTeleportLocation();
 
+	/**
+	 * Main player join event body.
+	 * @param event It is the object that includes the event information.
+	 */
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		if (!isTeleportEnabled)
@@ -46,6 +50,10 @@ public class UserTeleportEvents implements Listener {
 			event.getPlayer().teleport(teleportLocation.get());
 	}
 
+	/**
+	 * Main player login event body.
+	 * @param event It is the object that includes the event information.
+	 */
 	@EventHandler
 	public void onPlayerLogin(DILoginEvent event) {
 		if (!isTeleportEnabled)
@@ -65,6 +73,10 @@ public class UserTeleportEvents implements Listener {
 		UserDataController.removeFile(uuid);
 	}
 
+	/**
+	 * Get the teleport location.
+	 * @return Optional<Location>
+	 */
 	private Optional<Location> getTeleportLocation() {
 		if (isTeleportEnabled) {
 			ConfigManager confManager = api.getInternalController().getConfigManager();

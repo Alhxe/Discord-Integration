@@ -11,6 +11,9 @@ import com.nickuc.login.api.event.bukkit.command.UnregisterEvent;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.dao.DIUserDao;
 
+/**
+ * Events from nLogin plugin.
+ */
 public class UnregisterNLoginEvents implements Listener{
 	
 	/**
@@ -18,6 +21,10 @@ public class UnregisterNLoginEvents implements Listener{
 	 */
 	private DIUserDao userDao = DILoginController.getDIUserDao();
 
+	/**
+	 * Unregister nLogin event.
+	 * @param event Unregister event.
+	 */
 	@EventHandler
 	void onUnregisterByPlayerEvent(UnregisterEvent event) {
 		Optional<Player> optPlayer = Optional.ofNullable(event.getPlayer());

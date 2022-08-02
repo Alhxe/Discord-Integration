@@ -4,18 +4,14 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import di.dilogin.entity.TmpMessage;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Contains users who are in the process of registering / logging in
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TmpCache {
-
-	/**
-	 * Prohibits instantiation of the class.
-	 */
-	private TmpCache() {
-		throw new IllegalStateException();
-	}
 
 	/**
 	 * List of users pending login.

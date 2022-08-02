@@ -122,22 +122,11 @@ public class BukkitApplication extends JavaPlugin {
 			new LuckPermsEvents();
 		}
 		if (DILoginController.isAuthmeEnabled()) {
-			getPlugin().getLogger().info("Authme detected, starting plugin compatibility.");
-			getServer().getPluginManager().registerEvents(new UserLoginEventAuthmeImpl(), plugin);
-			getServer().getPluginManager().registerEvents(new AuthmeEvents(), plugin);
-		} else if (DILoginController.isNLoginEnabled()) { //
-			getPlugin().getLogger().info("nLogin detected, starting plugin compatibility.");
-			try {
-				Class.forName("com.nickuc.login.api.nLoginAPIHolder");
-				getServer().getPluginManager().registerEvents(new UnregisterNLoginEvents(), plugin);
-				getServer().getPluginManager().registerEvents(new UserLoginEventNLoginImpl(), plugin);
-			} catch (ClassNotFoundException e) {
-				getLogger().severe("You are using the old version of nLogin.");
-				getLogger().severe("Please upgrade to version 10.");
-			}
+			initAuthmeEvents();
+		} else if (DILoginController.isNLoginEnabled()) {
+			initNLoginEvents();
 		} else {
-			getServer().getPluginManager().registerEvents(new UserLoginEventImpl(), plugin);
-			getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
+			initDILoginEvents();
 		}
 		getServer().getPluginManager().registerEvents(new UserLeaveEvent(), plugin);
 		getServer().getPluginManager().registerEvents(new UserTeleportEvents(), plugin);
@@ -159,6 +148,38 @@ public class BukkitApplication extends JavaPlugin {
 	 */
 	private void initDiscordCommands() {
 		api.registerDiscordCommand(new DiscordRegisterCommand());
+	}
+
+	/**
+	 * Init events with compatibility with nLogin.
+	 */
+	private void initNLoginEvents() {
+		getPlugin().getLogger().info("nLogin detected, starting plugin compatibility.");
+		try {
+			Class.forName("com.nickuc.login.api.nLoginAPIHolder");
+			getServer().getPluginManager().registerEvents(new UnregisterNLoginEvents(), plugin);
+			getServer().getPluginManager().registerEvents(new UserLoginEventNLoginImpl(), plugin);
+		} catch (ClassNotFoundException e) {
+			getLogger().severe("You are using the old version of nLogin.");
+			getLogger().severe("Please upgrade to version 10.");
+		}
+	}
+
+	/**
+	 * Init events with compatibility with Authme.
+	 */
+	private void initAuthmeEvents() {
+		getPlugin().getLogger().info("Authme detected, starting plugin compatibility.");
+		getServer().getPluginManager().registerEvents(new UserLoginEventAuthmeImpl(), plugin);
+		getServer().getPluginManager().registerEvents(new AuthmeEvents(), plugin);
+	}
+
+	/**
+	 * Init the plugin's default events.
+	 */
+	private void initDILoginEvents() {
+		getServer().getPluginManager().registerEvents(new UserLoginEventImpl(), plugin);
+		getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
 	}
 
 }

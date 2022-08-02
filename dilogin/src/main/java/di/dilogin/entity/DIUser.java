@@ -24,7 +24,7 @@ public class DIUser {
 	private Optional<Player> playerBukkit;
 
 	/**
-	 * Discord Player object.
+	 * Discord Player object. Can be null if user left server.
 	 */
 	private Optional<User> playerDiscord;
 }

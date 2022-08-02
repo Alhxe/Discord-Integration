@@ -1,20 +1,16 @@
 package di.dilogin.entity;
 
 import di.dicore.DIApi;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.Random;
 
 /**
  * Code generator for registration.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CodeGenerator {
-
-	/**
-	 * Prohibits instantiation of the class.
-	 */
-	private CodeGenerator() {
-		throw new IllegalStateException();
-	}
 
 	/**
 	 * List of valid numbers for the code.

@@ -10,7 +10,7 @@ import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
-import di.dilogin.entity.AuthmeHook;
+import di.dilogin.minecraft.ext.authme.AuthmeHook;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
@@ -31,9 +31,17 @@ public class UserReactionMessageEvent extends ListenerAdapter {
 	 * Database user DAO.
 	 */
 	private final DIUserDao userDao = DILoginController.getDIUserDao();
-	
+
+	/**
+	 * Main api.
+	 */
 	private final DIApi api = BukkitApplication.getDIApi();
 
+	/**
+	 * Main event body.
+	 *
+	 * @param event It is the object that includes the event information.
+	 */
 	@Override
 	public void onMessageReactionAdd(MessageReactionAddEvent event) {
 

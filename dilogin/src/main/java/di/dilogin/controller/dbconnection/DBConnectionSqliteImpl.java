@@ -8,13 +8,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import lombok.NoArgsConstructor;
 import org.bukkit.plugin.Plugin;
 
 import di.dilogin.BukkitApplication;
 
 /**
- * Database controller class.
+ * SQLite controller class.
  */
+@NoArgsConstructor
 public class DBConnectionSqliteImpl implements DBConnection {
 
 	/**
@@ -29,13 +31,6 @@ public class DBConnectionSqliteImpl implements DBConnection {
 		if (connection == null)
 			initDB();
 		return connection;
-	}
-
-	/**
-	 * Main constructor.
-	 */
-	public DBConnectionSqliteImpl() {
-		// No args required
 	}
 
 	/**

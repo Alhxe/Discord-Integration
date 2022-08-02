@@ -44,6 +44,14 @@ public class RegisterCommand implements CommandExecutor {
 	 */
 	private final String emoji = api.getInternalController().getConfigManager().getString("discord_embed_emoji");
 
+	/**
+	 * Main command body.
+	 * @param sender The sender of the command.
+	 * @param command The command.
+	 * @param label The label of the command.
+	 * @param args The arguments of the command.
+	 * @return True if the command was executed.
+	 */
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {

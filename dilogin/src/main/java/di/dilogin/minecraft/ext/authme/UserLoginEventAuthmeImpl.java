@@ -15,8 +15,16 @@ import di.dilogin.minecraft.event.UserLoginEvent;
 import di.dilogin.minecraft.event.custom.DILoginEvent;
 import fr.xephi.authme.events.LoginEvent;
 
+/**
+ * Implementation of user login event to Authme.
+ */
 public class UserLoginEventAuthmeImpl implements UserLoginEvent {
 
+	/**
+	 * Contains the main flow of login.
+	 *
+	 * @param event Main login event.
+	 */
 	@Override
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
@@ -28,6 +36,12 @@ public class UserLoginEventAuthmeImpl implements UserLoginEvent {
 		}
 	}
 
+	/**
+	 * Send login request to the user.
+	 *
+	 * @param event      Main login event.
+	 * @param playerName Player's name.
+	 */
 	@Override
 	public void initPlayerLoginRequest(PlayerJoinEvent event, String playerName) {
 		TmpCache.addLogin(playerName, null);
@@ -46,6 +60,12 @@ public class UserLoginEventAuthmeImpl implements UserLoginEvent {
 		sendLoginMessageRequest(user.getPlayerBukkit().get(), user.getPlayerDiscord().get());
 	}
 
+	/**
+	 * Send register request to the user.
+	 *
+	 * @param event      Main register event.
+	 * @param playerName Player's name.
+	 */
 	@Override
 	public void initPlayerRegisterRequest(PlayerJoinEvent event, String playerName) {
 		String code = CodeGenerator

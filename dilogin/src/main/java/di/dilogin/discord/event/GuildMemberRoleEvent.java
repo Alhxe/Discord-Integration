@@ -16,8 +16,15 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
  */
 public class GuildMemberRoleEvent extends ListenerAdapter {
 
+	/**
+	 * User manager in the database.
+	 */
 	private final DIUserDao dao = DILoginController.getDIUserDao();
 
+	/**
+	 * Main event body.
+	 * @param event It is the object that includes the event information.
+	 */
 	@Override
 	public void onGuildMemberRoleAdd(GuildMemberRoleAddEvent event) {
 		Optional<DIUser> optDIUser = dao.get(event.getUser().getIdLong());
@@ -38,6 +45,10 @@ public class GuildMemberRoleEvent extends ListenerAdapter {
 		}
 	}
 
+	/**
+	 * Main event body.
+	 * @param event It is the object that includes the event information.
+	 */
 	@Override
 	public void onGuildMemberRoleRemove(GuildMemberRoleRemoveEvent event) {
 		Optional<DIUser> optDIUser = dao.get(event.getUser().getIdLong());

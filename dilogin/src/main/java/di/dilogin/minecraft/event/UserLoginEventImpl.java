@@ -21,8 +21,15 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 
+/**
+ * Container class for user login event.
+ */
 public class UserLoginEventImpl implements UserLoginEvent {
 
+	/**
+	 * Main join player event body.
+	 * @param event Player Join Event.
+	 */
 	@Override
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
@@ -44,6 +51,11 @@ public class UserLoginEventImpl implements UserLoginEvent {
 		}
 	}
 
+	/**
+	 * Initializes the player login request.
+	 * @param event      Main login event.
+	 * @param playerName Player's name.
+	 */
 	@Override
 	public void initPlayerLoginRequest(PlayerJoinEvent event, String playerName) {
 		TmpCache.addLogin(playerName, null);
@@ -78,6 +90,11 @@ public class UserLoginEventImpl implements UserLoginEvent {
 		});
 	}
 
+	/**
+	 * Initializes the player register request.
+	 * @param event      Main register event.
+	 * @param playerName Player's name.
+	 */
 	@Override
 	public void initPlayerRegisterRequest(PlayerJoinEvent event, String playerName) {
 		String code = CodeGenerator
