@@ -59,17 +59,17 @@ public class RegisterCommand implements CommandExecutor {
 
 			if (userDao.contains(player.getName())) {
 				player.sendMessage(LangManager.getString(player, "register_already_exists"));
-				return false;
+				return true;
 			}
 
 			if (args.length == 0) {
 				player.sendMessage(LangManager.getString(player, "register_arguments"));
-				return false;
+				return true;
 			}
 
 			Optional<User> userOpt = catchRegisterUserOption(args, player);
 			if (!userOpt.isPresent())
-				return false;
+				return true;
 
 			User user = userOpt.get();
 
@@ -77,7 +77,7 @@ public class RegisterCommand implements CommandExecutor {
 					.getInt("register_max_discord_accounts")) {
 				player.sendMessage(LangManager.getString(player, "register_max_accounts").replace("%user_discord_id%",
 						arrayToString(args).replace(" ", "")));
-				return false;
+				return true;
 			}
 
 			player.sendMessage(LangManager.getString(user, player, "register_submit"));

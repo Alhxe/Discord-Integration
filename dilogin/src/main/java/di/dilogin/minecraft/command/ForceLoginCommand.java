@@ -49,15 +49,15 @@ public class ForceLoginCommand implements CommandExecutor {
 
 		if (player == null) {
 			sender.sendMessage(LangManager.getString("no_player").replace("%nick%", nick));
-			return false;
+			return true;
 		}
 		if (!userDao.contains(player.getName())) {
 			sender.sendMessage(LangManager.getString(player, "user_not_registered"));
-			return false;
+			return true;
 		}
 		if (!TmpCache.containsLogin(player.getName())) {
 			sender.sendMessage(LangManager.getString(player, "forcelogin_user_connected"));
-			return false;
+			return true;
 		}
 		editMessage(player);
 		DILoginController.loginUser(player, null);

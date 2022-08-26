@@ -48,7 +48,7 @@ public class UnregisterCommand implements CommandExecutor {
 
 		if (args.length == 0) {
 			sender.sendMessage(api.getCoreController().getLangManager().getString("no_args"));
-			return false;
+			return true;
 		}
 
 		String nick = args[0];

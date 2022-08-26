@@ -14,6 +14,14 @@ import lombok.Getter;
 public final class DILoginEvent extends Event {
 
 	/**
+	 * Default handler list.
+	 * @return the handler list.
+	 */
+	public static HandlerList getHandlerList() {
+		return HANDLERS_LIST;
+	}
+
+	/**
 	 * The handler list.
 	 */
 	private static final HandlerList HANDLERS_LIST = new HandlerList();
