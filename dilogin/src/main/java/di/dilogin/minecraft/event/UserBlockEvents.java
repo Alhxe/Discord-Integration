@@ -49,7 +49,7 @@ public class UserBlockEvents implements Listener {
 			event.setCancelled(true);
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 		if (UserBlockedCache.contains(event.getPlayer().getName()))
 			event.setCancelled(true);
