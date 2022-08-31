@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -14,6 +15,8 @@ import di.dilogin.entity.UserData;
 import di.dilogin.minecraft.controller.UserDataController;
 import di.dilogin.minecraft.event.custom.DILoginEvent;
 import di.internal.controller.file.ConfigManager;
+
+import javax.swing.text.html.Option;
 
 public class UserTeleportEvents implements Listener {
 
@@ -46,8 +49,7 @@ public class UserTeleportEvents implements Listener {
 			return;
 
 		UserDataController.saveUserData(event.getPlayer());
-		if (teleportLocation.isPresent())
-			event.getPlayer().teleport(teleportLocation.get());
+		teleportLocation.ifPresent(location -> event.getPlayer().teleport(location));
 	}
 
 	/**
@@ -59,7 +61,13 @@ public class UserTeleportEvents implements Listener {
 		if (!isTeleportEnabled)
 			return;
 
-		String uuid = event.getPlayer().getUniqueId().toString();
+		Optional<Player> playerOptional = event.getUser().getPlayerBukkit();
+		if(!playerOptional.isPresent())
+			return;
+
+		Player player = playerOptional.get();
+
+		String uuid = player.getUniqueId().toString();
 		if (!UserDataController.isFilePresent(uuid))
 			return;
 
@@ -69,7 +77,7 @@ public class UserTeleportEvents implements Listener {
 
 		UserData userData = optUserData.get();
 		Location location = userData.asLocation();
-		event.getPlayer().teleport(location);
+		player.teleport(location);
 		UserDataController.removeFile(uuid);
 	}
 
@@ -80,12 +88,12 @@ public class UserTeleportEvents implements Listener {
 	private Optional<Location> getTeleportLocation() {
 		if (isTeleportEnabled) {
 			ConfigManager confManager = api.getInternalController().getConfigManager();
-			Double x = Double.parseDouble(confManager.getString("teleport_x"));
-			Double y = Double.parseDouble(confManager.getString("teleport_y"));
-			Double z = Double.parseDouble(confManager.getString("teleport_z"));
+			double x = Double.parseDouble(confManager.getString("teleport_x"));
+			double y = Double.parseDouble(confManager.getString("teleport_y"));
+			double z = Double.parseDouble(confManager.getString("teleport_z"));
 			String worldName = confManager.getString("teleport_world");
-			Float yaw = Float.parseFloat(confManager.getString("teleport_yaw"));
-			Float pitch = Float.parseFloat(confManager.getString("teleport_pitch"));
+			float yaw = Float.parseFloat(confManager.getString("teleport_yaw"));
+			float pitch = Float.parseFloat(confManager.getString("teleport_pitch"));
 
 			Optional<World> world = Optional
 					.ofNullable(api.getInternalController().getPlugin().getServer().getWorld(worldName));

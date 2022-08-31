@@ -64,9 +64,7 @@ public class Utils {
 	public static Optional<User> getDiscordUserByUsernameAndTag(Guild guild, String string) {
 		String name = string.substring(0, string.lastIndexOf('#'));
 		String tag = string.substring(string.lastIndexOf('#') + 1, string.length());
-		System.out.println("name: "+name + " - tag: "+tag);
 		Optional<Member> cachedUserOpt = Optional.ofNullable(guild.getMemberByTag(name, tag));
-		System.out.println("encontrado: "+cachedUserOpt);
 		if (cachedUserOpt.isPresent())
 			return Optional.of(cachedUserOpt.get().getUser());
 

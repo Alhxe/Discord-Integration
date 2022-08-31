@@ -85,9 +85,6 @@ public class UserLoginEventNLoginImpl implements UserLoginEvent {
         if (!userDao.contains(playerName)) {
             initPlayerNLoginRegisterRequest(event, playerName);
         }
-
-        Bukkit.getScheduler().runTask(api.getInternalController().getPlugin(),
-                () -> Bukkit.getPluginManager().callEvent(new DILoginEvent(event.getPlayer())));
     }
 
     /**

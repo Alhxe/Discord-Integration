@@ -1,4 +1,4 @@
-package di.dilogin.discord.event;
+package di.dilogin.minecraft.ext.luckperms;
 
 import java.util.Optional;
 

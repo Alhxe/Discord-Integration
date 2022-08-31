@@ -55,15 +55,14 @@ public class UserReactionMessageEvent extends ListenerAdapter {
 		}
 
 		Optional<TmpMessage> loginOpt = TmpCache.getLoginMessage(event.getMessageIdLong());
-		if (loginOpt.isPresent())
-			loginUser(event, loginOpt.get());
+		loginOpt.ifPresent(tmpMessage -> loginUser(event, tmpMessage));
 	}
 
 	/**
 	 * In case of being present in a registration process, this is carried out.
 	 * 
 	 * @param event     Reaction event.
-	 * @param tmpMssage Process message.
+	 * @param tmpMessage Process message.
 	 */
 	private void registerUser(MessageReactionAddEvent event, TmpMessage tmpMessage) {
 		Message message = tmpMessage.getMessage();
@@ -100,7 +99,7 @@ public class UserReactionMessageEvent extends ListenerAdapter {
 	 * In case of being present in a login process, this is carried out.
 	 * 
 	 * @param event     Reaction event.
-	 * @param tmpMssage Process message.
+	 * @param tmpMessage Process message.
 	 */
 	private void loginUser(MessageReactionAddEvent event, TmpMessage tmpMessage) {
 		Message message = tmpMessage.getMessage();

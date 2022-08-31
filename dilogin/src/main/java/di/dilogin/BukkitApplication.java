@@ -2,6 +2,7 @@ package di.dilogin;
 
 import java.util.logging.Level;
 
+import di.dilogin.minecraft.ext.luckperms.LuckPermsLoginEvent;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,7 +11,7 @@ import di.dicore.DIApi;
 import di.dilogin.controller.DBController;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.discord.command.DiscordRegisterCommand;
-import di.dilogin.discord.event.GuildMemberRoleEvent;
+import di.dilogin.minecraft.ext.luckperms.GuildMemberRoleEvent;
 import di.dilogin.discord.event.UserReactionMessageEvent;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.command.ForceLoginCommand;
@@ -118,8 +119,7 @@ public class BukkitApplication extends JavaPlugin {
 	 */
 	private void initEvents() {
 		if (DILoginController.isLuckPermsEnabled()) {
-			getPlugin().getLogger().info("LuckPerms detected, starting plugin compatibility.");
-			new LuckPermsEvents();
+			initLuckPermsEvents();
 		}
 		if (DILoginController.isAuthmeEnabled()) {
 			initAuthmeEvents();
@@ -163,6 +163,12 @@ public class BukkitApplication extends JavaPlugin {
 			getLogger().severe("You are using the old version of nLogin.");
 			getLogger().severe("Please upgrade to version 10.");
 		}
+	}
+
+	private void initLuckPermsEvents(){
+		getPlugin().getLogger().info("LuckPerms detected, starting plugin compatibility.");
+		new LuckPermsEvents();
+		getServer().getPluginManager().registerEvents(new LuckPermsLoginEvent(), plugin);
 	}
 
 	/**

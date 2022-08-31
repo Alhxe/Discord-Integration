@@ -35,7 +35,7 @@ public class DILoginController {
 	/**
 	 * Starts the implementation of the class that gets data from the users.
 	 */
-	private static DIUserDao userDao = new DIUserDaoSqlImpl();
+	private static final DIUserDao userDao = new DIUserDaoSqlImpl();
 
 	/**
 	 *
@@ -140,17 +140,18 @@ public class DILoginController {
 		if (user != null && isSyncronizeOptionEnabled()) {
 				syncUserName(player, user);
 		}
+		DIUser DIUser = new DIUser(Optional.of(player), Optional.of(user));
 
 		if (isAuthmeEnabled()) {
 			AuthmeHook.login(player);
 		} else if (DILoginController.isNLoginEnabled()) {
 			nLoginAPI.getApi().forceLogin(player.getName());
 		}else {
-			Bukkit.getScheduler().runTask(BukkitApplication.getPlugin(),
-					() -> Bukkit.getPluginManager().callEvent(new DILoginEvent(player)));
 			UserBlockedCache.remove(player.getName());
 			player.sendMessage(LangManager.getString("login_success"));
 		}
+		Bukkit.getScheduler().runTask(BukkitApplication.getPlugin(),
+				() -> Bukkit.getPluginManager().callEvent(new DILoginEvent(DIUser)));
 		TmpCache.removeLogin(player.getName());
 	}
 

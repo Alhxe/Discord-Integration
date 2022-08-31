@@ -85,9 +85,6 @@ public class UserLoginEventAuthmeImpl implements UserLoginEvent {
 		if (!userDao.contains(playerName)) {
 			initPlayerAuthmeRegisterRequest(event, playerName);
 		}
-
-		Bukkit.getScheduler().runTask(api.getInternalController().getPlugin(),
-				() -> Bukkit.getPluginManager().callEvent(new DILoginEvent(event.getPlayer())));
 	}
 
 	/**

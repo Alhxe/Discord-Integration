@@ -1,15 +1,14 @@
 package di.dilogin.minecraft.ext.luckperms;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import di.dilogin.minecraft.util.Util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import net.dv8tion.jda.api.entities.Role;
 import org.bukkit.entity.Player;
 
 import di.dicore.DIApi;
@@ -60,10 +59,6 @@ public class LuckPermsController {
 	 * @return true if user is in group role, false otherwise.
 	 */
 	public static boolean isUserInGroup(Player player, String group) {
-		List<User> a = getUsersInGroup(group).join();
-		for (User u : a) {
-			diapi.getCoreController().getPlugin().getLogger().info(u.getFriendlyName());
-		}
 		return getUsersInGroup(group).join().stream().anyMatch(u->u.getFriendlyName().equalsIgnoreCase(player.getName()));
 	}
 
@@ -74,6 +69,34 @@ public class LuckPermsController {
 	 */
 	public static User getLuckPermsUser(Player player) {
 		return api.getPlayerAdapter(Player.class).getUser(player);
+	}
+
+	/**
+	 * Syncronize the roles of the player.
+	 * @param player minecraft player to syncronize.
+	 */
+	public static void syncUserRole(Player player){
+		rolMap.forEach(map -> {
+			Optional<Entry<String, String>> optEntry = map.entrySet().stream().findFirst();
+			if (optEntry.isPresent()) {
+				Entry<String, String> entry = optEntry.get();
+				String role = entry.getKey();
+				String group = entry.getValue();
+
+				boolean isUserInGroup = isUserInGroup(player, group);
+				boolean isUserInRole = Util.userHasRole(role, player.getName());
+
+				Role discordRole = diapi.getCoreController().getGuild().getRoleById(role);
+				if (isUserInGroup && !isUserInRole){
+					removeGroup(player, group, "Removed " + discordRole + " role in discord.");
+				}
+
+				if (!isUserInGroup && isUserInRole){
+					addGroup(player, group, "Get " + discordRole + " role in discord.");
+				}
+			}
+		});
+
 	}
 
 	/**
@@ -111,7 +134,7 @@ public class LuckPermsController {
 	 */
 	public static List<String> getMinecraftRoleFromDiscordRole(String role) {
 		List<String> result = new ArrayList<>();
-		rolMap.stream().filter(r -> r.containsKey(role)).forEach(r -> r.values().stream().forEach(result::add));
+		rolMap.stream().filter(r -> r.containsKey(role)).forEach(r -> result.addAll(r.values()));
 		return result;
 	}
 
@@ -122,7 +145,7 @@ public class LuckPermsController {
 	 */
 	public static List<String> getDiscordRoleFromMinecraftRole(String role) {
 		List<String> result = new ArrayList<>();
-		rolMap.stream().filter(r -> r.containsValue(role)).forEach(r -> r.keySet().forEach(result::add));
+		rolMap.stream().filter(r -> r.containsValue(role)).forEach(r -> result.addAll(r.keySet()));
 		return result;
 	}
 
