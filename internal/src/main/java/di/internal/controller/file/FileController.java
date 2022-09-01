@@ -19,12 +19,14 @@ public interface FileController {
 		File outDir = new File(folder, resourcePath.substring(0, (lastIndex >= 0) ? lastIndex : 0));
 		if (!outDir.exists())
 			outDir.mkdirs();
-		try (OutputStream out = new FileOutputStream(outFile)) {
+		try {
 			if (!outFile.exists() || replace) {
+				OutputStream out = new FileOutputStream(outFile);
 				byte[] buf = new byte[1024];
 				int len;
 				while ((len = in.read(buf)) > 0)
 					out.write(buf, 0, len);
+				out.close();
 				in.close();
 			} else {
 				plugin.getLogger().log(Level.WARNING, "Could not save " + outFile.getName() + " to " + outFile
