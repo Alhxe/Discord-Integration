@@ -16,38 +16,32 @@ public class YamlManager implements FileController {
 	/**
 	 * Name of the file to be controlled.
 	 */
-	private String fileName;
+	private final String fileName;
 
 	/**
 	 * File configuration.
 	 */
-	private File customConfigFile;
+	private final File customConfigFile;
 
 	/**
 	 * Map of the data obtained from the yaml.
 	 */
-	private Map<String, Object> yamlData;
-
-	/**
-	 * Plugin controller.
-	 */
-	PluginController controller;
+	private final Map<String, Object> yamlData;
 
 	/**
 	 * Main constructor.
 	 * 
-	 * @param controller  Plugin driver
-	 * @param filename    The name of the file
-	 * @param dataFolder  The folder where it is located
+	 * @param controller  Plugin controller.
+	 * @param filename    The name of the file.
+	 * @param dataFolder  The folder where it is located.
 	 * @param classLoader Class loader.
 	 */
 	public YamlManager(PluginController controller, String filename, File dataFolder, ClassLoader classLoader) {
 		this.fileName = filename;
-		this.controller = controller;
 		this.customConfigFile = new File(dataFolder, this.fileName);
 		if (!this.customConfigFile.exists()) {
 			this.customConfigFile.getParentFile().mkdirs();
-			saveResource(controller.getPlugin(), dataFolder, filename, false);
+			saveResource(controller, dataFolder, filename, false);
 		}
 
 		this.yamlData = getYamlContent(classLoader);
@@ -55,7 +49,7 @@ public class YamlManager implements FileController {
 	}
 
 	/**
-	 * @param path The value you want to obtain
+	 * @param path The value you want to obtain.
 	 * @return The content of the sought value.
 	 */
 	public String getString(String path) {
@@ -74,13 +68,12 @@ public class YamlManager implements FileController {
 	 * @param classLoader Class Loader.
 	 * @return Custom file completed.
 	 */
-	@SuppressWarnings("unchecked")
 	private Map<String, Object> getYamlContent(ClassLoader classLoader) {
 		try {
 			InputStream file = Utils.getFileFromResourceAsStream(classLoader, fileName);
-			Map<String, Object> custom = (Map<String, Object>) new Yaml()
+			Map<String, Object> custom = new Yaml()
 					.load(new FileInputStream(this.customConfigFile));
-			Map<String, Object> original = (Map<String, Object>) new Yaml().load(file);
+			Map<String, Object> original = new Yaml().load(file);
 			if (original==null)
 				return null;
 			

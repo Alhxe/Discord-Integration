@@ -1,4 +1,5 @@
 name: DICore
 main: di.dicore.BukkitApplication
 version: 4.0.0
+author: Alhxe
 loadbefore: [DiscordSRV]

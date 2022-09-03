@@ -1,5 +1,8 @@
-package di.dicore;
+package di.dicore.api.impl;
 
+import di.dicore.BukkitApplication;
+import di.dicore.api.DIApi;
+import di.internal.controller.impl.InternalControllerBukkitImpl;
 import org.bukkit.plugin.Plugin;
 
 import di.internal.controller.CoreController;
@@ -12,17 +15,17 @@ import lombok.Getter;
  * Class used to communicate between the rest of the plugins.
  */
 @Getter
-public class DIApi {
+public class DIApiBukkitImpl implements DIApi {
 
 	/**
 	 * Core controller.
 	 */
-	private CoreController coreController;
+	private final CoreController coreController;
 
 	/**
 	 * Contains the plugin driver.
 	 */
-	private InternalController internalController;
+	private final InternalController internalController;
 
 	/**
 	 * Main Discord Integration Api. When this class is instantiated, the internal
@@ -36,20 +39,22 @@ public class DIApi {
 	 * @throws NoApiException In case the internal controller of the core is not
 	 *                        instantiated, it will throw an error.
 	 */
-	public DIApi(Plugin plugin, ClassLoader classLoader, boolean configFile, boolean langFile) throws NoApiException {
+	public DIApiBukkitImpl(Plugin plugin, ClassLoader classLoader, boolean configFile, boolean langFile) throws NoApiException {
 		if (BukkitApplication.getInternalController() == null) {
-			throw new NoApiException(plugin);
+			throw new NoApiException(plugin.getLogger());
 		}
 		this.coreController = BukkitApplication.getInternalController();
-		this.internalController = new InternalController(plugin, coreController, classLoader, configFile, langFile);
-		coreController.getPlugin().getLogger().info("DICore has successfully connected with " + plugin.getName());
+		this.internalController = new InternalControllerBukkitImpl(plugin, coreController, classLoader, configFile, langFile);
+		plugin.getLogger().info("DICore has successfully connected with " + plugin.getName());
 	}
+
 
 	/**
 	 * Add a new event as listener.
 	 * 
 	 * @param listener Discord Listener.
 	 */
+	@Override
 	public void registerDiscordEvent(Object listener) {
 		this.coreController.getDiscordApi().addEventListener(listener);
 	}

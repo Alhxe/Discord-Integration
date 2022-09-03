@@ -1,31 +1,23 @@
 package di.dicore;
 
-import di.dicore.event.BotStatusBukkitEvent;
-import di.internal.controller.impl.CoreControllerSpigotImpl;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
-
+import di.dicore.event.BotStatusBungeeEvent;
 import di.internal.controller.CoreController;
+import di.internal.controller.impl.CoreControllerBungeeImpl;
+import net.md_5.bungee.api.plugin.Plugin;
 
-/**
- * Main class of the plugin.
- */
-public class BukkitApplication extends JavaPlugin {
+public class BungeeApplication extends Plugin {
 
     /**
      * The internal controller of the core plugin.
      */
     private static CoreController internalController;
 
-    /**
-     * Runs when the plugin is being powered on.
-     */
     @Override
     public void onEnable() {
         getLogger().info("Plugin started");
-        Plugin plugin = getPlugin(getClass());
-        internalController = new CoreControllerSpigotImpl(plugin, this.getClassLoader());
-        BotStatusBukkitEvent.init(plugin);
+        Plugin plugin = this.getProxy().getPluginManager().getPlugin("DICore");
+        internalController = new CoreControllerBungeeImpl(plugin, this.getClass().getClassLoader());
+        BotStatusBungeeEvent.init(plugin);
     }
 
     /**
@@ -44,5 +36,4 @@ public class BukkitApplication extends JavaPlugin {
     public static CoreController getInternalController() {
         return internalController;
     }
-
 }

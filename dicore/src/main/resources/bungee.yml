@@ -1,0 +1,4 @@
+name: DICore
+main: di.dicore.BungeeApplication
+version: 4.0.0
+author: Alhxe

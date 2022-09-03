@@ -1,5 +1,8 @@
 package di.internal.controller.file;
 
+import di.internal.controller.PluginController;
+import org.yaml.snakeyaml.Yaml;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,10 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 
-import org.yaml.snakeyaml.Yaml;
-
-import di.internal.controller.PluginController;
-
 /**
  * Configuration file driver.
  */
@@ -19,23 +18,20 @@ public class ConfigManager implements FileController {
 
 	private static final String FILENAME = "config.yml";
 
-	private File customConfigFile;
+	private final PluginController controller;
 
 	private Map<String, Object> yamlData;
 
-	private PluginController pluginController;
-
-	@SuppressWarnings("unchecked")
 	public ConfigManager(PluginController controller, File dataFolder) {
-		this.customConfigFile = new File(dataFolder, FILENAME);
-		this.pluginController = controller;
-		if (!this.customConfigFile.exists()) {
-			this.customConfigFile.getParentFile().mkdirs();
-			saveResource(controller.getPlugin(), dataFolder, FILENAME, false);
+		File customConfigFile = new File(dataFolder, FILENAME);
+		this.controller = controller;
+		if (!customConfigFile.exists()) {
+			customConfigFile.getParentFile().mkdirs();
+			saveResource(controller, dataFolder, FILENAME, false);
 		}
 		Yaml yaml = new Yaml();
 		try {
-			this.yamlData = (Map<String, Object>) yaml.load(new FileInputStream(this.customConfigFile));
+			this.yamlData = yaml.load(new FileInputStream(customConfigFile));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -60,7 +56,7 @@ public class ConfigManager implements FileController {
 
 	public Optional<Long> getOptionalLong(String path) {
 		try {
-			return Optional.ofNullable(Long.parseLong(get(path)));
+			return Optional.of(Long.parseLong(get(path)));
 		} catch (NumberFormatException e) {
 			return Optional.empty();
 		}
@@ -82,9 +78,9 @@ public class ConfigManager implements FileController {
 		} catch (Exception e) {
 			String message = "Failed to find in config file: " + path;
 			String message2 = "Regenerate the file to correct the problem or include the above mentioned line in the configuration file.";
-			pluginController.getPlugin().getLogger().log(Level.SEVERE, message);
-			pluginController.getPlugin().getLogger().log(Level.SEVERE, message2);
-			pluginController.getPlugin().getServer().getPluginManager().disablePlugin(pluginController.getPlugin());
+			controller.getLogger().log(Level.SEVERE, message);
+			controller.getLogger().log(Level.SEVERE, message2);
+			controller.disablePlugin();
 		}
 		return "error";
 	}

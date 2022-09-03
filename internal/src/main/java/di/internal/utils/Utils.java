@@ -8,9 +8,6 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -91,10 +88,10 @@ public class Utils {
 	 * @param plugin     Bukkit plugin.
 	 * @param playerName Bukkit player's name.
 	 * @return Possible player based on their name.
+	 *public static Optional<Player> getUserPlayerByName(Plugin plugin, String playerName) {
+	 * 		return Optional.ofNullable(plugin.getServer().getPlayer(playerName));
+	 *        }
 	 */
-	public static Optional<Player> getUserPlayerByName(Plugin plugin, String playerName) {
-		return Optional.ofNullable(plugin.getServer().getPlayer(playerName));
-	}
 
 	/**
 	 * Delete a message after a certain time.
