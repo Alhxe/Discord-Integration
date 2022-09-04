@@ -4,11 +4,10 @@ import di.dicore.api.DIApi;
 import di.dicore.api.impl.DIApiBungeeImpl;
 import di.dilogin.controller.DBController;
 import di.dilogin.controller.MainController;
-import di.dilogin.discord.command.DiscordRegisterCommand;
-import di.dilogin.discord.event.UserReactionMessageEvent;
-import di.dilogin.minecraft.bukkit.ext.luckperms.GuildMemberRoleEvent;
+import di.dilogin.controller.impl.DILoginControllerBungee;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.internal.exception.NoApiException;
+import jdk.tools.jmod.Main;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.util.logging.Level;
@@ -30,15 +29,20 @@ public class BungeeApplication extends Plugin {
 
 	@Override
 	public void onEnable() {
-		getLogger().info("Plugin started");
-		plugin = getPlugin();
+		plugin = this;
 
 		connectWithCoreApi();
+		MainController.setDIApi(api);
+		MainController.setDILoginController(new DILoginControllerBungee());
+		MainController.setBukkit(true);
+		DBController.getConnect();
+
 		initCommands();
 		initEvents();
 		initDiscordEvents();
 		initDiscordCommands();
-		DBController.getConnect();
+
+		getLogger().info("Plugin started");
 	}
 
 	@Override
@@ -105,17 +109,14 @@ public class BungeeApplication extends Plugin {
 	 * Records Discord events.
 	 */
 	private void initDiscordEvents() {
-		api.registerDiscordEvent(new UserReactionMessageEvent());
-		if (MainController.getDILoginController().isSyncroRolEnabled()) {
-			api.registerDiscordEvent(new GuildMemberRoleEvent());
-		}
+
 	}
 
 	/**
 	 * Init discord commands.
 	 */
 	private void initDiscordCommands() {
-		api.registerDiscordCommand(new DiscordRegisterCommand());
+
 	}
 
 }

@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 import di.dicore.api.DIApi;
-import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DBController;
+import di.dilogin.controller.MainController;
 import di.dilogin.entity.DIUser;
 import di.internal.utils.Utils;
 import net.dv8tion.jda.api.entities.User;
@@ -26,7 +26,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 	/**
 	 * Core api.
 	 */
-	private final DIApi api = BukkitApplication.getDIApi();
+	private final DIApi api = MainController.getDIApi();
 
 	@Override
 	public Optional<DIUser> get(String playerName) {
@@ -41,7 +41,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 					if (userOpt.isPresent()) {
 						return Optional.of(new DIUser(playerName, userOpt));
 					} else {
-						BukkitApplication.getPlugin().getLogger().warning("Unable to get user named " + playerName);
+						api.getInternalController().getLogger().warning("Unable to get user named " + playerName);
 					}
 				}
 			}
@@ -60,7 +60,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 				ps.setLong(2, user.getPlayerDiscord().get().getIdLong());
 				ps.execute();
 			} else {
-				BukkitApplication.getPlugin().getLogger().warning("Unable to add user " + user);
+				api.getInternalController().getLogger().warning("Unable to add user " + user);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -75,7 +75,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 				ps.setLong(1, user.getPlayerDiscord().get().getIdLong());
 				ps.execute();
 			} else {
-				BukkitApplication.getPlugin().getLogger().warning("Unable to remove user " + user);
+				api.getInternalController().getLogger().warning("Unable to remove user " + user);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -152,7 +152,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 					if (userOpt.isPresent()) {
 						return Optional.of(new DIUser(playerName, userOpt));
 					} else {
-						BukkitApplication.getPlugin().getLogger()
+						api.getInternalController().getLogger()
 								.warning("Unable to get discord user with id " + discordId);
 					}
 				}

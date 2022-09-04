@@ -9,11 +9,12 @@ import di.internal.controller.PluginController;
 
 public interface FileController {
 
-	public default void saveResource(PluginController controller, File folder, String resourcePath, boolean replace) {
+	public default void saveResource(PluginController controller, File folder, String resourcePath, ClassLoader classLoader, boolean replace) {
 		if (resourcePath == null || resourcePath.equals(""))
 			throw new IllegalArgumentException("ResourcePath cannot be null or empty");
+
 		resourcePath = resourcePath.replace('\\', '/');
-		InputStream in = getResource(controller, resourcePath);
+		InputStream in = getResource(classLoader, resourcePath);
 		File outFile = new File(folder, resourcePath);
 		int lastIndex = resourcePath.lastIndexOf('/');
 		File outDir = new File(folder, resourcePath.substring(0, (lastIndex >= 0) ? lastIndex : 0));
@@ -37,11 +38,11 @@ public interface FileController {
 
 	}
 
-	public default InputStream getResource(PluginController controller, String filename) {
+	public default InputStream getResource(ClassLoader classLoader, String filename) {
 		if (filename == null)
 			throw new IllegalArgumentException("Filename cannot be null");
 		try {
-			URL url = controller.getClass().getClassLoader().getResource(filename);
+			URL url = classLoader.getResource(filename);
 			if (url == null)
 				return null;
 			URLConnection connection = url.openConnection();

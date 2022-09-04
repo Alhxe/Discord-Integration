@@ -50,18 +50,20 @@ public class BukkitApplication extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info("Plugin started");
         plugin = getPlugin(getClass());
 
         connectWithCoreApi();
-        DBController.getConnect();
+        MainController.setDIApi(api);
         MainController.setDILoginController(new DILoginControllerBukkit());
         MainController.setBukkit(true);
+        DBController.getConnect();
 
         initCommands();
         initEvents();
         initDiscordEvents();
         initDiscordCommands();
+
+        getLogger().info("Plugin started");
     }
 
     @Override

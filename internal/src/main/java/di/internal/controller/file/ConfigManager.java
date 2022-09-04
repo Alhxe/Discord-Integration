@@ -22,12 +22,12 @@ public class ConfigManager implements FileController {
 
 	private Map<String, Object> yamlData;
 
-	public ConfigManager(PluginController controller, File dataFolder) {
+	public ConfigManager(PluginController controller, File dataFolder, ClassLoader classLoader) {
 		File customConfigFile = new File(dataFolder, FILENAME);
 		this.controller = controller;
 		if (!customConfigFile.exists()) {
 			customConfigFile.getParentFile().mkdirs();
-			saveResource(controller, dataFolder, FILENAME, false);
+			saveResource(controller, dataFolder, FILENAME, classLoader, false);
 		}
 		Yaml yaml = new Yaml();
 		try {

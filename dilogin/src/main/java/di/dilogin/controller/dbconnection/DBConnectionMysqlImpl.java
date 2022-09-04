@@ -6,10 +6,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import di.dilogin.controller.MainController;
 import lombok.NoArgsConstructor;
-import org.bukkit.plugin.Plugin;
 
-import di.dilogin.BukkitApplication;
 import di.internal.controller.file.ConfigManager;
 
 /**
@@ -37,8 +36,8 @@ public class DBConnectionMysqlImpl implements DBConnection {
      */
     private void initDB() {
         try {
-            BukkitApplication.getPlugin().getLogger().info("Database connection type: MYSQL");
-            ConfigManager cm = BukkitApplication.getDIApi().getInternalController().getConfigManager();
+            MainController.getDIApi().getInternalController().getLogger().info("Database connection type: MYSQL");
+            ConfigManager cm = MainController.getDIApi().getInternalController().getConfigManager();
             String host = cm.getString("database_host");
             String port = cm.getString("database_port");
             String user = cm.getString("database_username");
@@ -50,8 +49,7 @@ public class DBConnectionMysqlImpl implements DBConnection {
             initTables();
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-            Plugin plugin = BukkitApplication.getPlugin();
-            plugin.getPluginLoader().disablePlugin(plugin);
+            MainController.getDIApi().getInternalController().disablePlugin();
         }
 
     }

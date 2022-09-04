@@ -1,5 +1,6 @@
 package di.dilogin.controller;
 
+import di.dicore.api.DIApi;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,11 @@ public class MainController {
      * Main DILoginController.
      */
     private static DILoginController controller;
+
+    /**
+     * Main DIApi.
+     */
+    private static DIApi api;
 
     /**
      * Information about whether the plugin is running in Bukkit.
@@ -32,10 +38,24 @@ public class MainController {
     }
 
     /**
-     * @param controller Main DILoginController.
+     * @param dilogincontroller Main DILoginController.
      */
-    public static void setDILoginController(DILoginController controller) {
-        MainController.controller = controller;
+    public static void setDILoginController(DILoginController dilogincontroller) {
+        MainController.controller = dilogincontroller;
+    }
+
+    /**
+     * @return Main DIApi.
+     */
+    public static DIApi getDIApi() {
+        return api;
+    }
+
+    /**
+     * @param diapi Main DIApi.
+     */
+    public static void setDIApi(DIApi diapi) {
+        MainController.api = diapi;
     }
 
     /**
@@ -46,10 +66,10 @@ public class MainController {
     }
 
     /**
-     * @param isBukkit Information about whether the plugin is running in Bukkit.
+     * @param b Information about whether the plugin is running in Bukkit.
      */
-    public static void setBukkit(boolean isBukkit) {
-        MainController.isBukkit = isBukkit;
+    public static void setBukkit(boolean b) {
+        MainController.isBukkit = b;
     }
 
     /**
@@ -60,9 +80,9 @@ public class MainController {
     }
 
     /**
-     * @param isBungee Information about whether the plugin is running in BungeeCord.
+     * @param b Information about whether the plugin is running in BungeeCord.
      */
-    public static void setBungee(boolean isBungee) {
-        MainController.isBungee = isBungee;
+    public static void setBungee(boolean b) {
+        MainController.isBungee = b;
     }
 }

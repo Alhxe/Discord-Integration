@@ -55,7 +55,7 @@ public class InternalControllerBukkitImpl implements PluginController, InternalC
         if (configFile && langFile)
             this.dataFolder = getInternalPluginDataFolder(coreController);
         if (configFile)
-            this.configManager = new ConfigManager(this, dataFolder);
+            this.configManager = new ConfigManager(this, dataFolder, classLoader);
         if (langFile)
             this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader);
     }

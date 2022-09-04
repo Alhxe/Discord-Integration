@@ -41,11 +41,10 @@ public class YamlManager implements FileController {
 		this.customConfigFile = new File(dataFolder, this.fileName);
 		if (!this.customConfigFile.exists()) {
 			this.customConfigFile.getParentFile().mkdirs();
-			saveResource(controller, dataFolder, filename, false);
+			saveResource(controller, dataFolder, filename, classLoader, false);
 		}
 
 		this.yamlData = getYamlContent(classLoader);
-
 	}
 
 	/**

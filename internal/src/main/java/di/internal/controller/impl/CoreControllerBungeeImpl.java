@@ -48,7 +48,7 @@ public class CoreControllerBungeeImpl implements PluginController, CoreControlle
     public CoreControllerBungeeImpl(Plugin plugin, ClassLoader classLoader) {
         this.plugin = plugin;
         this.dataFolder = plugin.getDataFolder();
-        this.configManager = new ConfigManager(this, plugin.getDataFolder());
+        this.configManager = new ConfigManager(this, plugin.getDataFolder(), classLoader);
         this.langManager = new YamlManager(this, "lang.yml", plugin.getDataFolder(), classLoader);
         this.bot = initBot();
     }
