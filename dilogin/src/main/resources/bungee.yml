@@ -2,5 +2,5 @@ name: DILogin
 main: di.dilogin.BungeeApplication
 version: 4.0.0
 author: Alhxe
-depend: [DICore]
-softdepend: [AuthMe, Multiverse-Core, LuckPerms, nLogin]
+depends: [DICore]
+softdepends: [AuthMe, Multiverse-Core, LuckPerms, nLogin]
