@@ -49,7 +49,7 @@ public class ForceLoginCommand implements CommandExecutor {
 
 		if (player == null) {
 			sender.sendMessage(LangManager.getString("no_player").replace("%nick%", nick));
-			return false;
+			return true;
 		}
 		if (!userDao.contains(player.getName())) {
 			sender.sendMessage(LangManager.getString(player.getName(), "user_not_registered"));

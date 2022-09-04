@@ -12,7 +12,6 @@ import net.luckperms.api.LuckPerms;
 import net.luckperms.api.event.EventBus;
 import net.luckperms.api.event.node.NodeAddEvent;
 import net.luckperms.api.event.node.NodeClearEvent;
-import net.luckperms.api.event.node.NodeMutateEvent;
 import net.luckperms.api.event.node.NodeRemoveEvent;
 import net.luckperms.api.node.Node;
 
@@ -38,16 +37,7 @@ public class LuckPermsEvents {
 			eventBus.subscribe(this.plugin, NodeAddEvent.class, this::addRole);
 			eventBus.subscribe(this.plugin, NodeClearEvent.class, this::clearRoles);
 			eventBus.subscribe(this.plugin, NodeRemoveEvent.class, this::removeRole);
-			eventBus.subscribe(this.plugin, NodeMutateEvent.class, this::info);
 		}
-	}
-
-	/**
-	 * Info about node mutation.
-	 * @param event event to handle.
-	 */
-	private void info(NodeMutateEvent event) {
-		plugin.getLogger().info("NodeMutateEvent: " + event.getEventType());
 	}
 
 	/**

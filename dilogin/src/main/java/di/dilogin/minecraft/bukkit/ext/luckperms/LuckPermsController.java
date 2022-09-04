@@ -1,15 +1,14 @@
 package di.dilogin.minecraft.bukkit.ext.luckperms;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import di.dilogin.minecraft.util.Util;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import net.dv8tion.jda.api.entities.Role;
 import org.bukkit.entity.Player;
 
 import di.dicore.api.DIApi;
@@ -74,6 +73,34 @@ public class LuckPermsController {
 	 */
 	public static User getLuckPermsUser(String userName) {
 		return api.getUserManager().getUser(userName);
+	}
+
+	/**
+	 * Syncronize the roles of the player.
+	 * @param player minecraft player to syncronize.
+	 */
+	public static void syncUserRole(Player player){
+		rolMap.forEach(map -> {
+			Optional<Entry<String, String>> optEntry = map.entrySet().stream().findFirst();
+			if (optEntry.isPresent()) {
+				Entry<String, String> entry = optEntry.get();
+				String role = entry.getKey();
+				String group = entry.getValue();
+
+				boolean isUserInGroup = isUserInGroup(player, group);
+				boolean isUserInRole = Util.userHasRole(role, player.getName());
+
+				Role discordRole = diapi.getCoreController().getGuild().getRoleById(role);
+				if (isUserInGroup && !isUserInRole){
+					removeGroup(player, group, "Removed " + discordRole + " role in discord.");
+				}
+
+				if (!isUserInGroup && isUserInRole){
+					addGroup(player, group, "Get " + discordRole + " role in discord.");
+				}
+			}
+		});
+
 	}
 
 	/**

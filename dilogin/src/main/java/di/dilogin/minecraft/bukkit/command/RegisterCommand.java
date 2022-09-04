@@ -69,7 +69,7 @@ public class RegisterCommand implements CommandExecutor {
 
 			Optional<User> userOpt = catchRegisterUserOption(args, player);
 			if (!userOpt.isPresent())
-				return false;
+				return true;
 
 			User user = userOpt.get();
 
@@ -77,7 +77,7 @@ public class RegisterCommand implements CommandExecutor {
 					.getInt("register_max_discord_accounts")) {
 				player.sendMessage(LangManager.getString(player.getName(), "register_max_accounts").replace("%user_discord_id%",
 						arrayToString(args).replace(" ", "")));
-				return false;
+				return true;
 			}
 
 			player.sendMessage(LangManager.getString(user, player.getName(), "register_submit"));

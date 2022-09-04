@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import di.dicore.api.impl.DIApiBukkitImpl;
 import di.dilogin.controller.MainController;
 import di.dilogin.controller.impl.DILoginControllerBukkit;
+
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,7 +15,7 @@ import di.dicore.api.DIApi;
 import di.dilogin.controller.DBController;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.discord.command.DiscordRegisterCommand;
-import di.dilogin.discord.event.GuildMemberRoleEvent;
+import di.dilogin.minecraft.ext.luckperms.GuildMemberRoleEvent;
 import di.dilogin.discord.event.UserReactionMessageEvent;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.bukkit.command.ForceLoginCommand;
@@ -103,6 +104,7 @@ public class BukkitApplication extends JavaPlugin {
         Objects.requireNonNull(getCommand(command)).setPermissionMessage(api.getCoreController().getLangManager().getString("no_permission"));
     }
 
+
     /**
      * Connect with DIApi.
      */
@@ -119,6 +121,7 @@ public class BukkitApplication extends JavaPlugin {
             plugin.getPluginLoader().disablePlugin(plugin);
         }
     }
+
 
     /**
      * Init Bukkit events.
@@ -171,6 +174,12 @@ public class BukkitApplication extends JavaPlugin {
             getLogger().severe("Please upgrade to version 10.");
         }
     }
+
+	private void initLuckPermsEvents(){
+		getPlugin().getLogger().info("LuckPerms detected, starting plugin compatibility.");
+		new LuckPermsEvents();
+		getServer().getPluginManager().registerEvents(new LuckPermsLoginEvent(), plugin);
+	}
 
     /**
      * Init events with compatibility with Authme.
