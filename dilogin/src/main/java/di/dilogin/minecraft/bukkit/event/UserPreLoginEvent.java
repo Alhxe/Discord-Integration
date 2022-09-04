@@ -1,14 +1,15 @@
-package di.dilogin.minecraft.event;
+package di.dilogin.minecraft.bukkit.event;
 
 import java.util.Optional;
 
+import di.dilogin.controller.MainController;
 import org.bukkit.Server;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
-import di.dicore.DIApi;
+import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.dao.DIUserDao;
@@ -27,7 +28,7 @@ public class UserPreLoginEvent implements Listener {
 	/**
 	 * User manager in the database.
 	 */
-	private final DIUserDao userDao = DILoginController.getDIUserDao();
+	private final DIUserDao userDao = MainController.getDILoginController().getDIUserDao();
 
 	/**
 	 * Main event body.
@@ -36,7 +37,7 @@ public class UserPreLoginEvent implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent event) {
 		String username = event.getName();
-		Server server = api.getCoreController().getPlugin().getServer();
+		Server server = BukkitApplication.getPlugin().getServer();
 
 		boolean isAnotherUserOnline = server.getOnlinePlayers().stream().anyMatch(u -> u.getName().equals(username));
 
@@ -65,9 +66,7 @@ public class UserPreLoginEvent implements Listener {
 
 			if (userOpt.isPresent()) {
 				DIUser user = userOpt.get();
-				if (!user.getPlayerDiscord().isPresent()) {
-					return false;
-				}
+				return user.getPlayerDiscord().isPresent();
 			}
 		}
 		return true;

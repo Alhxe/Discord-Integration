@@ -1,4 +1,4 @@
-package di.dilogin.minecraft.ext.luckperms;
+package di.dilogin.minecraft.bukkit.ext.luckperms;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +12,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.bukkit.entity.Player;
 
-import di.dicore.DIApi;
+import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -40,7 +40,7 @@ public class LuckPermsController {
 	/**
 	 * Role map from config file.
 	 */
-	private static List<Map<String, String>> rolMap = initRoleList();
+	private static final List<Map<String, String>> rolMap = initRoleList();
 
 	/**
 	 * Get the LuckPerms api instance.
@@ -55,39 +55,39 @@ public class LuckPermsController {
 
 	/**
 	 * Check if user is in group role.
-	 * @param player player to check.
+	 * @param playerName player to check.
 	 * @param group group to check.
 	 * @return true if user is in group role, false otherwise.
 	 */
-	public static boolean isUserInGroup(Player player, String group) {
+	public static boolean isUserInGroup(String playerName, String group) {
 		List<User> a = getUsersInGroup(group).join();
 		for (User u : a) {
-			diapi.getCoreController().getPlugin().getLogger().info(u.getFriendlyName());
+			diapi.getCoreController().getLogger().info(u.getFriendlyName());
 		}
-		return getUsersInGroup(group).join().stream().anyMatch(u->u.getFriendlyName().equalsIgnoreCase(player.getName()));
+		return getUsersInGroup(group).join().stream().anyMatch(u->u.getFriendlyName().equalsIgnoreCase(playerName));
 	}
 
 	/**
 	 * Get the perms of the user.
-	 * @param player player to get perms.
+	 * @param userName player to get perms.
 	 * @return the perms of the user.
 	 */
-	public static User getLuckPermsUser(Player player) {
-		return api.getPlayerAdapter(Player.class).getUser(player);
+	public static User getLuckPermsUser(String userName) {
+		return api.getUserManager().getUser(userName);
 	}
 
 	/**
 	 * Add the user to the group.
-	 * @param player player to add.
+	 * @param playerName player to add.
 	 * @param group	group to add.
 	 * @param reason Reason to add the group to the user.
 	 */
-	public static void addGroup(Player player, String group, String reason) {
-		User user = getLuckPermsUser(player);
+	public static void addGroup(String playerName, String group, String reason) {
+		User user = getLuckPermsUser(playerName);
 		user.data().add(Node.builder("group." + group).build());
 		api.getUserManager().saveUser(user);
-		diapi.getInternalController().getPlugin().getLogger()
-				.info(group + " group has been given to " + player.getName() + ". Reason: " + reason);
+		diapi.getInternalController().getLogger()
+				.info(group + " group has been given to " + playerName + ". Reason: " + reason);
 	}
 
 	/**
@@ -96,12 +96,12 @@ public class LuckPermsController {
 	 * @param group group to remove.
 	 * @param reason Reason to remove the group from the user.
 	 */
-	public static void removeGroup(Player player, String group, String reason) {
-		User user = getLuckPermsUser(player);
+	public static void removeGroup(String playerName, String group, String reason) {
+		User user = getLuckPermsUser(playerName);
 		user.data().remove(Node.builder("group." + group).build());
 		api.getUserManager().saveUser(user);
-		diapi.getInternalController().getPlugin().getLogger()
-				.info(group + " group has been removed from " + player.getName() + ". Reason: " + reason);
+		diapi.getInternalController().getLogger()
+				.info(group + " group has been removed from " + playerName + ". Reason: " + reason);
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class LuckPermsController {
 	 */
 	public static List<String> getMinecraftRoleFromDiscordRole(String role) {
 		List<String> result = new ArrayList<>();
-		rolMap.stream().filter(r -> r.containsKey(role)).forEach(r -> r.values().stream().forEach(result::add));
+		rolMap.stream().filter(r -> r.containsKey(role)).forEach(r -> result.addAll(r.values()));
 		return result;
 	}
 
@@ -122,7 +122,7 @@ public class LuckPermsController {
 	 */
 	public static List<String> getDiscordRoleFromMinecraftRole(String role) {
 		List<String> result = new ArrayList<>();
-		rolMap.stream().filter(r -> r.containsValue(role)).forEach(r -> r.keySet().forEach(result::add));
+		rolMap.stream().filter(r -> r.containsValue(role)).forEach(r -> result.addAll(r.keySet()));
 		return result;
 	}
 

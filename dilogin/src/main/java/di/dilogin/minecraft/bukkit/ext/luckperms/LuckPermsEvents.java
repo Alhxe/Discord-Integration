@@ -1,12 +1,12 @@
-package di.dilogin.minecraft.ext.luckperms;
+package di.dilogin.minecraft.bukkit.ext.luckperms;
 
 import java.util.List;
 
+import di.dilogin.controller.MainController;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import di.dilogin.BukkitApplication;
-import di.dilogin.controller.DILoginController;
 import di.dilogin.minecraft.util.Util;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.event.EventBus;
@@ -34,7 +34,7 @@ public class LuckPermsEvents {
 
 		EventBus eventBus = api.getEventBus();
 
-		if (DILoginController.isSyncroRolEnabled()) {
+		if (MainController.getDILoginController().isSyncroRolEnabled()) {
 			eventBus.subscribe(this.plugin, NodeAddEvent.class, this::addRole);
 			eventBus.subscribe(this.plugin, NodeClearEvent.class, this::clearRoles);
 			eventBus.subscribe(this.plugin, NodeRemoveEvent.class, this::removeRole);

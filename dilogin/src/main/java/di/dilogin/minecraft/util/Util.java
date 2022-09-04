@@ -1,16 +1,16 @@
 package di.dilogin.minecraft.util;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
 
+import di.dilogin.controller.MainController;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.bukkit.Server;
 
-import di.dicore.DIApi;
+import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
-import di.dilogin.controller.DILoginController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.DIUser;
 import net.dv8tion.jda.api.JDA;
@@ -35,44 +35,12 @@ public class Util {
         Optional<Role> optRole = requiredRole();
         if (optRole.isPresent()) {
             Role role = optRole.get();
-            Member member = user.getJDA()
-                    .getGuildById(BukkitApplication.getDIApi().getCoreController().getBot().getServerid())
+            Member member = Objects.requireNonNull(user.getJDA()
+                            .getGuildById(BukkitApplication.getDIApi().getCoreController().getBot().getServerid()))
                     .retrieveMember(user, true).complete();
-            if (!member.getRoles().contains(role))
-                return false;
+            return member.getRoles().contains(role);
         }
         return true;
-    }
-
-    /**
-     * @param server Active server.
-     * @return The number of the version of server.
-     */
-    public static int getServerVersion(Server server) {
-        String version = server.getVersion();
-        if (version.contains("1.17"))
-            return 17;
-        if (version.contains("1.16"))
-            return 16;
-        if (version.contains("1.15"))
-            return 15;
-        if (version.contains("1.14"))
-            return 14;
-        if (version.contains("1.13"))
-            return 13;
-        if (version.contains("1.12"))
-            return 12;
-        if (version.contains("1.11"))
-            return 11;
-        if (version.contains("1.10"))
-            return 10;
-        if (version.contains("1.9"))
-            return 9;
-        if (version.contains("1.8"))
-            return 8;
-        if (version.contains("1.7"))
-            return 7;
-        return -1;
     }
 
     /**
@@ -107,7 +75,7 @@ public class Util {
         Role role = guild.getRoleById(roleid);
         if (role == null) {
             String message = "Could not find ROL with id: " + roleid + ". Check the plugin settings to avoid problems.";
-            api.getInternalController().getPlugin().getLogger().log(Level.SEVERE, message);
+            api.getInternalController().getLogger().log(Level.SEVERE, message);
             return false;
         }
         return true;
@@ -149,11 +117,11 @@ public class Util {
 
         try {
             guild.addRoleToMember(member, role).queue();
-            api.getInternalController().getPlugin().getLogger().info(
+            api.getInternalController().getLogger().info(
                     role.getName() + " role has been given to " + member.getUser().getAsTag() + ". Reason: " + reason);
 
         } catch (Exception e) {
-            api.getInternalController().getPlugin().getLogger().log(Level.SEVERE,
+            api.getInternalController().getLogger().log(Level.SEVERE,
                     " Could not give " + role.getName() + " role to " + member.getUser().getAsTag()
                             + ". Reason:  Can't modify a role with higher or equal highest role than yourself");
         }
@@ -178,12 +146,13 @@ public class Util {
         Role role = guild.getRoleById(roleid);
 
         try {
+            assert role != null;
             guild.removeRoleFromMember(member, role).queue();
-            api.getInternalController().getPlugin().getLogger().info(role.getName() + " role has been removed from "
+            api.getInternalController().getLogger().info(role.getName() + " role has been removed from "
                     + member.getUser().getAsTag() + ". Reason: " + reason);
 
         } catch (Exception e) {
-            api.getInternalController().getPlugin().getLogger().log(Level.SEVERE,
+            api.getInternalController().getLogger().log(Level.SEVERE,
                     " Could not remove " + role.getName() + " role from " + member.getUser().getAsTag()
                             + ". Reason:  Can't modify a role with higher or equal highest role than yourself");
         }
@@ -196,7 +165,7 @@ public class Util {
      * @return Optional member.
      */
     private static Optional<Member> getMember(String player) {
-        DIUserDao dao = DILoginController.getDIUserDao();
+        DIUserDao dao = MainController.getDILoginController().getDIUserDao();
         Guild guild = getGuild();
 
         Optional<DIUser> DIUserOpt = dao.get(player);

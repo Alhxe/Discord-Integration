@@ -47,7 +47,7 @@ public class UserDataController {
 		boolean isDeleted = file.delete();
 
 		if(!isDeleted) {
-			BukkitApplication.getDIApi().getInternalController().getPlugin().getLogger().warning("Could not delete file: " + file.getAbsolutePath());
+			BukkitApplication.getDIApi().getInternalController().getLogger().warning("Could not delete file: " + file.getAbsolutePath());
 		}
 	}
 

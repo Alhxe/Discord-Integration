@@ -1,4 +1,4 @@
-package di.dilogin.minecraft.event;
+package di.dilogin.minecraft.bukkit.event;
 
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;

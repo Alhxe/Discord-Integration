@@ -1,9 +1,5 @@
 package di.internal.controller;
 
-import java.util.logging.Logger;
+public interface InternalController extends BasicController {
 
-public interface InternalController {
-    public Logger getLogger();
-
-    public void disablePlugin();
 }

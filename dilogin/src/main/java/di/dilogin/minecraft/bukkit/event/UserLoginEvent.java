@@ -1,13 +1,14 @@
-package di.dilogin.minecraft.event;
+package di.dilogin.minecraft.bukkit.event;
 
 import java.time.Duration;
 
+import di.dilogin.controller.MainController;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import di.dicore.DIApi;
+import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
@@ -27,7 +28,7 @@ public interface UserLoginEvent extends Listener {
 	/**
 	 * User manager.
 	 */
-	DIUserDao userDao = DILoginController.getDIUserDao();
+	DIUserDao userDao = MainController.getDILoginController().getDIUserDao();
 
 	/**
 	 * Main api.
@@ -70,9 +71,9 @@ public interface UserLoginEvent extends Listener {
 	 * @param user   Discord user.
 	 */
 	default void sendLoginMessageRequest(Player player, User user) {
-		MessageEmbed embed = DILoginController.getEmbedBase()
-				.setTitle(LangManager.getString(player, "login_discord_title"))
-				.setDescription(LangManager.getString(user, player, "login_discord_desc")).build();
+		MessageEmbed embed = MainController.getDILoginController().getEmbedBase()
+				.setTitle(LangManager.getString(player.getName(), "login_discord_title"))
+				.setDescription(LangManager.getString(user, player.getName(), "login_discord_desc")).build();
 
 		boolean hasMessagesOnlyChannel = api.getInternalController().getConfigManager()
 				.contains("messages_only_channel");

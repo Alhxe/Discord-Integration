@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
 
-import di.dicore.DIApi;
+import di.dicore.api.DIApi;
 import di.internal.utils.Utils;
 import litebans.api.Database;
 import litebans.api.Entry;
@@ -30,12 +30,12 @@ public class EventsListener {
     /**
      * Main Discord Integration Project api.
      */
-    private static final DIApi api = DILiteBansLogsApplication.getDIApi();
+    private static final DIApi api = BukkitApplication.getDIApi();
 
     /**
      * Main Channel.
      */
-    private static final TextChannel channel = DILiteBansLogsApplication.getChannel();
+    private static final TextChannel channel = BukkitApplication.getChannel();
 
     /**
      * Init events.

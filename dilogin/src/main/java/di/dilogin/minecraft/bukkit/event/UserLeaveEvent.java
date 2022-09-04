@@ -1,12 +1,13 @@
-package di.dilogin.minecraft.event;
+package di.dilogin.minecraft.bukkit.event;
 
+import java.util.Objects;
 import java.util.Optional;
 
+import di.dilogin.controller.MainController;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import di.dilogin.controller.DILoginController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
@@ -22,7 +23,7 @@ public class UserLeaveEvent implements Listener {
 	/**
 	 * User manager in the database.
 	 */
-	private final DIUserDao userDao = DILoginController.getDIUserDao();
+	private final DIUserDao userDao = MainController.getDILoginController().getDIUserDao();
 
 	/**
 	 * Main event body.
@@ -30,7 +31,7 @@ public class UserLeaveEvent implements Listener {
 	 */
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent event) {
-		boolean session = DILoginController.isSessionEnabled();
+		boolean session = MainController.getDILoginController().isSessionEnabled();
 		boolean isInRegister = TmpCache.containsRegister(event.getPlayer().getName());
 		boolean isInLogin = TmpCache.containsLogin(event.getPlayer().getName());
 		boolean isUserRegistered = userDao.contains(event.getPlayer().getName());
@@ -38,7 +39,7 @@ public class UserLeaveEvent implements Listener {
 		// Check if add session
 		if (session && !isInRegister && !isInLogin && isUserRegistered) {
 			UserSessionCache.addSession(event.getPlayer().getName(),
-					event.getPlayer().getAddress().getAddress().toString());
+					Objects.requireNonNull(event.getPlayer().getAddress()).getAddress().toString());
 		}
 
 		if (isInRegister) {
@@ -50,9 +51,9 @@ public class UserLeaveEvent implements Listener {
 
 		if (UserBlockedCache.contains(event.getPlayer().getName())) {
 			UserBlockedCache.remove(event.getPlayer().getName());
-		} else if (DILoginController.isSessionEnabled()) {
+		} else if (MainController.getDILoginController().isSessionEnabled()) {
 			UserSessionCache.addSession(event.getPlayer().getName(),
-					event.getPlayer().getAddress().getAddress().toString());
+					Objects.requireNonNull(event.getPlayer().getAddress()).getAddress().toString());
 		}
 	}
 

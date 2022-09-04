@@ -3,17 +3,18 @@ package di.dilitebanslogs;
 import java.util.Optional;
 import java.util.logging.Level;
 
+import di.dicore.api.impl.DIApiBukkitImpl;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import di.dicore.DIApi;
+import di.dicore.api.DIApi;
 import di.internal.exception.NoApiException;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 /**
  * Main class of DILiteBansLogs plugin.
  */
-public class DILiteBansLogsApplication extends JavaPlugin {
+public class BukkitApplication extends JavaPlugin {
 
 	/**
 	 * Discord Integration Core Api.
@@ -68,7 +69,7 @@ public class DILiteBansLogsApplication extends JavaPlugin {
 	 */
 	private void connectWithCoreApi() {
 		try {
-			api = new DIApi(plugin, this.getClassLoader(), true, true);
+			api = new DIApiBukkitImpl(plugin, this.getClassLoader(), true, true);
 		} catch (NoApiException e) {
 			e.printStackTrace();
 			plugin.getPluginLoader().disablePlugin(plugin);

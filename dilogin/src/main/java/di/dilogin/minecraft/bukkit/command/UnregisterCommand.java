@@ -1,16 +1,16 @@
-package di.dilogin.minecraft.command;
+package di.dilogin.minecraft.bukkit.command;
 
 import java.util.Optional;
 
+import di.dilogin.controller.MainController;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import di.dicore.DIApi;
+import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
-import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.DIUser;
@@ -23,7 +23,7 @@ public class UnregisterCommand implements CommandExecutor {
 	/**
 	 * User manager in the database.
 	 */
-	private final DIUserDao userDao = DILoginController.getDIUserDao();
+	private final DIUserDao userDao = MainController.getDILoginController().getDIUserDao();
 
 	/**
 	 * Main plugin.
@@ -63,7 +63,7 @@ public class UnregisterCommand implements CommandExecutor {
 		sender.sendMessage(LangManager.getString(nick, "unregister_success"));
 		
 		if(player!=null)
-			player.kickPlayer(LangManager.getString(player, "unregister_kick"));
+			player.kickPlayer(LangManager.getString(player.getName(), "unregister_kick"));
 		
 		userDao.remove(user);
 		return true;

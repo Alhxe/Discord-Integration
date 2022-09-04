@@ -3,18 +3,18 @@ package di.dilogin.discord.command;
 import java.time.Duration;
 import java.util.Optional;
 
+import di.dilogin.controller.MainController;
 import org.bukkit.entity.Player;
 
-import di.dicore.DIApi;
+import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
-import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
-import di.dilogin.minecraft.ext.authme.AuthmeHook;
+import di.dilogin.minecraft.bukkit.ext.authme.AuthmeHook;
 import di.internal.entity.DiscordCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -30,7 +30,7 @@ public class DiscordRegisterCommand implements DiscordCommand {
     /**
      * User manager in the database.
      */
-    private final DIUserDao userDao = DILoginController.getDIUserDao();
+    private final DIUserDao userDao = MainController.getDILoginController().getDIUserDao();
 
     /**
      * Main api.
@@ -62,7 +62,7 @@ public class DiscordRegisterCommand implements DiscordCommand {
         }
 
         // Check arguments.
-        if (message.equals("") || message.isEmpty()) {
+        if (message.isEmpty()) {
             event.getChannel().sendMessage(LangManager.getString("register_discord_arguments"))
                     .delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
             return;
@@ -80,7 +80,7 @@ public class DiscordRegisterCommand implements DiscordCommand {
 
         // Create password.
         String password = CodeGenerator.getCode(8, api);
-        player.sendMessage(LangManager.getString(event.getAuthor(), player, "register_success")
+        player.sendMessage(LangManager.getString(event.getAuthor(), player.getName(), "register_success")
                 .replace("%authme_password%", password));
         // Send message to discord.
         MessageEmbed messageEmbed = getEmbedMessage(player, event.getAuthor());
@@ -88,12 +88,12 @@ public class DiscordRegisterCommand implements DiscordCommand {
         // Remove user from register cache.
         TmpCache.removeRegister(player.getName());
         // Add user to data base.
-        userDao.add(new DIUser(Optional.of(player), Optional.of(event.getAuthor())));
+        userDao.add(new DIUser(player.getName(), Optional.of(event.getAuthor())));
 
-        if (DILoginController.isAuthmeEnabled()) {
+        if (MainController.getDILoginController().isAuthmeEnabled()) {
             AuthmeHook.register(player, password);
         } else {
-            DILoginController.loginUser(player, event.getAuthor());
+            MainController.getDILoginController().loginUser(player.getName(), event.getAuthor());
         }
 
     }
@@ -106,7 +106,7 @@ public class DiscordRegisterCommand implements DiscordCommand {
      * @return Player if exits and is not registered.
      */
     public Optional<Player> catchRegister(String message, MessageReceivedEvent event) {
-        Optional<Player> player = registerByCode(message, event);
+        Optional<Player> player = registerByCode(message);
 
         if (!player.isPresent())
             player = registerByUserName(message, event);
@@ -118,17 +118,13 @@ public class DiscordRegisterCommand implements DiscordCommand {
      * Register by code.
      *
      * @param message Args from the message.
-     * @param event   Event of the message.
      * @return Player if exits and is not registered.
      */
-    public Optional<Player> registerByCode(String message, MessageReceivedEvent event) {
+    public Optional<Player> registerByCode(String message) {
         // Check code.
         Optional<TmpMessage> tmpMessageOpt = TmpCache.getRegisterMessageByCode(message);
-        if (!tmpMessageOpt.isPresent()) {
-            return Optional.empty();
-        }
+        return tmpMessageOpt.map(TmpMessage::getPlayer);
 
-        return Optional.ofNullable(tmpMessageOpt.get().getPlayer());
     }
 
     /**
@@ -140,7 +136,7 @@ public class DiscordRegisterCommand implements DiscordCommand {
      */
     public Optional<Player> registerByUserName(String message, MessageReceivedEvent event) {
 
-        Optional<Player> playerOpt = Optional.ofNullable(api.getCoreController().getPlugin().getServer().getPlayer(message));
+        Optional<Player> playerOpt = Optional.ofNullable(BukkitApplication.getPlugin().getServer().getPlayer("message"));
 
         if (!playerOpt.isPresent())
             return Optional.empty();
@@ -167,9 +163,9 @@ public class DiscordRegisterCommand implements DiscordCommand {
      * @return Embed message configured.
      */
     private MessageEmbed getEmbedMessage(Player player, User user) {
-        EmbedBuilder embedBuilder = DILoginController.getEmbedBase()
-                .setTitle(LangManager.getString(player, "register_discord_title"))
-                .setDescription(LangManager.getString(user, player, "register_discord_success"));
+        EmbedBuilder embedBuilder = MainController.getDILoginController().getEmbedBase()
+                .setTitle(LangManager.getString(player.getName(), "register_discord_title"))
+                .setDescription(LangManager.getString(user, player.getName(), "register_discord_success"));
         return embedBuilder.build();
     }
 

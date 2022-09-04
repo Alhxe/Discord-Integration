@@ -1,12 +1,12 @@
-package di.dilogin.minecraft.ext.authme;
+package di.dilogin.minecraft.bukkit.ext.authme;
 
 import java.util.Optional;
 
+import di.dilogin.controller.MainController;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import di.dilogin.controller.DILoginController;
 import di.dilogin.dao.DIUserDao;
 import fr.xephi.authme.events.UnregisterByAdminEvent;
 import fr.xephi.authme.events.UnregisterByPlayerEvent;
@@ -19,7 +19,7 @@ public class AuthmeEvents implements Listener {
     /**
      * User management.
      */
-    private DIUserDao userDao = DILoginController.getDIUserDao();
+    private DIUserDao userDao = MainController.getDILoginController().getDIUserDao();
 
     /**
      * Main unregister by admin event body.

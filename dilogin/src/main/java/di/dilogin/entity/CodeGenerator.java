@@ -1,6 +1,6 @@
 package di.dilogin.entity;
 
-import di.dicore.DIApi;
+import di.dicore.api.DIApi;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

@@ -1,4 +1,4 @@
-package di.dilogin.minecraft.event.custom;
+package di.dilogin.minecraft.bukkit.event.custom;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;

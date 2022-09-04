@@ -1,7 +1,8 @@
-package di.dilogin.minecraft.ext.nlogin;
+package di.dilogin.minecraft.bukkit.ext.nlogin;
 
 import java.util.Optional;
 
+import di.dilogin.BukkitApplication;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -13,8 +14,8 @@ import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
-import di.dilogin.minecraft.event.UserLoginEvent;
-import di.dilogin.minecraft.event.custom.DILoginEvent;
+import di.dilogin.minecraft.bukkit.event.UserLoginEvent;
+import di.dilogin.minecraft.bukkit.event.custom.DILoginEvent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -53,13 +54,13 @@ public class UserLoginEventNLoginImpl implements UserLoginEvent {
 
         DIUser user = userOpt.get();
 
-        if (!user.getPlayerBukkit().isPresent() && !user.getPlayerDiscord().isPresent()) {
-            api.getCoreController().getPlugin().getLogger().severe("Failed to get user in database: " + playerName);
+        if (!user.getPlayerDiscord().isPresent()) {
+            api.getCoreController().getLogger().severe("Failed to get user in database: " + playerName);
             return;
         }
 
         event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
-        sendLoginMessageRequest(user.getPlayerBukkit().get(), user.getPlayerDiscord().get());
+        sendLoginMessageRequest(event.getPlayer(), user.getPlayerDiscord().get());
     }
 
     /**
@@ -86,7 +87,7 @@ public class UserLoginEventNLoginImpl implements UserLoginEvent {
             initPlayerNLoginRegisterRequest(event, playerName);
         }
 
-        Bukkit.getScheduler().runTask(api.getInternalController().getPlugin(),
+        Bukkit.getScheduler().runTask(BukkitApplication.getPlugin(),
                 () -> Bukkit.getPluginManager().callEvent(new DILoginEvent(event.getPlayer())));
     }
 
@@ -103,7 +104,7 @@ public class UserLoginEventNLoginImpl implements UserLoginEvent {
                 .getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
         String command = api.getCoreController().getBot().getPrefix() + api.getInternalController().getConfigManager().getString("register_command") + " " + code;
         TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(), null, null, code));
-        TextComponent message = new TextComponent(LangManager.getString(event.getPlayer(), "register_opt_request")
+        TextComponent message = new TextComponent(LangManager.getString(event.getPlayer().getName(), "register_opt_request")
                 .replace("%register_command%", command));
         message.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, code));
         message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Copy").create()));

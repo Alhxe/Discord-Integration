@@ -2,10 +2,10 @@ package di.dilogin.discord.event;
 
 import java.util.Optional;
 
-import di.dilogin.controller.DILoginController;
+import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.DIUser;
-import di.dilogin.minecraft.ext.luckperms.LuckPermsController;
+import di.dilogin.minecraft.bukkit.ext.luckperms.LuckPermsController;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;
@@ -19,7 +19,7 @@ public class GuildMemberRoleEvent extends ListenerAdapter {
 	/**
 	 * User manager in the database.
 	 */
-	private final DIUserDao dao = DILoginController.getDIUserDao();
+	private final DIUserDao dao = MainController.getDILoginController().getDIUserDao();
 
 	/**
 	 * Main event body.
@@ -33,13 +33,10 @@ public class GuildMemberRoleEvent extends ListenerAdapter {
 
 		DIUser user = optDIUser.get();
 
-		if (!user.getPlayerBukkit().isPresent())
-			return;
-
 		for (Role role : event.getRoles()) {
 			for (String group : LuckPermsController.getMinecraftRoleFromDiscordRole(role.getId())) {
-					if (user.getPlayerBukkit().isPresent() && !LuckPermsController.isUserInGroup(user.getPlayerBukkit().get(), group))
-						LuckPermsController.addGroup(user.getPlayerBukkit().get(), group,
+					if (!LuckPermsController.isUserInGroup(user.getPlayerName(), group))
+						LuckPermsController.addGroup(user.getPlayerName(), group,
 								"Get " + role + " role in discord.");
 			}
 		}
@@ -57,13 +54,10 @@ public class GuildMemberRoleEvent extends ListenerAdapter {
 
 		DIUser user = optDIUser.get();
 
-		if (!user.getPlayerBukkit().isPresent())
-			return;
-
 		for (Role role : event.getRoles()) {
 			for (String group : LuckPermsController.getMinecraftRoleFromDiscordRole(role.getId())) {
-					if (user.getPlayerBukkit().isPresent() && LuckPermsController.isUserInGroup(user.getPlayerBukkit().get(), group))
-						LuckPermsController.removeGroup(user.getPlayerBukkit().get(), group,
+					if (LuckPermsController.isUserInGroup(user.getPlayerName(), group))
+						LuckPermsController.removeGroup(user.getPlayerName(), group,
 								"Removed " + role + " role in discord.");
 			}
 		}

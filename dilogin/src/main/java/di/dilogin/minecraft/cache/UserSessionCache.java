@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import di.dilogin.BukkitApplication;
-import di.dilogin.controller.DILoginController;
+import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.UserSession;
 import lombok.AccessLevel;
@@ -25,7 +25,7 @@ public class UserSessionCache {
 	/**
 	 * User manager in the database.
 	 */
-	private static final DIUserDao userDao = DILoginController.getDIUserDao();
+	private static final DIUserDao userDao = MainController.getDILoginController().getDIUserDao();
 
 	/**
 	 * Check if the user has a valid session.
@@ -45,7 +45,7 @@ public class UserSessionCache {
 		if (!user.getIp().equals(ip))
 			return false;
 
-		if (Calendar.getInstance().getTimeInMillis() > (sessions.get(user)).longValue())
+		if (Calendar.getInstance().getTimeInMillis() > sessions.get(user))
 			return false;
 		
 		if (!userDao.contains(name)) {

@@ -6,9 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
-import org.bukkit.entity.Player;
-
-import di.dicore.DIApi;
+import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DBController;
 import di.dilogin.entity.DIUser;
@@ -23,7 +21,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 	/**
 	 * Database connection.
 	 */
-	private Connection conn = DBController.getConnect();
+	private final Connection conn = DBController.getConnect();
 
 	/**
 	 * Core api.
@@ -39,11 +37,9 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 				if (rs.next()) {
 					long id = rs.getLong(1);
 					Optional<User> userOpt = Utils.getDiscordUserById(api.getCoreController().getDiscordApi(), id);
-					Optional<Player> playerOpt = Utils.getUserPlayerByName(api.getInternalController().getPlugin(),
-							playerName);
 
 					if (userOpt.isPresent()) {
-						return Optional.of(new DIUser(playerOpt, userOpt));
+						return Optional.of(new DIUser(playerName, userOpt));
 					} else {
 						BukkitApplication.getPlugin().getLogger().warning("Unable to get user named " + playerName);
 					}
@@ -59,12 +55,12 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 	public void add(DIUser user) {
 		String query = "insert into user(username, discord_id) values(?,?);";
 		try (PreparedStatement ps = conn.prepareStatement(query)) {
-			if (user.getPlayerBukkit().isPresent() && user.getPlayerDiscord().isPresent()) {
-				ps.setString(1, user.getPlayerBukkit().get().getName());
+			if (user.getPlayerName()!=null && user.getPlayerDiscord().isPresent()) {
+				ps.setString(1, user.getPlayerName());
 				ps.setLong(2, user.getPlayerDiscord().get().getIdLong());
 				ps.execute();
 			} else {
-				BukkitApplication.getPlugin().getLogger().warning("Unable to add user " + user.toString());
+				BukkitApplication.getPlugin().getLogger().warning("Unable to add user " + user);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -79,7 +75,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 				ps.setLong(1, user.getPlayerDiscord().get().getIdLong());
 				ps.execute();
 			} else {
-				BukkitApplication.getPlugin().getLogger().warning("Unable to remove user " + user.toString());
+				BukkitApplication.getPlugin().getLogger().warning("Unable to remove user " + user);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -143,23 +139,21 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 	}
 
 	@Override
-	public Optional<DIUser> get(long discordid) {
+	public Optional<DIUser> get(long discordId) {
 		String query = "select username from user where discord_id = ?;";
 		try (PreparedStatement ps = conn.prepareStatement(query)) {
-			ps.setLong(1, discordid);
+			ps.setLong(1, discordId);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
-					String playername = rs.getString(1);
+					String playerName = rs.getString(1);
 					Optional<User> userOpt = Utils.getDiscordUserById(api.getCoreController().getDiscordApi(),
-							discordid);
-					Optional<Player> playerOpt = Utils.getUserPlayerByName(api.getInternalController().getPlugin(),
-							playername);
+							discordId);
 
 					if (userOpt.isPresent()) {
-						return Optional.of(new DIUser(playerOpt, userOpt));
+						return Optional.of(new DIUser(playerName, userOpt));
 					} else {
 						BukkitApplication.getPlugin().getLogger()
-								.warning("Unable to get discord user with id " + discordid);
+								.warning("Unable to get discord user with id " + discordId);
 					}
 				}
 			}

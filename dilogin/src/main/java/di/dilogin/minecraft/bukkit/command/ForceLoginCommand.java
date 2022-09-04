@@ -1,8 +1,9 @@
-package di.dilogin.minecraft.command;
+package di.dilogin.minecraft.bukkit.command;
 
 import java.time.Duration;
 import java.util.Optional;
 
+import di.dilogin.controller.MainController;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -10,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import di.dilogin.BukkitApplication;
-import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.TmpMessage;
@@ -27,7 +27,7 @@ public class ForceLoginCommand implements CommandExecutor {
 	/**
 	 * User manager in the database.
 	 */
-	private final DIUserDao userDao = DILoginController.getDIUserDao();
+	private final DIUserDao userDao = MainController.getDILoginController().getDIUserDao();
 
 	/**
 	 * Main plugin.
@@ -52,16 +52,16 @@ public class ForceLoginCommand implements CommandExecutor {
 			return false;
 		}
 		if (!userDao.contains(player.getName())) {
-			sender.sendMessage(LangManager.getString(player, "user_not_registered"));
+			sender.sendMessage(LangManager.getString(player.getName(), "user_not_registered"));
 			return false;
 		}
 		if (!TmpCache.containsLogin(player.getName())) {
-			sender.sendMessage(LangManager.getString(player, "forcelogin_user_connected"));
+			sender.sendMessage(LangManager.getString(player.getName(), "forcelogin_user_connected"));
 			return false;
 		}
 		editMessage(player);
-		DILoginController.loginUser(player, null);
-		sender.sendMessage(LangManager.getString(player, "forcelogin_success"));
+		MainController.getDILoginController().loginUser(player.getName(), null);
+		sender.sendMessage(LangManager.getString(player.getName(), "forcelogin_success"));
 		return true;
 
 	}
@@ -78,9 +78,9 @@ public class ForceLoginCommand implements CommandExecutor {
 		User user = tmpMessageOpt.get().getUser();
 		Message message = tmpMessageOpt.get().getMessage();
 		
-		MessageEmbed embed = DILoginController.getEmbedBase()
-				.setTitle(LangManager.getString(user, player, "login_discord_title"))
-				.setDescription(LangManager.getString(user, player, "login_discord_forced")).build();
+		MessageEmbed embed = MainController.getDILoginController().getEmbedBase()
+				.setTitle(LangManager.getString(user, player.getName(), "login_discord_title"))
+				.setDescription(LangManager.getString(user, player.getName(), "login_discord_forced")).build();
 		
 		message.editMessageEmbeds(embed).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
 	}

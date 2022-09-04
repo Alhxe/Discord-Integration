@@ -1,17 +1,17 @@
-package di.dilogin.minecraft.command;
+package di.dilogin.minecraft.bukkit.command;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 
+import di.dilogin.controller.MainController;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import di.dicore.DIApi;
+import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
-import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.TmpMessage;
@@ -32,7 +32,7 @@ public class RegisterCommand implements CommandExecutor {
 	/**
 	 * User manager in the database.
 	 */
-	private final DIUserDao userDao = DILoginController.getDIUserDao();
+	private final DIUserDao userDao = MainController.getDILoginController().getDIUserDao();
 
 	/**
 	 * Main api.
@@ -58,12 +58,12 @@ public class RegisterCommand implements CommandExecutor {
 			Player player = (Player) sender;
 
 			if (userDao.contains(player.getName())) {
-				player.sendMessage(LangManager.getString(player, "register_already_exists"));
+				player.sendMessage(LangManager.getString(player.getName(), "register_already_exists"));
 				return false;
 			}
 
 			if (args.length == 0) {
-				player.sendMessage(LangManager.getString(player, "register_arguments"));
+				player.sendMessage(LangManager.getString(player.getName(), "register_arguments"));
 				return false;
 			}
 
@@ -75,12 +75,12 @@ public class RegisterCommand implements CommandExecutor {
 
 			if (userDao.getDiscordUserAccounts(user) >= api.getInternalController().getConfigManager()
 					.getInt("register_max_discord_accounts")) {
-				player.sendMessage(LangManager.getString(player, "register_max_accounts").replace("%user_discord_id%",
+				player.sendMessage(LangManager.getString(player.getName(), "register_max_accounts").replace("%user_discord_id%",
 						arrayToString(args).replace(" ", "")));
 				return false;
 			}
 
-			player.sendMessage(LangManager.getString(user, player, "register_submit"));
+			player.sendMessage(LangManager.getString(user, player.getName(), "register_submit"));
 
 			MessageEmbed messageEmbed = getEmbedMessage(player, user);
 
@@ -107,7 +107,7 @@ public class RegisterCommand implements CommandExecutor {
 
 		if (!userOpt.isPresent()) {
 			player.sendMessage(
-					LangManager.getString(player, "register_user_not_detected").replace("%user_discord_id%", string));
+					LangManager.getString(player.getName(), "register_user_not_detected").replace("%user_discord_id%", string));
 			return Optional.empty();
 		}
 
@@ -121,11 +121,10 @@ public class RegisterCommand implements CommandExecutor {
 	 * @return Posible user.
 	 */
 	private Optional<User> registerById(String string) {
-		String id = string;
-		if (!idIsValid(id))
+		if (!idIsValid(string))
 			return Optional.empty();
 
-		return Utils.getDiscordUserById(api.getCoreController().getDiscordApi(), Long.parseLong(id));
+		return Utils.getDiscordUserById(api.getCoreController().getDiscordApi(), Long.parseLong(string));
 	}
 
 	/**
@@ -135,12 +134,11 @@ public class RegisterCommand implements CommandExecutor {
 	 * @return Posible user.
 	 */
 	private Optional<User> registerByName(String string) {
-		String name = string;
-		if (!usernameAndTagIsValid(name))
+		if (!usernameAndTagIsValid(string))
 			return Optional.empty();
 
 		Guild guild = api.getCoreController().getGuild();
-		return Utils.getDiscordUserByUsernameAndTag(guild, name);
+		return Utils.getDiscordUserByUsernameAndTag(guild, string);
 
 	}
 
@@ -153,7 +151,7 @@ public class RegisterCommand implements CommandExecutor {
 	 */
 	private void sendMessage(User user, Player player, MessageEmbed messageEmbed) {
 		if (!TmpCache.getRegisterMessage(player.getName()).isPresent()){
-			api.getInternalController().getPlugin().getLogger().severe("Error while sending message to user register");
+			api.getInternalController().getLogger().severe("Error while sending message to user register");
 			return;
 		}
 
@@ -192,6 +190,7 @@ public class RegisterCommand implements CommandExecutor {
 		TextChannel serverchannel = api.getCoreController().getDiscordApi()
 				.getTextChannelById(api.getInternalController().getConfigManager().getLong("channel"));
 
+		assert serverchannel != null;
 		serverchannel.sendMessage(user.getAsMention()).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
 
 		Message servermessage = serverchannel.sendMessageEmbeds(messageEmbed).submit().join();
@@ -207,8 +206,8 @@ public class RegisterCommand implements CommandExecutor {
 	 * @return Embed message configured.
 	 */
 	private MessageEmbed getEmbedMessage(Player player, User user) {
-		EmbedBuilder embedBuilder = new EmbedBuilder().setTitle(LangManager.getString(player, "register_discord_title"))
-				.setDescription(LangManager.getString(user, player, "register_discord_desc")).setColor(
+		EmbedBuilder embedBuilder = new EmbedBuilder().setTitle(LangManager.getString(player.getName(), "register_discord_title"))
+				.setDescription(LangManager.getString(user, player.getName(), "register_discord_desc")).setColor(
 						Utils.hex2Rgb(api.getInternalController().getConfigManager().getString("discord_embed_color")));
 
 		if (api.getInternalController().getConfigManager().getBoolean("discord_embed_server_image")) {
@@ -231,15 +230,15 @@ public class RegisterCommand implements CommandExecutor {
 	 * @return Returns a string from array string.
 	 */
 	private static String arrayToString(String[] string) {
-		String respuesta = "";
+		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < string.length; i++) {
 			if (i != string.length - 1) {
-				respuesta = String.valueOf(respuesta) + string[i] + " ";
+				result.append(string[i]).append(" ");
 			} else {
-				respuesta = String.valueOf(respuesta) + string[i];
+				result.append(string[i]);
 			}
 		}
-		return respuesta;
+		return result.toString();
 	}
 
 	/**
@@ -268,7 +267,7 @@ public class RegisterCommand implements CommandExecutor {
 			return false;
 
 		String name = string.substring(0, string.lastIndexOf('#'));
-		String tag = string.substring(string.lastIndexOf('#') + 1, string.length());
+		String tag = string.substring(string.lastIndexOf('#') + 1);
 
 		if (name.length() < 1)
 			return false;

@@ -1,4 +1,4 @@
-package di.dilogin.minecraft.event;
+package di.dilogin.minecraft.bukkit.event;
 
 import java.util.Optional;
 
@@ -8,11 +8,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import di.dicore.DIApi;
+import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
 import di.dilogin.entity.UserData;
 import di.dilogin.minecraft.controller.UserDataController;
-import di.dilogin.minecraft.event.custom.DILoginEvent;
+import di.dilogin.minecraft.bukkit.event.custom.DILoginEvent;
 import di.internal.controller.file.ConfigManager;
 
 public class UserTeleportEvents implements Listener {
@@ -88,7 +88,7 @@ public class UserTeleportEvents implements Listener {
 			Float pitch = Float.parseFloat(confManager.getString("teleport_pitch"));
 
 			Optional<World> world = Optional
-					.ofNullable(api.getInternalController().getPlugin().getServer().getWorld(worldName));
+					.ofNullable(BukkitApplication.getPlugin().getServer().getWorld(worldName));
 
 			if (!world.isPresent())
 				throw new IllegalArgumentException("No world named " + worldName);
