@@ -2,6 +2,7 @@ package di.dilogin.minecraft.bukkit.event;
 
 import java.util.Optional;
 
+import di.dilogin.minecraft.bukkit.BukkitUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -15,8 +16,6 @@ import di.dilogin.entity.UserData;
 import di.dilogin.minecraft.controller.UserDataController;
 import di.dilogin.minecraft.bukkit.event.custom.DILoginEvent;
 import di.internal.controller.file.ConfigManager;
-
-import javax.swing.text.html.Option;
 
 public class UserTeleportEvents implements Listener {
 
@@ -61,7 +60,7 @@ public class UserTeleportEvents implements Listener {
 		if (!isTeleportEnabled)
 			return;
 
-		Optional<Player> playerOptional = event.getUser().getPlayerBukkit();
+		Optional<Player> playerOptional = BukkitUtil.getUserPlayerByName(event.getUser().getPlayerName());
 		if(!playerOptional.isPresent())
 			return;
 

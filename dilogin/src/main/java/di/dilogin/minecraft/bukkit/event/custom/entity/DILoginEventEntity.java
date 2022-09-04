@@ -1,4 +1,4 @@
-package di.dilogin.minecraft.event.custom.entity;
+package di.dilogin.minecraft.bukkit.event.custom.entity;
 
 import di.dilogin.entity.DIUser;
 import lombok.AllArgsConstructor;

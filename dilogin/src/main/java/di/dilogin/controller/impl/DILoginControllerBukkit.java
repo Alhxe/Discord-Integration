@@ -98,7 +98,7 @@ public class DILoginControllerBukkit implements DILoginController {
 
     @Override
     public void loginUser(String playerName, User user) {
-        Optional<Player> optionalPlayer = BukkitUtil.getUserPlayerByName(BukkitApplication.getPlugin(), playerName);
+        Optional<Player> optionalPlayer = BukkitUtil.getUserPlayerByName(playerName);
 
         if (!optionalPlayer.isPresent())
             return;
@@ -115,7 +115,7 @@ public class DILoginControllerBukkit implements DILoginController {
             nLoginAPI.getApi().forceLogin(player.getName());
         } else {
             Bukkit.getScheduler().runTask(BukkitApplication.getPlugin(),
-                    () -> Bukkit.getPluginManager().callEvent(new DILoginEvent(player)));
+                    () -> Bukkit.getPluginManager().callEvent(new DILoginEvent(new DIUser(playerName, Optional.of(user)))));
             UserBlockedCache.remove(player.getName());
             player.sendMessage(LangManager.getString("login_success"));
         }
@@ -124,7 +124,7 @@ public class DILoginControllerBukkit implements DILoginController {
 
     @Override
     public void kickPlayer(String playerName, String message) {
-        Optional<Player> optionalPlayer = BukkitUtil.getUserPlayerByName(BukkitApplication.getPlugin(), playerName);
+        Optional<Player> optionalPlayer = BukkitUtil.getUserPlayerByName(playerName);
 
         if (!optionalPlayer.isPresent())
             return;

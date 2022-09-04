@@ -87,16 +87,16 @@ public class LuckPermsController {
 				String role = entry.getKey();
 				String group = entry.getValue();
 
-				boolean isUserInGroup = isUserInGroup(player, group);
+				boolean isUserInGroup = isUserInGroup(player.getName(), group);
 				boolean isUserInRole = Util.userHasRole(role, player.getName());
 
 				Role discordRole = diapi.getCoreController().getGuild().getRoleById(role);
 				if (isUserInGroup && !isUserInRole){
-					removeGroup(player, group, "Removed " + discordRole + " role in discord.");
+					removeGroup(player.getName(), group, "Removed " + discordRole + " role in discord.");
 				}
 
 				if (!isUserInGroup && isUserInRole){
-					addGroup(player, group, "Get " + discordRole + " role in discord.");
+					addGroup(player.getName(), group, "Get " + discordRole + " role in discord.");
 				}
 			}
 		});
@@ -119,7 +119,7 @@ public class LuckPermsController {
 
 	/**
 	 * Remove the user from the group.
-	 * @param player player to remove.
+	 * @param playerName player to remove.
 	 * @param group group to remove.
 	 * @param reason Reason to remove the group from the user.
 	 */

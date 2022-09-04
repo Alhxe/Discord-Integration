@@ -1,4 +1,4 @@
-package di.dilogin.minecraft.ext.luckperms;
+package di.dilogin.minecraft.bukkit.ext.luckperms;
 
 import java.util.Optional;
 

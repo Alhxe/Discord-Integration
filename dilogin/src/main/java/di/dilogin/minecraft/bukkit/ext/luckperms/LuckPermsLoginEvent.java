@@ -1,7 +1,9 @@
-package di.dilogin.minecraft.ext.luckperms;
+package di.dilogin.minecraft.bukkit.ext.luckperms;
 
+import di.dilogin.BukkitApplication;
 import di.dilogin.entity.DIUser;
-import di.dilogin.minecraft.event.custom.DILoginEvent;
+import di.dilogin.minecraft.bukkit.BukkitUtil;
+import di.dilogin.minecraft.bukkit.event.custom.DILoginEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,7 +15,7 @@ public class LuckPermsLoginEvent implements Listener {
     @EventHandler
     public void onLogin(DILoginEvent event) {
         DIUser user = event.getUser();
-        Optional<Player> playerOptional = user.getPlayerBukkit();
+        Optional<Player> playerOptional = BukkitUtil.getUserPlayerByName(user.getPlayerName());
         if(!playerOptional.isPresent())
             return;
 

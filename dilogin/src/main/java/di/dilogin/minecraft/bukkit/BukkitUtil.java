@@ -48,11 +48,10 @@ public class BukkitUtil {
     }
 
     /**
-     * @param plugin     Bukkit plugin.
      * @param playerName Bukkit player's name.
      * @return Possible player based on their name.
      */
-    public static Optional<Player> getUserPlayerByName(Plugin plugin, String playerName) {
-        return Optional.ofNullable(plugin.getServer().getPlayer(playerName));
+    public static Optional<Player> getUserPlayerByName(String playerName) {
+        return Optional.ofNullable(BukkitApplication.getPlugin().getServer().getPlayer(playerName));
     }
 }

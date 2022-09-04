@@ -3,7 +3,6 @@ package di.dilogin.controller;
 import di.dilogin.dao.DIUserDao;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
-import org.bukkit.entity.Player;
 
 /**
  * DILogin plugin controller.
