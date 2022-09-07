@@ -5,8 +5,9 @@ import java.util.logging.Level;
 
 import di.dicore.api.impl.DIApiBukkitImpl;
 import di.dilogin.controller.MainController;
-import di.dilogin.controller.impl.DILoginControllerBukkit;
+import di.dilogin.controller.impl.DILoginControllerBukkitImpl;
 
+import di.dilogin.minecraft.bukkit.command.EjemploCommand;
 import di.dilogin.minecraft.bukkit.ext.luckperms.GuildMemberRoleEvent;
 import di.dilogin.minecraft.bukkit.ext.luckperms.LuckPermsLoginEvent;
 import org.bukkit.command.CommandExecutor;
@@ -54,7 +55,7 @@ public class BukkitApplication extends JavaPlugin {
 
         connectWithCoreApi();
         MainController.setDIApi(api);
-        MainController.setDILoginController(new DILoginControllerBukkit());
+        MainController.setDILoginController(new DILoginControllerBukkitImpl());
         MainController.setBukkit(true);
         DBController.getConnect();
 
@@ -92,6 +93,7 @@ public class BukkitApplication extends JavaPlugin {
         initUniqueCommand("diregister", new RegisterCommand());
         initUniqueCommand("forcelogin", new ForceLoginCommand());
         initUniqueCommand("unregister", new UnregisterCommand());
+        initUniqueCommand("ejemplo", new EjemploCommand());
     }
 
     /**
@@ -111,16 +113,19 @@ public class BukkitApplication extends JavaPlugin {
      * Connect with DIApi.
      */
     private void connectWithCoreApi() {
-        if (Objects.requireNonNull(plugin.getServer().getPluginManager().getPlugin("DICore")).isEnabled()) {
-            try {
+        try {
+            if (Objects.requireNonNull(plugin.getServer().getPluginManager().getPlugin("DICore")).isEnabled()) {
                 api = new DIApiBukkitImpl(plugin, this.getClassLoader(), true, true);
-            } catch (NoApiException e) {
-                e.printStackTrace();
+            } else if (isBungeeDetected()) {
+                System.out.println("BUNGEEDETECTED");
+                api = new DIApiBukkitImpl(plugin, this.getClassLoader(), true, true);
+            } else {
+                plugin.getLogger().log(Level.SEVERE,
+                        "Failed to connect to DICore plugin. Check if it has been turned on correctly.");
+                plugin.getPluginLoader().disablePlugin(plugin);
             }
-        } else {
-            plugin.getLogger().log(Level.SEVERE,
-                    "Failed to connect to DICore plugin. Check if it has been turned on correctly.");
-            plugin.getPluginLoader().disablePlugin(plugin);
+        } catch (NoApiException e) {
+            e.printStackTrace();
         }
     }
 
@@ -130,8 +135,7 @@ public class BukkitApplication extends JavaPlugin {
      */
     private void initEvents() {
         if (MainController.getDILoginController().isLuckPermsEnabled()) {
-            getPlugin().getLogger().info("LuckPerms detected, starting plugin compatibility.");
-            new LuckPermsEvents();
+            initLuckPermsEvents();
         }
         if (MainController.getDILoginController().isAuthmeEnabled()) {
             initAuthmeEvents();
@@ -177,11 +181,11 @@ public class BukkitApplication extends JavaPlugin {
         }
     }
 
-	private void initLuckPermsEvents(){
-		getPlugin().getLogger().info("LuckPerms detected, starting plugin compatibility.");
-		new LuckPermsEvents();
-		getServer().getPluginManager().registerEvents(new LuckPermsLoginEvent(), plugin);
-	}
+    private void initLuckPermsEvents() {
+        getPlugin().getLogger().info("LuckPerms detected, starting plugin compatibility.");
+        new LuckPermsEvents();
+        getServer().getPluginManager().registerEvents(new LuckPermsLoginEvent(), plugin);
+    }
 
     /**
      * Init events with compatibility with Authme.
@@ -198,6 +202,13 @@ public class BukkitApplication extends JavaPlugin {
     private void initDILoginEvents() {
         getServer().getPluginManager().registerEvents(new UserLoginEventImpl(), plugin);
         getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
+    }
+
+    /**
+     * @return true if bungee is enabled.
+     */
+    private boolean isBungeeDetected() {
+        return getServer().spigot().getConfig().getConfigurationSection("settings").getBoolean("settings.bungeecord");
     }
 
 }

@@ -3,6 +3,7 @@ package di.dilogin.minecraft.bukkit.ext.authme;
 import java.util.Optional;
 
 import di.dilogin.BukkitApplication;
+import di.internal.entity.DiscordBot;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;

@@ -17,7 +17,7 @@ import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.cache.UserBlockedCache;
 import di.dilogin.minecraft.bukkit.event.custom.DILoginEvent;
 import di.dilogin.minecraft.bukkit.ext.authme.AuthmeHook;
-import di.internal.utils.Utils;
+import di.internal.utils.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
 /**
  * DILogin plugin control.
  */
-public class DILoginControllerBukkit implements DILoginController {
+public class DILoginControllerBukkitImpl implements DILoginController {
 
     /**
      * Starts the implementation of the class that gets data from the users.
@@ -50,7 +50,7 @@ public class DILoginControllerBukkit implements DILoginController {
     public EmbedBuilder getEmbedBase() {
         DIApi api = BukkitApplication.getDIApi();
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(
-                Utils.hex2Rgb(api.getInternalController().getConfigManager().getString("discord_embed_color")));
+                Util.hex2Rgb(api.getInternalController().getConfigManager().getString("discord_embed_color")));
         if (api.getInternalController().getConfigManager().getBoolean("discord_embed_server_image")) {
             Optional<Guild> optGuild = Optional.ofNullable(api.getCoreController().getDiscordApi()
                     .getGuildById(api.getCoreController().getConfigManager().getLong("discord_server_id")));

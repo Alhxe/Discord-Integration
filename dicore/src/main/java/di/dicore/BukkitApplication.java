@@ -1,7 +1,7 @@
 package di.dicore;
 
 import di.dicore.event.BotStatusBukkitEvent;
-import di.internal.controller.impl.CoreControllerSpigotImpl;
+import di.internal.controller.impl.CoreControllerBukkitImpl;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,14 +18,27 @@ public class BukkitApplication extends JavaPlugin {
     private static CoreController internalController;
 
     /**
+     * The plugin instance.
+     */
+    private static Plugin plugin;
+
+    /**
      * Runs when the plugin is being powered on.
      */
     @Override
     public void onEnable() {
-        getLogger().info("Plugin started");
-        Plugin plugin = getPlugin(getClass());
-        internalController = new CoreControllerSpigotImpl(plugin, this.getClassLoader());
+        plugin = getPlugin(getClass());
+        internalController = new CoreControllerBukkitImpl(plugin, this.getClassLoader());
+        internalController.startBot();
         BotStatusBukkitEvent.init(plugin);
+        getLogger().info("Plugin started");
+    }
+
+    /**
+     * @return The bukkit plugin.
+     */
+    public static Plugin getPlugin() {
+        return plugin;
     }
 
     /**
@@ -35,6 +48,7 @@ public class BukkitApplication extends JavaPlugin {
     public void onDisable() {
         if (internalController != null)
             internalController.getBot().getApi().shutdownNow();
+
         getLogger().info("Plugin disabled");
     }
 
@@ -45,4 +59,10 @@ public class BukkitApplication extends JavaPlugin {
         return internalController;
     }
 
+    /**
+     * @return true if bungee is enabled.
+     */
+    private boolean isBungeeDetected() {
+        return getServer().spigot().getConfig().getBoolean("settings.bungeecord");
+    }
 }

@@ -6,7 +6,7 @@ import java.util.Map;
 import org.yaml.snakeyaml.Yaml;
 
 import di.internal.controller.PluginController;
-import di.internal.utils.Utils;
+import di.internal.utils.Util;
 
 /**
  * Language file driver.
@@ -69,7 +69,7 @@ public class YamlManager implements FileController {
 	 */
 	private Map<String, Object> getYamlContent(ClassLoader classLoader) {
 		try {
-			InputStream file = Utils.getFileFromResourceAsStream(classLoader, fileName);
+			InputStream file = Util.getFileFromResourceAsStream(classLoader, fileName);
 			Map<String, Object> custom = new Yaml()
 					.load(new FileInputStream(this.customConfigFile));
 			Map<String, Object> original = new Yaml().load(file);

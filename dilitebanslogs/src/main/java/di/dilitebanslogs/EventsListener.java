@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.time.Instant;
 
 import di.dicore.api.DIApi;
-import di.internal.utils.Utils;
+import di.internal.utils.Util;
 import litebans.api.Database;
 import litebans.api.Entry;
 import litebans.api.Events;
@@ -136,7 +136,7 @@ public class EventsListener {
      * @return color.
      */
     private static Color getColor(String string) {
-        return Utils.hex2Rgb(api.getInternalController().getConfigManager().getString("embed_" + string + "_color"));
+        return Util.hex2Rgb(api.getInternalController().getConfigManager().getString("embed_" + string + "_color"));
     }
 
     /**

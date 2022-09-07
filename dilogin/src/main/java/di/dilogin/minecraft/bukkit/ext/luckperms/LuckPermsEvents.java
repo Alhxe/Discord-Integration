@@ -16,7 +16,7 @@ import net.luckperms.api.event.node.NodeRemoveEvent;
 import net.luckperms.api.node.Node;
 
 /**
- * Events from LuckPerms plugin.
+ * Ejemplo from LuckPerms plugin.
  */
 public class LuckPermsEvents {
 

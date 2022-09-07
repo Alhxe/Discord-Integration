@@ -4,10 +4,9 @@ import di.dicore.api.DIApi;
 import di.dicore.api.impl.DIApiBungeeImpl;
 import di.dilogin.controller.DBController;
 import di.dilogin.controller.MainController;
-import di.dilogin.controller.impl.DILoginControllerBungee;
+import di.dilogin.controller.impl.DILoginControllerBungeeImpl;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.internal.exception.NoApiException;
-import jdk.tools.jmod.Main;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.util.logging.Level;
@@ -33,7 +32,7 @@ public class BungeeApplication extends Plugin {
 
 		connectWithCoreApi();
 		MainController.setDIApi(api);
-		MainController.setDILoginController(new DILoginControllerBungee());
+		MainController.setDILoginController(new DILoginControllerBungeeImpl());
 		MainController.setBukkit(true);
 		DBController.getConnect();
 

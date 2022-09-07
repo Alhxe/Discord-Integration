@@ -15,43 +15,70 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Internal Controller of Plugin.
+ * Bukkit implementation for {@link CoreController}.
  */
 @Getter
-public class CoreControllerSpigotImpl implements PluginController, CoreController {
+public class CoreControllerBukkitImpl implements PluginController, CoreController {
 
     /**
-     * The driver for the plugin configuration file.
+     * The manager for the plugin configuration file.
      */
     private final ConfigManager configManager;
 
     /**
-     * The driver for the plugin lang file.
+     * The manager for the plugin lang file.
      */
     private final YamlManager langManager;
 
     /**
-     * The bukkit plugin.
+     * The Bukkit plugin.
      */
     private final Plugin plugin;
 
     /**
      * Contains the bot config information.
      */
-    private final DiscordBot bot;
+    private DiscordBot bot;
 
     /**
      * Path of the main plugin folder.
      */
     private final File dataFolder;
 
-
-    public CoreControllerSpigotImpl(Plugin plugin, ClassLoader classLoader) {
+    public CoreControllerBukkitImpl(Plugin plugin, ClassLoader classLoader) {
         this.plugin = plugin;
         this.dataFolder = plugin.getDataFolder();
         this.configManager = new ConfigManager(this, plugin.getDataFolder(), classLoader);
         this.langManager = new YamlManager(this, "lang.yml", plugin.getDataFolder(), classLoader);
-        this.bot = initBot();
+    }
+
+    @Override
+    public JDA getDiscordApi() {
+        return this.bot.getApi();
+    }
+
+    @Override
+    public void startBot(){
+        bot = initBot();
+    }
+
+    public Guild getGuild() {
+        return bot.getApi().getGuildById(bot.getServerid());
+    }
+
+    @Override
+    public Logger getLogger() {
+        return plugin.getLogger();
+    }
+
+    @Override
+    public void disablePlugin() {
+        plugin.getServer().getPluginManager().disablePlugin(plugin);
+    }
+
+    @Override
+    public DiscordBot getBot(){
+        return bot;
     }
 
     /**
@@ -80,35 +107,5 @@ public class CoreControllerSpigotImpl implements PluginController, CoreControlle
 
         getLogger().info("Starting Bot");
         return new DiscordBot(prefix, serverid, token, this);
-    }
-
-    /**
-     * @return Discord Api.
-     */
-    public JDA getDiscordApi() {
-        return this.bot.getApi();
-    }
-
-    /**
-     * @return Main server guild.
-     */
-    public Guild getGuild() {
-        return bot.getApi().getGuildById(bot.getServerid());
-    }
-
-    /**
-     * @return Logger of plugin.
-     */
-    @Override
-    public Logger getLogger() {
-        return plugin.getLogger();
-    }
-
-    /**
-     * Disable the plugin.
-     */
-    @Override
-    public void disablePlugin() {
-        plugin.getServer().getPluginManager().disablePlugin(plugin);
     }
 }

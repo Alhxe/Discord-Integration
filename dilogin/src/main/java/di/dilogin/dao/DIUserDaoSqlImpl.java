@@ -10,7 +10,7 @@ import di.dicore.api.DIApi;
 import di.dilogin.controller.DBController;
 import di.dilogin.controller.MainController;
 import di.dilogin.entity.DIUser;
-import di.internal.utils.Utils;
+import di.internal.utils.Util;
 import net.dv8tion.jda.api.entities.User;
 
 /**
@@ -36,7 +36,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					long id = rs.getLong(1);
-					Optional<User> userOpt = Utils.getDiscordUserById(api.getCoreController().getDiscordApi(), id);
+					Optional<User> userOpt = Util.getDiscordUserById(api.getCoreController().getDiscordApi(), id);
 
 					if (userOpt.isPresent()) {
 						return Optional.of(new DIUser(playerName, userOpt));
@@ -146,7 +146,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next()) {
 					String playerName = rs.getString(1);
-					Optional<User> userOpt = Utils.getDiscordUserById(api.getCoreController().getDiscordApi(),
+					Optional<User> userOpt = Util.getDiscordUserById(api.getCoreController().getDiscordApi(),
 							discordId);
 
 					if (userOpt.isPresent()) {

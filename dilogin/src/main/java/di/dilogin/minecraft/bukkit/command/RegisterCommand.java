@@ -16,7 +16,7 @@ import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
-import di.internal.utils.Utils;
+import di.internal.utils.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -124,7 +124,7 @@ public class RegisterCommand implements CommandExecutor {
 		if (!idIsValid(string))
 			return Optional.empty();
 
-		return Utils.getDiscordUserById(api.getCoreController().getDiscordApi(), Long.parseLong(string));
+		return Util.getDiscordUserById(api.getCoreController().getDiscordApi(), Long.parseLong(string));
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class RegisterCommand implements CommandExecutor {
 			return Optional.empty();
 
 		Guild guild = api.getCoreController().getGuild();
-		return Utils.getDiscordUserByUsernameAndTag(guild, string);
+		return Util.getDiscordUserByUsernameAndTag(guild, string);
 
 	}
 
@@ -208,7 +208,7 @@ public class RegisterCommand implements CommandExecutor {
 	private MessageEmbed getEmbedMessage(Player player, User user) {
 		EmbedBuilder embedBuilder = new EmbedBuilder().setTitle(LangManager.getString(player.getName(), "register_discord_title"))
 				.setDescription(LangManager.getString(user, player.getName(), "register_discord_desc")).setColor(
-						Utils.hex2Rgb(api.getInternalController().getConfigManager().getString("discord_embed_color")));
+						Util.hex2Rgb(api.getInternalController().getConfigManager().getString("discord_embed_color")));
 
 		if (api.getInternalController().getConfigManager().getBoolean("discord_embed_server_image")) {
 			Optional<Guild> optGuild = Optional.ofNullable(api.getCoreController().getDiscordApi()

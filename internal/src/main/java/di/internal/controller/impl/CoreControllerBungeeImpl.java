@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import di.internal.controller.ChannelController;
 import di.internal.controller.CoreController;
 import di.internal.controller.PluginController;
 import di.internal.controller.file.ConfigManager;
@@ -15,7 +16,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.md_5.bungee.api.plugin.Plugin;
 
 /**
- * Internal Controller of Plugin.
+ * BungeeCord implementation for {@link CoreController}.
  */
 @Getter
 public class CoreControllerBungeeImpl implements PluginController, CoreController {
@@ -38,19 +39,48 @@ public class CoreControllerBungeeImpl implements PluginController, CoreControlle
     /**
      * Contains the bot config information.
      */
-    private final DiscordBot bot;
+    private DiscordBot bot;
 
     /**
      * Path of the main plugin folder.
      */
     private final File dataFolder;
 
+
     public CoreControllerBungeeImpl(Plugin plugin, ClassLoader classLoader) {
         this.plugin = plugin;
         this.dataFolder = plugin.getDataFolder();
         this.configManager = new ConfigManager(this, plugin.getDataFolder(), classLoader);
         this.langManager = new YamlManager(this, "lang.yml", plugin.getDataFolder(), classLoader);
-        this.bot = initBot();
+    }
+
+    @Override
+    public JDA getDiscordApi() {
+        return this.bot.getApi();
+    }
+
+    public Guild getGuild() {
+        return bot.getApi().getGuildById(bot.getServerid());
+    }
+
+    @Override
+    public void startBot() {
+        bot = initBot();
+    }
+
+    @Override
+    public Logger getLogger() {
+            return plugin.getLogger();
+    }
+
+    @Override
+    public void disablePlugin() {
+        plugin.onDisable();
+    }
+
+    @Override
+    public DiscordBot getBot(){
+        return bot;
     }
 
     /**
@@ -79,35 +109,5 @@ public class CoreControllerBungeeImpl implements PluginController, CoreControlle
 
         getLogger().info("Starting Bot");
         return new DiscordBot(prefix, serverid, token, this);
-    }
-
-    /**
-     * @return Discord Api.
-     */
-    public JDA getDiscordApi() {
-        return this.bot.getApi();
-    }
-
-    /**
-     * @return Main server guild.
-     */
-    public Guild getGuild() {
-        return bot.getApi().getGuildById(bot.getServerid());
-    }
-
-    /**
-     * @return Logger of plugin.
-     */
-    @Override
-    public Logger getLogger() {
-            return plugin.getLogger();
-    }
-
-    /**
-     * Disable the plugin.
-     */
-    @Override
-    public void disablePlugin() {
-        plugin.onDisable();
     }
 }

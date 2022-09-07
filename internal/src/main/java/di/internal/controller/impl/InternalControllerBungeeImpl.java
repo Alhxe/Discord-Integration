@@ -1,5 +1,6 @@
 package di.internal.controller.impl;
 
+import di.internal.controller.ChannelController;
 import di.internal.controller.CoreController;
 import di.internal.controller.InternalController;
 import di.internal.controller.PluginController;
@@ -39,6 +40,11 @@ public class InternalControllerBungeeImpl implements PluginController, InternalC
     private File dataFolder;
 
     /**
+     * The ChannelController.
+     */
+    private final ChannelController channelController;
+
+    /**
      * Main Class Constructor.
      *
      * @param plugin         Bukkit plugin.
@@ -56,6 +62,8 @@ public class InternalControllerBungeeImpl implements PluginController, InternalC
             this.configManager = new ConfigManager(this, dataFolder, classLoader);
         if (langFile)
             this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader);
+
+        this.channelController = new ChannelControllerBungeeImpl(plugin);
     }
 
     /**
@@ -83,6 +91,11 @@ public class InternalControllerBungeeImpl implements PluginController, InternalC
     @Override
     public void disablePlugin() {
         plugin.onDisable();
+    }
+
+    @Override
+    public ChannelController getChannelController() {
+        return this.channelController;
     }
 
     private String getPluginName() {

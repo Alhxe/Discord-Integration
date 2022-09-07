@@ -2,6 +2,7 @@ package di.internal.utils;
 
 import java.awt.Color;
 import java.io.InputStream;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,12 +18,12 @@ import net.dv8tion.jda.api.entities.User;
 /**
  * General utilities.
  */
-public class Utils {
+public class Util {
 
     /**
      * Prohibits instantiation of the class.
      */
-    private Utils() {
+    private Util() {
         throw new IllegalStateException();
     }
 
@@ -123,5 +124,29 @@ public class Utils {
         } else {
             return inputStream;
         }
+    }
+
+    /**
+     * Generates a random subchannel.
+     *
+     * @param playerName Player name.
+     * @return Random subchannel.
+     */
+    public static String getRandomSubChannel(String playerName) {
+        return playerName + generateNumber(20);
+    }
+
+    /**
+     * Generates a random number.
+     *
+     * @param length Number length.
+     * @return Random number.
+     */
+    private static String generateNumber(int length) {
+        SecureRandom sr = new SecureRandom();
+        String result = (sr.nextInt(9) + 1) + "";
+        for (int i = 0; i < length - 2; i++) result += sr.nextInt(10);
+        result += (sr.nextInt(9) + 1);
+        return result;
     }
 }

@@ -17,6 +17,10 @@ commands:
         description: Unregister user
         usage: /unregister <nick>
         permission: sdl.unregister
+    ejemplo:
+        description: Ejemplo de comando
+        usage: /ejemplo
+        aliases: [eje]
 permissions:
     sdl.forcelogin:
         description: Allow to use Forcelogin

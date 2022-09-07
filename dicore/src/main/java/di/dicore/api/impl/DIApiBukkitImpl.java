@@ -3,6 +3,7 @@ package di.dicore.api.impl;
 import di.dicore.BukkitApplication;
 import di.dicore.api.DIApi;
 import di.internal.controller.impl.InternalControllerBukkitImpl;
+import di.internal.entity.DiscordBot;
 import org.bukkit.plugin.Plugin;
 
 import di.internal.controller.CoreController;
@@ -10,6 +11,8 @@ import di.internal.controller.InternalController;
 import di.internal.entity.DiscordCommand;
 import di.internal.exception.NoApiException;
 import lombok.Getter;
+
+import java.util.Optional;
 
 /**
  * Class used to communicate between the rest of the plugins.

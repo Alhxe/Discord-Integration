@@ -12,7 +12,7 @@ import com.nickuc.login.api.event.bukkit.command.UnregisterEvent;
 import di.dilogin.dao.DIUserDao;
 
 /**
- * Events from nLogin plugin.
+ * Ejemplo from nLogin plugin.
  */
 public class UnregisterNLoginEvents implements Listener{
 	

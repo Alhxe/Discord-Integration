@@ -3,9 +3,11 @@ package di.internal.controller.impl;
 import java.io.File;
 import java.util.logging.Logger;
 
+import di.internal.controller.ChannelController;
 import di.internal.controller.CoreController;
 import di.internal.controller.InternalController;
 import di.internal.controller.PluginController;
+import di.internal.interceptor.ChannelBukkitInterceptor;
 import org.bukkit.plugin.Plugin;
 
 import di.internal.controller.file.ConfigManager;
@@ -40,6 +42,11 @@ public class InternalControllerBukkitImpl implements PluginController, InternalC
     private File dataFolder;
 
     /**
+     * The ChannelController.
+     */
+    private final ChannelController channelController;
+
+    /**
      * Main Class Constructor.
      *
      * @param plugin         Bukkit plugin.
@@ -58,6 +65,8 @@ public class InternalControllerBukkitImpl implements PluginController, InternalC
             this.configManager = new ConfigManager(this, dataFolder, classLoader);
         if (langFile)
             this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader);
+
+        this.channelController = new ChannelControllerBukkitImpl(plugin);
     }
 
     /**
@@ -85,6 +94,11 @@ public class InternalControllerBukkitImpl implements PluginController, InternalC
     @Override
     public void disablePlugin() {
         plugin.getServer().getPluginManager().disablePlugin(plugin);
+    }
+
+    @Override
+    public ChannelController getChannelController() {
+        return this.channelController;
     }
 
     private String getPluginName() {

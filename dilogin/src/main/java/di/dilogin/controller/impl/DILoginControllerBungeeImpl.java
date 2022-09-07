@@ -7,7 +7,7 @@ import di.dilogin.dao.DIUserDao;
 import di.dilogin.dao.DIUserDaoSqlImpl;
 import di.dilogin.entity.DIUser;
 import di.dilogin.minecraft.bungee.BungeeUtil;
-import di.internal.utils.Utils;
+import di.internal.utils.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
@@ -22,7 +22,7 @@ import java.util.Optional;
 /**
  * DILogin plugin control.
  */
-public class DILoginControllerBungee implements DILoginController {
+public class DILoginControllerBungeeImpl implements DILoginController {
 
     /**
      * Starts the implementation of the class that gets data from the users.
@@ -43,7 +43,7 @@ public class DILoginControllerBungee implements DILoginController {
     public EmbedBuilder getEmbedBase() {
         DIApi api = BungeeApplication.getDIApi();
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(
-                Utils.hex2Rgb(api.getInternalController().getConfigManager().getString("discord_embed_color")));
+                Util.hex2Rgb(api.getInternalController().getConfigManager().getString("discord_embed_color")));
         if (api.getInternalController().getConfigManager().getBoolean("discord_embed_server_image")) {
             Optional<Guild> optGuild = Optional.ofNullable(api.getCoreController().getDiscordApi()
                     .getGuildById(api.getCoreController().getConfigManager().getLong("discord_server_id")));
