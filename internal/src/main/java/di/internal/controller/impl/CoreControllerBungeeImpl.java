@@ -1,10 +1,10 @@
 package di.internal.controller.impl;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import di.internal.controller.ChannelController;
 import di.internal.controller.CoreController;
 import di.internal.controller.PluginController;
 import di.internal.controller.file.ConfigManager;
@@ -46,26 +46,26 @@ public class CoreControllerBungeeImpl implements PluginController, CoreControlle
      */
     private final File dataFolder;
 
-
     public CoreControllerBungeeImpl(Plugin plugin, ClassLoader classLoader) {
         this.plugin = plugin;
         this.dataFolder = plugin.getDataFolder();
-        this.configManager = new ConfigManager(this, plugin.getDataFolder(), classLoader);
-        this.langManager = new YamlManager(this, "lang.yml", plugin.getDataFolder(), classLoader);
+        this.configManager = new ConfigManager(this, plugin.getDataFolder(), classLoader, false);
+        this.langManager = new YamlManager(this, "lang.yml", plugin.getDataFolder(), classLoader, false);
+        this.bot = initBot();
     }
 
     @Override
-    public JDA getDiscordApi() {
+    public Optional<JDA> getDiscordApi() {
         return this.bot.getApi();
     }
 
-    public Guild getGuild() {
-        return bot.getApi().getGuildById(bot.getServerid());
+    public Optional<Guild> getGuild() {
+        return Optional.ofNullable(bot.getApi().get().getGuildById(bot.getServerId()));
     }
 
     @Override
-    public void startBot() {
-        bot = initBot();
+    public void setBotInfo(String prefix, long serverId) {
+        this.bot = new DiscordBot(prefix, serverId);
     }
 
     @Override

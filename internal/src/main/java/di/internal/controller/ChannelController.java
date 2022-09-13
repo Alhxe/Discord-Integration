@@ -12,18 +12,18 @@ public interface ChannelController {
      * Send a message to the plugin.
      *
      * @param playerName Player to send the message.
-     * @param message    Message to send.
+     * @param content    Message to send.
      */
-    void sendMessageToPlugin(String playerName, String message);
+    void sendMessageToPlugin(String playerName, String content);
 
     /**
      * Send a message to the plugin.
      *
      * @param subChannel SubChannel to send the message.
      * @param playerName Player to send the message.
-     * @param message    Message to send.
+     * @param content    Message to send.
      */
-    void sendMessageToPlugin(String subChannel, String playerName, String message);
+    void sendMessageToPluginWithSubChannel(String subChannel, String playerName, String content);
 
     /**
      * Send a message to the plugin and wait for a response.
@@ -32,7 +32,7 @@ public interface ChannelController {
      * @param message    Message to send.
      * @return
      */
-    CompletableFuture<String> sendMessageAndWaitResponse(String playerName, String message);
+    CompletableFuture<String> sendMessageAndWaitResponse(String playerName, String demand, String content);
 
     /**
      * Send a message to the plugin and wait for a response.
@@ -42,7 +42,6 @@ public interface ChannelController {
      * @param message    Message to send.
      * @return
      */
-    CompletableFuture<String> sendMessageAndWaitResponse(String subChannel, String playerName, String message);
-
+    CompletableFuture<String> sendMessageAndWaitResponseWithSubChannel(String subChannel, String playerName, String demand, String content);
 
 }

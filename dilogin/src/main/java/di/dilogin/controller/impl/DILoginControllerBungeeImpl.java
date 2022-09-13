@@ -46,7 +46,7 @@ public class DILoginControllerBungeeImpl implements DILoginController {
                 Util.hex2Rgb(api.getInternalController().getConfigManager().getString("discord_embed_color")));
         if (api.getInternalController().getConfigManager().getBoolean("discord_embed_server_image")) {
             Optional<Guild> optGuild = Optional.ofNullable(api.getCoreController().getDiscordApi()
-                    .getGuildById(api.getCoreController().getConfigManager().getLong("discord_server_id")));
+                    .get().getGuildById(api.getCoreController().getConfigManager().getLong("discord_server_id")));
             if (optGuild.isPresent()) {
                 String url = optGuild.get().getIconUrl();
                 if (url != null)
@@ -116,8 +116,8 @@ public class DILoginControllerBungeeImpl implements DILoginController {
             return;
 
         DIApi api = BungeeApplication.getDIApi();
-        JDA jda = BungeeApplication.getDIApi().getCoreController().getDiscordApi();
-        Guild guild = api.getCoreController().getGuild();
+        JDA jda = BungeeApplication.getDIApi().getCoreController().getDiscordApi().get();
+        Guild guild = api.getCoreController().getGuild().get();
 
         Member member = guild.retrieveMember(user, true).complete();
         Member bot = guild.retrieveMember(jda.getSelfUser(), true).complete();

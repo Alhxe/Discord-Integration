@@ -8,24 +8,30 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
 
+import di.internal.controller.ChannelController;
+import di.internal.controller.CoreController;
+import di.internal.controller.file.ConfigManager;
+import di.internal.controller.file.YamlManager;
+import di.internal.dto.BotDto;
+import di.internal.dto.Demand;
+import di.internal.dto.FileDto;
+import di.internal.dto.converter.JsonConverter;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
+import org.bukkit.entity.Player;
 
 /**
  * General utilities.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Util {
-
-    /**
-     * Prohibits instantiation of the class.
-     */
-    private Util() {
-        throw new IllegalStateException();
-    }
 
     /**
      * @param colorStr hexadecimal color.
@@ -59,6 +65,11 @@ public class Util {
         return Optional.empty();
     }
 
+    /**
+     * @param guild  Discord guild.
+     * @param string Discord user name with tag.
+     * @return Possible discord user.
+     */
     public static Optional<User> getDiscordUserByUsernameAndTag(Guild guild, String string) {
         String name = string.substring(0, string.lastIndexOf('#'));
         String tag = string.substring(string.lastIndexOf('#') + 1);
@@ -82,15 +93,6 @@ public class Util {
 
         return Optional.empty();
     }
-
-    /**
-     * @param plugin     Bukkit plugin.
-     * @param playerName Bukkit player's name.
-     * @return Possible player based on their name.
-     *public static Optional<Player> getUserPlayerByName(Plugin plugin, String playerName) {
-     * 		return Optional.ofNullable(plugin.getServer().getPlayer(playerName));
-     *        }
-     */
 
     /**
      * Delete a message after a certain time.
@@ -133,20 +135,67 @@ public class Util {
      * @return Random subchannel.
      */
     public static String getRandomSubChannel(String playerName) {
-        return playerName + generateNumber(20);
+        return playerName + generateNumber();
     }
 
     /**
      * Generates a random number.
      *
-     * @param length Number length.
      * @return Random number.
      */
-    private static String generateNumber(int length) {
+    private static String generateNumber() {
         SecureRandom sr = new SecureRandom();
-        String result = (sr.nextInt(9) + 1) + "";
-        for (int i = 0; i < length - 2; i++) result += sr.nextInt(10);
-        result += (sr.nextInt(9) + 1);
-        return result;
+        StringBuilder result = new StringBuilder((sr.nextInt(9) + 1) + "");
+        for (int i = 0; i < 20 - 2; i++) result.append(sr.nextInt(10));
+        result.append(sr.nextInt(9) + 1);
+        return result.toString();
+    }
+
+    /**
+     * Loads the configuration file from bungee.
+     *
+     * @param controller    Channel controller.
+     * @param configManager Config manager.
+     * @param playerName    Player name.
+     */
+    public static void loadConfigFile(ChannelController controller, ConfigManager configManager, String playerName) {
+        controller.sendMessageAndWaitResponse(playerName, "getConfigFile", "").whenCompleteAsync((json, throwable) -> {
+            if (json != null) {
+                JsonConverter<FileDto> fileDtoJsonConverter = new JsonConverter(FileDto.class);
+                configManager.setData(fileDtoJsonConverter.getDto(json).getYamlData());
+            }
+        });
+    }
+
+    /**
+     * Loads the language file from bungee.
+     *
+     * @param controller  Channel controller.
+     * @param yamlManager Yaml manager.
+     * @param playerName  Player name.
+     */
+    public static void loadLangFile(ChannelController controller, YamlManager yamlManager, String playerName) {
+        controller.sendMessageAndWaitResponse(playerName, "getLangFile", "").whenCompleteAsync((json, throwable) -> {
+            if (json != null) {
+                JsonConverter<FileDto> fileDtoJsonConverter = new JsonConverter(FileDto.class);
+                yamlManager.setData(fileDtoJsonConverter.getDto(json).getYamlData());
+            }
+        });
+    }
+
+    /**
+     * Update the bot's configuration, asking bungee for the information.
+     *
+     * @param controller Channel controller.
+     * @param coreController Core controller.
+     * @param playerName Player name.
+     */
+    public static void updateBotInfo(ChannelController controller, CoreController coreController, String playerName) {
+        controller.sendMessageAndWaitResponse(playerName, Demand.getBotConfig.name(), "")
+                .whenCompleteAsync((s, throwable) -> {
+                    JsonConverter<BotDto> jsonConverter = new JsonConverter<>(BotDto.class);
+                    BotDto botDto = jsonConverter.getDto(s);
+                    coreController.setBotInfo(botDto.getPrefix(), botDto.getServerId());
+                });
     }
 }

@@ -34,7 +34,7 @@ public class UserPreLoginEvent implements Listener {
 	 * Main event body.
 	 * @param event It is the object that includes the event information.
 	 */
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOW)
 	public void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent event) {
 		String username = event.getName();
 		Server server = BukkitApplication.getPlugin().getServer();

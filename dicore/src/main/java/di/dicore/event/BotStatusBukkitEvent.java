@@ -98,7 +98,7 @@ public class BotStatusBukkitEvent implements Listener {
      * Fire the status of the bot.
      */
     private static void fire() {
-        controller.getBot().getApi().getPresence().setActivity(Activity.playing(getContent()));
+        controller.getBot().getApi().get().getPresence().setActivity(Activity.playing(getContent()));
     }
 
     /**

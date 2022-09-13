@@ -83,7 +83,7 @@ public class BukkitApplication extends JavaPlugin {
 		final long CHANNEL_ID = api.getInternalController().getConfigManager().getLong("log_channel");
 
 		Optional<TextChannel> textChannelOpt = Optional
-				.ofNullable(api.getCoreController().getDiscordApi().getTextChannelById(CHANNEL_ID));
+				.ofNullable(api.getCoreController().getDiscordApi().get().getTextChannelById(CHANNEL_ID));
 
 		if (!textChannelOpt.isPresent()) {
 			getPlugin().getLogger().log(Level.SEVERE, String.format("No channel found with %s ID.",CHANNEL_ID));

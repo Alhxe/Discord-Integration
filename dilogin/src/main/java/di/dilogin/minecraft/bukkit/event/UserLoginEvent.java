@@ -105,7 +105,7 @@ public interface UserLoginEvent extends Listener {
 	 * @param embed  Embed message.
 	 */
 	default void sendServerMessage(User user, Player player, MessageEmbed embed) {
-		TextChannel serverchannel = api.getCoreController().getDiscordApi()
+		TextChannel serverchannel = api.getCoreController().getDiscordApi().get()
 				.getTextChannelById(api.getInternalController().getConfigManager().getLong("channel"));
 
 		serverchannel.sendMessage(user.getAsMention()).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();

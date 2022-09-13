@@ -39,25 +39,25 @@ public class ChannelControllerBukkitImpl implements ChannelController {
     }
 
     @Override
-    public void sendMessageToPlugin(String playerName, String message) {
+    public void sendMessageToPlugin(String playerName, String content) {
         String subChannel = Util.getRandomSubChannel(playerName);
-        sendMessage(subChannel, playerName, message);
+        sendMessage(subChannel, playerName, content);
     }
 
     @Override
-    public void sendMessageToPlugin(String subChannel, String playerName, String message) {
-        sendMessage(subChannel, playerName, message);
+    public void sendMessageToPluginWithSubChannel(String subChannel, String playerName, String content) {
+        sendMessage(subChannel, playerName, content);
     }
 
     @Override
-    public CompletableFuture<String> sendMessageAndWaitResponse(String playerName, String message) {
+    public CompletableFuture<String> sendMessageAndWaitResponse(String playerName, String demand, String content) {
         String subChannel = Util.getRandomSubChannel(playerName);
-        return sendMessageWithResponse(subChannel, playerName, message);
+        return sendMessageWithResponse(subChannel, playerName, demand, content);
     }
 
     @Override
-    public CompletableFuture<String> sendMessageAndWaitResponse(String subChannel, String playerName, String message) {
-        return sendMessageWithResponse(subChannel, playerName, message);
+    public CompletableFuture<String> sendMessageAndWaitResponseWithSubChannel(String subChannel, String playerName, String demand, String content) {
+        return sendMessageWithResponse(subChannel, playerName, demand, content);
     }
 
     /**
@@ -65,40 +65,53 @@ public class ChannelControllerBukkitImpl implements ChannelController {
      *
      * @param subChannel Bungee SubChannel.
      * @param playerName Player name.
-     * @param message    Message to send.
+     * @param content   Content for the demand.
      */
-    public void sendMessage(String subChannel, String playerName, String message) {
+    private void sendMessage(String subChannel, String playerName, String content) {
         Optional<Player> playerOptional = Optional.ofNullable(plugin.getServer().getPlayer(playerName));
 
         if (playerOptional.isPresent()) {
             ByteArrayDataOutput out = ByteStreams.newDataOutput();
             out.writeUTF(subChannel);
-            out.writeUTF(message);
+            out.writeUTF(content);
 
             playerOptional.get().getServer().sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
         }
     }
 
     /**
-     * Sends a message to the plugin and waits for a response.
+     * Sends a message to the plugin.
      *
      * @param subChannel Bungee SubChannel.
      * @param playerName Player name.
-     * @param message    Message to send.
-     * @return CompletableFuture with the response.
+     * @param demand    Demand to bungee.
+     * @param content   Content for the demand.
      */
-    public CompletableFuture<String> sendMessageWithResponse(String subChannel, String playerName, String message) {
-        CompletableFuture<String> future = new CompletableFuture<>();
+    private CompletableFuture<String> sendMessageWithResponse(String subChannel, String playerName, String demand, String content) {
         Optional<Player> playerOptional = Optional.ofNullable(plugin.getServer().getPlayer(playerName));
-
-        if (!playerOptional.isPresent())
+        if (!playerOptional.isPresent()) {
+            CompletableFuture<String> future = new CompletableFuture<>();
             future.complete("error");
+            return future;
+        }
+        return sendMessageWithResponse(subChannel, playerOptional.get(), demand, content);
+    }
 
+    /**
+     * Sends a message to the plugin.
+     *
+     * @param subChannel Bungee SubChannel.
+     * @param player Player name.
+     * @param demand    Demand to bungee.
+     * @param content   Content for the demand.
+     */
+    private CompletableFuture<String> sendMessageWithResponse(String subChannel, Player player, String demand, String content) {
+        CompletableFuture<String> future = new CompletableFuture<>();
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF(subChannel);
-        out.writeUTF(message);
+        out.writeUTF(demand);
+        out.writeUTF(content);
 
-        Player player = playerOptional.get();
         player.getServer().sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
         channelBukkitInterceptor.addMessage(subChannel);
 

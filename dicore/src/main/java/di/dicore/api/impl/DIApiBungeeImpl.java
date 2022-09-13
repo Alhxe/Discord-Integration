@@ -19,55 +19,50 @@ import java.util.Optional;
 @Getter
 public class DIApiBungeeImpl implements DIApi {
 
-	/**
-	 * Core controller.
-	 */
-	private final CoreController coreController;
+    /**
+     * Core controller.
+     */
+    private final CoreController coreController;
 
-	/**
-	 * Contains the plugin driver.
-	 */
-	private final InternalController internalController;
+    /**
+     * Contains the plugin driver.
+     */
+    private final InternalController internalController;
 
-	/**
-	 * Main Discord Integration Api. When this class is instantiated, the internal
-	 * controller of the core is obtained.
-	 *
-	 * @param plugin      Plugin from where it is instantiated. The goal is the
-	 *                    logger.
-	 * @param classLoader Class loader.
-	 * @param configFile  True if plugin has config file in DICore folder.
-	 * @param langFile    True if plugin has lang file in DICore folder.
-	 * @throws NoApiException In case the internal controller of the core is not
-	 *                        instantiated, it will throw an error.
-	 */
-	public DIApiBungeeImpl(Plugin plugin, ClassLoader classLoader, boolean configFile, boolean langFile) throws NoApiException {
-		if (BungeeApplication.getInternalController() == null) {
-			throw new NoApiException(plugin.getLogger());
-		}
-		this.coreController = BungeeApplication.getInternalController();
-		this.internalController = new InternalControllerBungeeImpl(plugin, coreController, classLoader, configFile, langFile);
-		plugin.getLogger().info("DICore has successfully connected with " + plugin.getDescription().getName());
+    /**
+     * Main Discord Integration Api. When this class is instantiated, the internal
+     * controller of the core is obtained.
+     *
+     * @param plugin      Plugin from where it is instantiated. The goal is the
+     *                    logger.
+     * @param classLoader Class loader.
+     * @param configFile  True if plugin has config file in DICore folder.
+     * @param langFile    True if plugin has lang file in DICore folder.
+     * @throws NoApiException In case the internal controller of the core is not
+     *                        instantiated, it will throw an error.
+     */
+    public DIApiBungeeImpl(Plugin plugin, ClassLoader classLoader, boolean configFile, boolean langFile) throws NoApiException {
+        if (BungeeApplication.getInternalController() == null) {
+            throw new NoApiException(plugin.getLogger());
+        }
+        this.coreController = BungeeApplication.getInternalController();
+        this.internalController = new InternalControllerBungeeImpl(plugin, coreController, classLoader, configFile, langFile);
+        plugin.getLogger().info("DICore has successfully connected with " + plugin.getDescription().getName());
 
-	}
+    }
 
+    @Override
+    public void registerDiscordEvent(Object listener) {
+        this.coreController.getDiscordApi().get().addEventListener(listener);
+    }
 
-	/**
-	 * Add a new event as listener.
-	 * 
-	 * @param listener Discord Listener.
-	 */
-	@Override
-	public void registerDiscordEvent(Object listener) {
-		this.coreController.getDiscordApi().addEventListener(listener);
-	}
+    @Override
+    public void registerDiscordCommand(DiscordCommand command) {
+        this.coreController.getBot().getCommandHandler().registerCommand(command);
+    }
 
-	/**
-	 * Add a new command to command handler.
-	 * 
-	 * @param command Discord command.
-	 */
-	public void registerDiscordCommand(DiscordCommand command) {
-		this.coreController.getBot().getCommandHandler().registerCommand(command);
-	}
+    @Override
+    public boolean isBungeeDetected() {
+        return false;
+    }
 }

@@ -124,7 +124,7 @@ public class RegisterCommand implements CommandExecutor {
 		if (!idIsValid(string))
 			return Optional.empty();
 
-		return Util.getDiscordUserById(api.getCoreController().getDiscordApi(), Long.parseLong(string));
+		return Util.getDiscordUserById(api.getCoreController().getDiscordApi().get(), Long.parseLong(string));
 	}
 
 	/**
@@ -137,7 +137,7 @@ public class RegisterCommand implements CommandExecutor {
 		if (!usernameAndTagIsValid(string))
 			return Optional.empty();
 
-		Guild guild = api.getCoreController().getGuild();
+		Guild guild = api.getCoreController().getGuild().get();
 		return Util.getDiscordUserByUsernameAndTag(guild, string);
 
 	}
@@ -188,7 +188,7 @@ public class RegisterCommand implements CommandExecutor {
 	 */
 	private void sendServerMessage(User user, Player player, MessageEmbed messageEmbed, String code) {
 		TextChannel serverchannel = api.getCoreController().getDiscordApi()
-				.getTextChannelById(api.getInternalController().getConfigManager().getLong("channel"));
+				.get().getTextChannelById(api.getInternalController().getConfigManager().getLong("channel"));
 
 		assert serverchannel != null;
 		serverchannel.sendMessage(user.getAsMention()).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
@@ -212,7 +212,7 @@ public class RegisterCommand implements CommandExecutor {
 
 		if (api.getInternalController().getConfigManager().getBoolean("discord_embed_server_image")) {
 			Optional<Guild> optGuild = Optional.ofNullable(api.getCoreController().getDiscordApi()
-					.getGuildById(api.getCoreController().getConfigManager().getLong("discord_server_id")));
+					.get().getGuildById(api.getCoreController().getConfigManager().getLong("discord_server_id")));
 			if (optGuild.isPresent()) {
 				String url = optGuild.get().getIconUrl();
 				if (url != null)

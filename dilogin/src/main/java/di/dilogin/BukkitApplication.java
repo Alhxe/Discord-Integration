@@ -54,16 +54,26 @@ public class BukkitApplication extends JavaPlugin {
         plugin = getPlugin(getClass());
 
         connectWithCoreApi();
+
         MainController.setDIApi(api);
-        MainController.setDILoginController(new DILoginControllerBukkitImpl());
+
+        MainController.setDILoginController(new DILoginControllerBukkitImpl(api.isBungeeDetected()));
         MainController.setBukkit(true);
-        DBController.getConnect();
 
-        initCommands();
-        initEvents();
-        initDiscordEvents();
-        initDiscordCommands();
-
+        if (!api.isBungeeDetected()) {
+            DBController.getConnect();
+            initCommands();
+            initEvents();
+            initDiscordEvents();
+            initDiscordCommands();
+        } else {
+            initCommands();
+            api.getInternalController().initConnectionWithBungee().whenCompleteAsync((json, throwable) -> {
+                getLogger().info(json);
+                initCommands();
+                initEvents();
+            });
+        }
         getLogger().info("Plugin started");
     }
 
@@ -115,9 +125,6 @@ public class BukkitApplication extends JavaPlugin {
     private void connectWithCoreApi() {
         try {
             if (Objects.requireNonNull(plugin.getServer().getPluginManager().getPlugin("DICore")).isEnabled()) {
-                api = new DIApiBukkitImpl(plugin, this.getClassLoader(), true, true);
-            } else if (isBungeeDetected()) {
-                System.out.println("BUNGEEDETECTED");
                 api = new DIApiBukkitImpl(plugin, this.getClassLoader(), true, true);
             } else {
                 plugin.getLogger().log(Level.SEVERE,
@@ -203,12 +210,4 @@ public class BukkitApplication extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new UserLoginEventImpl(), plugin);
         getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
     }
-
-    /**
-     * @return true if bungee is enabled.
-     */
-    private boolean isBungeeDetected() {
-        return getServer().spigot().getConfig().getConfigurationSection("settings").getBoolean("settings.bungeecord");
-    }
-
 }

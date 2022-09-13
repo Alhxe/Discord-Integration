@@ -36,7 +36,7 @@ public class Util {
         if (optRole.isPresent()) {
             Role role = optRole.get();
             Member member = Objects.requireNonNull(user.getJDA()
-                            .getGuildById(BukkitApplication.getDIApi().getCoreController().getBot().getServerid()))
+                            .getGuildById(BukkitApplication.getDIApi().getCoreController().getBot().getServerId()))
                     .retrieveMember(user, true).complete();
             return member.getRoles().contains(role);
         }
@@ -186,7 +186,7 @@ public class Util {
      */
     private static Guild getGuild() {
         DIApi api = BukkitApplication.getDIApi();
-        JDA jda = api.getCoreController().getDiscordApi();
-        return jda.getGuildById(api.getCoreController().getBot().getServerid());
+        JDA jda = api.getCoreController().getDiscordApi().get();
+        return jda.getGuildById(api.getCoreController().getBot().getServerId());
     }
 }

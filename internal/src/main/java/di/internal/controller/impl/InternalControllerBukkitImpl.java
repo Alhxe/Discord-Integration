@@ -1,13 +1,24 @@
 package di.internal.controller.impl;
 
 import java.io.File;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import di.internal.controller.ChannelController;
 import di.internal.controller.CoreController;
 import di.internal.controller.InternalController;
 import di.internal.controller.PluginController;
+import di.internal.dto.BotDto;
+import di.internal.dto.Demand;
+import di.internal.dto.FileDto;
+import di.internal.dto.converter.JsonConverter;
+import di.internal.entity.DiscordBot;
+import di.internal.event.UserLoginForBungeeCallBukkitEvent;
 import di.internal.interceptor.ChannelBukkitInterceptor;
+import di.internal.utils.Util;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import di.internal.controller.file.ConfigManager;
@@ -47,6 +58,11 @@ public class InternalControllerBukkitImpl implements PluginController, InternalC
     private final ChannelController channelController;
 
     /**
+     * The CoreController.
+     */
+    private final CoreController coreController;
+
+    /**
      * Main Class Constructor.
      *
      * @param plugin         Bukkit plugin.
@@ -54,19 +70,57 @@ public class InternalControllerBukkitImpl implements PluginController, InternalC
      * @param classLoader    Class loader.
      * @param configFile     True if plugin has config file in DICore folder.
      * @param langFile       True if plugin has lang file in DICore folder.
+     * @param isDataInBungee True if plugin data is in BungeeCord.
      */
     public InternalControllerBukkitImpl(Plugin plugin, CoreController coreController, ClassLoader classLoader, boolean configFile,
-                                        boolean langFile) {
+                                        boolean langFile, boolean isDataInBungee) {
         this.plugin = plugin;
+        this.coreController = coreController;
 
         if (configFile && langFile)
             this.dataFolder = getInternalPluginDataFolder(coreController);
         if (configFile)
-            this.configManager = new ConfigManager(this, dataFolder, classLoader);
+            this.configManager = new ConfigManager(this, dataFolder, classLoader, isDataInBungee);
         if (langFile)
-            this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader);
+            this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader, isDataInBungee);
 
         this.channelController = new ChannelControllerBukkitImpl(plugin);
+
+    }
+
+    @Override
+    public Logger getLogger() {
+        return plugin.getLogger();
+    }
+
+    @Override
+    public void disablePlugin() {
+        plugin.getServer().getPluginManager().disablePlugin(plugin);
+    }
+
+    @Override
+    public ChannelController getChannelController() {
+        return this.channelController;
+    }
+
+    @Override
+    public CompletableFuture<String> initConnectionWithBungee() {
+        CompletableFuture<String> future = new CompletableFuture<>();
+        UserLoginForBungeeCallBukkitEvent event = new UserLoginForBungeeCallBukkitEvent();
+        plugin.getServer().getPluginManager().registerEvents(event, plugin);
+        event.getFirstPlayer().whenCompleteAsync((player, throwable) -> {
+            plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+                String subChannel = Util.getRandomSubChannel(player.getName());
+                channelController.sendMessageAndWaitResponseWithSubChannel(subChannel, player.getName(), "checkConnection", "")
+                        .whenCompleteAsync((s, throwable1) -> {
+                            Util.loadConfigFile(channelController, configManager, player.getName());
+                            Util.loadLangFile(channelController, langManager, player.getName());
+                            Util.updateBotInfo(channelController, coreController, player.getName());
+                            future.complete(s);
+                        });
+            }, 20);
+        });
+        return future;
     }
 
     /**
@@ -81,26 +135,8 @@ public class InternalControllerBukkitImpl implements PluginController, InternalC
     }
 
     /**
-     * @return Logger of plugin.
+     * @return Plugin name.
      */
-    @Override
-    public Logger getLogger() {
-        return plugin.getLogger();
-    }
-
-    /**
-     * Disable the plugin.
-     */
-    @Override
-    public void disablePlugin() {
-        plugin.getServer().getPluginManager().disablePlugin(plugin);
-    }
-
-    @Override
-    public ChannelController getChannelController() {
-        return this.channelController;
-    }
-
     private String getPluginName() {
         return plugin.getName();
     }

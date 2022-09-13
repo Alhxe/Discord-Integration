@@ -5,6 +5,7 @@ import di.dicore.api.impl.DIApiBungeeImpl;
 import di.dilogin.controller.DBController;
 import di.dilogin.controller.MainController;
 import di.dilogin.controller.impl.DILoginControllerBungeeImpl;
+import di.dilogin.minecraft.bungee.controller.ChannelMessageController;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.internal.exception.NoApiException;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -36,11 +37,9 @@ public class BungeeApplication extends Plugin {
 		MainController.setBukkit(true);
 		DBController.getConnect();
 
-		initCommands();
-		initEvents();
-		initDiscordEvents();
-		initDiscordCommands();
-
+		// Events to get data from the DILogin database.
+		plugin.getProxy().getPluginManager().registerListener(plugin, new ChannelMessageController());
+		
 		getLogger().info("Plugin started");
 	}
 
@@ -64,23 +63,6 @@ public class BungeeApplication extends Plugin {
 	}
 
 	/**
-	 * Add the commands to bukkit.
-	 */
-	private void initCommands() {
-
-	}
-
-	/**
-	 * Add to each command that the server must respond in case it does not have
-	 * permissions.
-	 *
-	 * @param command  Bukkit command.
-	 */
-	private void initUniqueCommand(String command) {
-
-	}
-
-	/**
 	 * Connect with DIApi.
 	 */
 	private void connectWithCoreApi() {
@@ -96,26 +78,4 @@ public class BungeeApplication extends Plugin {
 			plugin.onDisable();
 		}
 	}
-
-	/**
-	 * Init Bukkit events.
-	 */
-	private void initEvents() {
-
-	}
-
-	/**
-	 * Records Discord events.
-	 */
-	private void initDiscordEvents() {
-
-	}
-
-	/**
-	 * Init discord commands.
-	 */
-	private void initDiscordCommands() {
-
-	}
-
 }

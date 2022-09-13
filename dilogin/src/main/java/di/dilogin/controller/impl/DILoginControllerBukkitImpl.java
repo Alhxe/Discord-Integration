@@ -10,6 +10,7 @@ import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
+import di.dilogin.dao.DIUserDaoBungeeImpl;
 import di.dilogin.dao.DIUserDaoSqlImpl;
 import di.dilogin.entity.DIUser;
 import di.dilogin.minecraft.bukkit.BukkitUtil;
@@ -34,12 +35,20 @@ public class DILoginControllerBukkitImpl implements DILoginController {
     /**
      * Starts the implementation of the class that gets data from the users.
      */
-    private static final DIUserDao userDao = new DIUserDaoSqlImpl();
+    private static DIUserDao userDao;
 
     /**
      * Get the main plugin api.
      */
     private static final DIApi api = BukkitApplication.getDIApi();
+
+    public DILoginControllerBukkitImpl(boolean isDataInBungee){
+        if(isDataInBungee){
+            this.userDao = new DIUserDaoBungeeImpl();
+        } else {
+            this.userDao = new DIUserDaoSqlImpl();
+        }
+    }
 
     @Override
     public DIUserDao getDIUserDao() {
@@ -52,7 +61,7 @@ public class DILoginControllerBukkitImpl implements DILoginController {
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(
                 Util.hex2Rgb(api.getInternalController().getConfigManager().getString("discord_embed_color")));
         if (api.getInternalController().getConfigManager().getBoolean("discord_embed_server_image")) {
-            Optional<Guild> optGuild = Optional.ofNullable(api.getCoreController().getDiscordApi()
+            Optional<Guild> optGuild = Optional.ofNullable(api.getCoreController().getDiscordApi().get()
                     .getGuildById(api.getCoreController().getConfigManager().getLong("discord_server_id")));
             if (optGuild.isPresent()) {
                 String url = optGuild.get().getIconUrl();
@@ -145,8 +154,8 @@ public class DILoginControllerBukkitImpl implements DILoginController {
             return;
 
         DIApi api = BukkitApplication.getDIApi();
-        JDA jda = BukkitApplication.getDIApi().getCoreController().getDiscordApi();
-        Guild guild = api.getCoreController().getGuild();
+        JDA jda = BukkitApplication.getDIApi().getCoreController().getDiscordApi().get();
+        Guild guild = api.getCoreController().getGuild().get();
 
         Member member = guild.retrieveMember(user, true).complete();
         Member bot = guild.retrieveMember(jda.getSelfUser(), true).complete();

@@ -10,6 +10,7 @@ import lombok.Getter;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.File;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
 /**
@@ -59,9 +60,9 @@ public class InternalControllerBungeeImpl implements PluginController, InternalC
         if (configFile && langFile)
             this.dataFolder = getInternalPluginDataFolder(coreController);
         if (configFile)
-            this.configManager = new ConfigManager(this, dataFolder, classLoader);
+            this.configManager = new ConfigManager(this, dataFolder, classLoader, false);
         if (langFile)
-            this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader);
+            this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader, false);
 
         this.channelController = new ChannelControllerBungeeImpl(plugin);
     }
@@ -96,6 +97,11 @@ public class InternalControllerBungeeImpl implements PluginController, InternalC
     @Override
     public ChannelController getChannelController() {
         return this.channelController;
+    }
+
+    @Override
+    public CompletableFuture<String> initConnectionWithBungee() {
+        return null;
     }
 
     private String getPluginName() {

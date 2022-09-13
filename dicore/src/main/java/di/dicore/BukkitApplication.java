@@ -28,9 +28,10 @@ public class BukkitApplication extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = getPlugin(getClass());
-        internalController = new CoreControllerBukkitImpl(plugin, this.getClassLoader());
-        internalController.startBot();
-        BotStatusBukkitEvent.init(plugin);
+        internalController = new CoreControllerBukkitImpl(plugin, this.getClassLoader(), isBungeeDetected());
+        if (!isBungeeDetected()) {
+            BotStatusBukkitEvent.init(plugin);
+        }
         getLogger().info("Plugin started");
     }
 
@@ -47,7 +48,7 @@ public class BukkitApplication extends JavaPlugin {
     @Override
     public void onDisable() {
         if (internalController != null)
-            internalController.getBot().getApi().shutdownNow();
+            internalController.getBot().getApi().get().shutdownNow();
 
         getLogger().info("Plugin disabled");
     }
@@ -60,9 +61,9 @@ public class BukkitApplication extends JavaPlugin {
     }
 
     /**
-     * @return true if bungee is enabled.
+     * @return true if BungeeCord setting is enabled.
      */
     private boolean isBungeeDetected() {
-        return getServer().spigot().getConfig().getBoolean("settings.bungeecord");
+        return plugin.getServer().spigot().getConfig().getBoolean("settings.bungeecord");
     }
 }

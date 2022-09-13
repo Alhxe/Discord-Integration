@@ -41,25 +41,25 @@ public class ChannelControllerBungeeImpl implements ChannelController {
     }
 
     @Override
-    public void sendMessageToPlugin(String playerName, String message) {
+    public void sendMessageToPlugin(String playerName, String content) {
         String subChannel = Util.getRandomSubChannel(playerName);
-        sendMessage(subChannel, playerName, message);
+        sendMessage(subChannel, playerName, content);
     }
 
     @Override
-    public void sendMessageToPlugin(String subChannel, String playerName, String message) {
-        sendMessage(subChannel, playerName, message);
+    public void sendMessageToPluginWithSubChannel(String subChannel, String playerName, String content) {
+        sendMessage(subChannel, playerName, content);
     }
 
     @Override
-    public CompletableFuture<String> sendMessageAndWaitResponse(String playerName, String message) {
+    public CompletableFuture<String> sendMessageAndWaitResponse(String playerName, String demand, String content) {
         String subChannel = Util.getRandomSubChannel(playerName);
-        return sendMessageWithResponse(subChannel, playerName, message);
+        return sendMessageWithResponse(subChannel, playerName, demand, content);
     }
 
     @Override
-    public CompletableFuture<String> sendMessageAndWaitResponse(String subChannel, String playerName, String message) {
-        return sendMessageWithResponse(subChannel, playerName, message);
+    public CompletableFuture<String> sendMessageAndWaitResponseWithSubChannel(String subChannel, String playerName, String demand, String content) {
+        return sendMessageWithResponse(subChannel, playerName, demand, content);
     }
 
     /**
@@ -67,16 +67,17 @@ public class ChannelControllerBungeeImpl implements ChannelController {
      *
      * @param subChannel Bungee SubChannel.
      * @param playerName Player name.
-     * @param message    Message to send.
+     * @param content    Content for the demand.
      */
-    private void sendMessage(String subChannel, String playerName, String message) {
+    private void sendMessage(String subChannel, String playerName, String content) {
         Collection<ProxiedPlayer> networkPlayers = ProxyServer.getInstance().getPlayers();
         if (networkPlayers == null || networkPlayers.isEmpty()) {
             return;
         }
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF(subChannel);
-        out.writeUTF(message);
+        out.writeUTF(content);
+
 
         Optional<ProxiedPlayer> playerOptional = networkPlayers.stream().findAny();
 
@@ -84,14 +85,14 @@ public class ChannelControllerBungeeImpl implements ChannelController {
     }
 
     /**
-     * Sends a message to the plugin and waits for a response.
+     * Sends a message to the plugin.
      *
      * @param subChannel Bungee SubChannel.
      * @param playerName Player name.
-     * @param message    Message to send.
-     * @return CompletableFuture with the response.
+     * @param demand     Demand to bungee.
+     * @param content    Content for the demand.
      */
-    private CompletableFuture<String> sendMessageWithResponse(String subChannel, String playerName, String message) {
+    private CompletableFuture<String> sendMessageWithResponse(String subChannel, String playerName, String demand, String content) {
         CompletableFuture<String> future = new CompletableFuture<>();
         Collection<ProxiedPlayer> networkPlayers = ProxyServer.getInstance().getPlayers();
         if (networkPlayers == null || networkPlayers.isEmpty()) {
@@ -100,7 +101,8 @@ public class ChannelControllerBungeeImpl implements ChannelController {
 
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF(subChannel);
-        out.writeUTF(message);
+        out.writeUTF(demand);
+        out.writeUTF(content);
 
         assert networkPlayers != null;
         Optional<ProxiedPlayer> playerOptional = networkPlayers.stream().filter(u -> u.getDisplayName().equals(playerName))

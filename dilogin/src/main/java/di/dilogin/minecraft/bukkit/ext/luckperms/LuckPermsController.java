@@ -90,7 +90,7 @@ public class LuckPermsController {
 				boolean isUserInGroup = isUserInGroup(player.getName(), group);
 				boolean isUserInRole = Util.userHasRole(role, player.getName());
 
-				Role discordRole = diapi.getCoreController().getGuild().getRoleById(role);
+				Role discordRole = diapi.getCoreController().getGuild().get().getRoleById(role);
 				if (isUserInGroup && !isUserInRole){
 					removeGroup(player.getName(), group, "Removed " + discordRole + " role in discord.");
 				}

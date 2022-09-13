@@ -24,7 +24,7 @@ public class DiscordBot {
 	/**
 	 * Javacord Api.
 	 */
-	private JDA api;
+	private Optional<JDA> api;
 
 	/**
 	 * Bot prefix.
@@ -34,7 +34,7 @@ public class DiscordBot {
 	/**
 	 * Main server id.
 	 */
-	private long serverid;
+	private long serverId;
 
 	/**
 	 * Bot CommandHandler.
@@ -44,21 +44,32 @@ public class DiscordBot {
 	/**
 	 * CoreController of plugin.
 	 */
-	private final CoreController controller;
+	private CoreController controller;
 
 	/**
 	 * Main Controller.
 	 * 
 	 * @param prefix   Bot prefix.
-	 * @param serverid Main server id.
+	 * @param serverId Main server id.
 	 * @param token    Bot token.
 	 * @param controller  CoreController of plugin.
 	 */
-	public DiscordBot(String prefix, long serverid, String token, CoreController controller) {
+	public DiscordBot(String prefix, long serverId, String token, CoreController controller) {
 		this.prefix = prefix;
-		this.serverid = serverid;
+		this.serverId = serverId;
 		this.controller = controller;
 		initBot(token);
+	}
+
+	/**
+	 * Constructor for when the bot is not hosted on the server.
+	 *
+	 * @param prefix  Bot prefix.
+	 * @param serverId Main server id.
+	 */
+	public DiscordBot(String prefix, long serverId){
+		this.prefix = prefix;
+		this.serverId = serverId;
 	}
 
 	/**
@@ -68,9 +79,10 @@ public class DiscordBot {
 	 */
 	public void initBot(String token) {
 		try {
-			this.api = JDABuilder.createDefault(token).enableIntents(GatewayIntent.GUILD_PRESENCES,
+			JDA api = JDABuilder.createDefault(token).enableIntents(GatewayIntent.GUILD_PRESENCES,
 					GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MEMBERS).build();
 			api.awaitReady();
+			this.api = Optional.of(api);
 			onConnectToDiscord();
 			checkPermissions();
 		} catch (LoginException e) {
@@ -90,17 +102,17 @@ public class DiscordBot {
 	private void onConnectToDiscord() {
 		controller.getLogger().info("Bot started");
 		this.commandHandler = new CommandHandler(prefix);
-		api.addEventListener(this.commandHandler);
+		api.get().addEventListener(this.commandHandler);
 	}
 
 	/**
 	 * Check discord server permissions.
 	 */
 	private void checkPermissions() {
-		Optional<Guild> guildOpt = Optional.ofNullable(api.getGuildById(serverid));
+		Optional<Guild> guildOpt = Optional.ofNullable(api.get().getGuildById(serverId));
 
 		if (!guildOpt.isPresent()) {
-			controller.getLogger().warning("I could not find the server with ID " + serverid);
+			controller.getLogger().warning("I could not find the server with ID " + serverId);
 			return;
 		}
 

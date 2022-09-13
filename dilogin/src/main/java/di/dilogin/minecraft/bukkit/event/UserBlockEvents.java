@@ -33,181 +33,184 @@ import org.bukkit.event.player.PlayerPortalEvent;
 
 import di.dilogin.minecraft.cache.UserBlockedCache;
 
+import java.util.Objects;
+
 @SuppressWarnings("deprecation")
 public class UserBlockEvents implements Listener {
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerSendCommand(PlayerCommandPreprocessEvent event) {
-		String message = event.getMessage();
-		if (!message.contains(" ")) {
-			if (message.equalsIgnoreCase("/register"))
-				return;
-		} else if (message.split(" ")[0].equalsIgnoreCase("/register")) {
-			return;
-		}
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerSendCommand(PlayerCommandPreprocessEvent event) {
+        String message = event.getMessage();
+        if (!message.contains(" ")) {
+            if (message.equalsIgnoreCase("/register"))
+                return;
+        } else if (message.split(" ")[0].equalsIgnoreCase("/register")) {
+            return;
+        }
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerChat(AsyncPlayerChatEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onMove(PlayerMoveEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()) && (event.getFrom().getX() != event.getTo().getX()
-				|| event.getFrom().getY() != event.getTo().getY() || event.getFrom().getZ() < event.getTo().getZ())) {
-			Location loc = event.getFrom();
-			event.getPlayer().teleport(loc.setDirection(event.getTo().getDirection()));
-		}
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onMove(PlayerMoveEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()) && (event.getFrom().getX()
+                != Objects.requireNonNull(event.getTo()).getX()
+                || event.getFrom().getY() != event.getTo().getY() || event.getFrom().getZ() < event.getTo().getZ())) {
+            Location loc = event.getFrom();
+            event.getPlayer().teleport(loc.setDirection(event.getTo().getDirection()));
+        }
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onHungerDecrease(FoodLevelChangeEvent event) {
-		if (event.getEntity().getType() != EntityType.PLAYER)
-			return;
-		Player player = (Player) event.getEntity();
-		if (UserBlockedCache.contains(player.getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onHungerDecrease(FoodLevelChangeEvent event) {
+        if (event.getEntity().getType() != EntityType.PLAYER)
+            return;
+        Player player = (Player) event.getEntity();
+        if (UserBlockedCache.contains(player.getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onOpenInventory(InventoryOpenEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onOpenInventory(InventoryOpenEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onInventoryClick(InventoryClickEvent event) {
-		if (UserBlockedCache.contains(event.getWhoClicked().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (UserBlockedCache.contains(event.getWhoClicked().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onUserDejaCaerItem(PlayerDropItemEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onUserDejaCaerItem(PlayerDropItemEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onUserCambiaDeModo(PlayerGameModeChangeEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onUserCambiaDeModo(PlayerGameModeChangeEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onInteractEvent(PlayerInteractEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onInteractEvent(PlayerInteractEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onInteractEntityEvent(PlayerInteractEntityEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onInteractEntityEvent(PlayerInteractEntityEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onUserCambiaObjetoDeMano(PlayerItemHeldEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onUserCambiaObjetoDeMano(PlayerItemHeldEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onUserLevantaObjeto(PlayerPickupItemEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onUserLevantaObjeto(PlayerPickupItemEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onUserPortal(PlayerPortalEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onUserPortal(PlayerPortalEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onConsumeItem(PlayerItemConsumeEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onConsumeItem(PlayerItemConsumeEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onItemDamage(PlayerItemDamageEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onItemDamage(PlayerItemDamageEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onBlockDamageEvent(BlockDamageEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onBlockDamageEvent(BlockDamageEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onBlockBreakEvent(BlockBreakEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onBlockBreakEvent(BlockBreakEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onBlockPlacedEvent(BlockPlaceEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onBlockPlacedEvent(BlockPlaceEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onBlockPlacedEvent(SignChangeEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onBlockPlacedEvent(SignChangeEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onBlockDamage(EntityDamageByBlockEvent event) {
-		if (event.getEntityType() != EntityType.PLAYER)
-			return;
-		Player player = (Player) event.getEntity();
-		if (UserBlockedCache.contains(player.getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onBlockDamage(EntityDamageByBlockEvent event) {
+        if (event.getEntityType() != EntityType.PLAYER)
+            return;
+        Player player = (Player) event.getEntity();
+        if (UserBlockedCache.contains(player.getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onEntityDamage(EntityDamageEvent event) {
-		if (event.getEntityType() != EntityType.PLAYER)
-			return;
-		Player player = (Player) event.getEntity();
-		if (UserBlockedCache.contains(player.getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (event.getEntityType() != EntityType.PLAYER)
+            return;
+        Player player = (Player) event.getEntity();
+        if (UserBlockedCache.contains(player.getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onEntityDamage(EntityDamageByEntityEvent event) {
-		if (event.getEntity().getType() == EntityType.PLAYER) {
-			Player player = (Player) event.getEntity();
-			if (UserBlockedCache.contains(player.getName()))
-				event.setCancelled(true);
-		} else if (event.getDamager().getType() == EntityType.PLAYER) {
-			Player player = (Player) event.getDamager();
-			if (UserBlockedCache.contains(player.getName()))
-				event.setCancelled(true);
-		}
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onEntityDamage(EntityDamageByEntityEvent event) {
+        if (event.getEntity().getType() == EntityType.PLAYER) {
+            Player player = (Player) event.getEntity();
+            if (UserBlockedCache.contains(player.getName()))
+                event.setCancelled(true);
+        } else if (event.getDamager().getType() == EntityType.PLAYER) {
+            Player player = (Player) event.getDamager();
+            if (UserBlockedCache.contains(player.getName()))
+                event.setCancelled(true);
+        }
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onAnimation(PlayerAnimationEvent event) {
-		if (UserBlockedCache.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onAnimation(PlayerAnimationEvent event) {
+        if (UserBlockedCache.contains(event.getPlayer().getName()))
+            event.setCancelled(true);
+    }
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onEntityInteractWithPlayer(EntityTargetLivingEntityEvent event) {
-		if (event.getTarget() == null)
-			return;
-		if (event.getTarget().getType() != EntityType.PLAYER)
-			return;
-		Player player = (Player) event.getTarget();
-		if (UserBlockedCache.contains(player.getName()))
-			event.setCancelled(true);
-	}
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onEntityInteractWithPlayer(EntityTargetLivingEntityEvent event) {
+        if (event.getTarget() == null)
+            return;
+        if (event.getTarget().getType() != EntityType.PLAYER)
+            return;
+        Player player = (Player) event.getTarget();
+        if (UserBlockedCache.contains(player.getName()))
+            event.setCancelled(true);
+    }
 }

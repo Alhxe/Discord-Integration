@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,25 +46,23 @@ public class CoreControllerBukkitImpl implements PluginController, CoreControlle
      */
     private final File dataFolder;
 
-    public CoreControllerBukkitImpl(Plugin plugin, ClassLoader classLoader) {
+    public CoreControllerBukkitImpl(Plugin plugin, ClassLoader classLoader, boolean isDataInBungee) {
         this.plugin = plugin;
         this.dataFolder = plugin.getDataFolder();
-        this.configManager = new ConfigManager(this, plugin.getDataFolder(), classLoader);
-        this.langManager = new YamlManager(this, "lang.yml", plugin.getDataFolder(), classLoader);
+        this.configManager = new ConfigManager(this, plugin.getDataFolder(), classLoader, isDataInBungee);
+        this.langManager = new YamlManager(this, "lang.yml", plugin.getDataFolder(), classLoader, isDataInBungee);
+        if (!isDataInBungee) {
+            this.bot = initBot();
+        }
     }
 
     @Override
-    public JDA getDiscordApi() {
+    public Optional<JDA> getDiscordApi() {
         return this.bot.getApi();
     }
 
-    @Override
-    public void startBot(){
-        bot = initBot();
-    }
-
-    public Guild getGuild() {
-        return bot.getApi().getGuildById(bot.getServerid());
+    public Optional<Guild> getGuild() {
+        return Optional.ofNullable(bot.getApi().get().getGuildById(bot.getServerId()));
     }
 
     @Override
@@ -81,24 +80,29 @@ public class CoreControllerBukkitImpl implements PluginController, CoreControlle
         return bot;
     }
 
+    @Override
+    public void setBotInfo(String prefix, long serverId) {
+        this.bot = new DiscordBot(prefix, serverId);
+    }
+
     /**
      * Init Discord Bot.
      *
      * @return Finished bot object.
      */
     private DiscordBot initBot() {
-        long serverid = 0;
+        long serverId = 0;
 
         String token = configManager.getString("bot_token");
         try {
-            serverid = configManager.getLong("discord_server_id");
+            serverId = configManager.getLong("discord_server_id");
         } catch (Exception e) {
             getLogger().log(Level.SEVERE,
                     "Failed to get server ID. Modify the config.yml file to be able to start the plugin.");
         }
         String prefix = configManager.getString("discord_server_prefix");
 
-        if (token == null || prefix == null || serverid == 0L) {
+        if (token == null || prefix == null || serverId == 0L) {
             getLogger().log(Level.SEVERE,
                     "Failed to load the data required to start the bot. Did you enter the server ID, token and prefix correctly?");
             disablePlugin();
@@ -106,6 +110,6 @@ public class CoreControllerBukkitImpl implements PluginController, CoreControlle
         }
 
         getLogger().info("Starting Bot");
-        return new DiscordBot(prefix, serverid, token, this);
+        return new DiscordBot(prefix, serverId, token, this);
     }
 }
