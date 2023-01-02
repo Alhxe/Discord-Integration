@@ -33,7 +33,7 @@ public class UnregisterCommand implements CommandExecutor {
 	/**
 	 * Main api.
 	 */
-	public final DIApi api = BukkitApplication.getDIApi();
+	public final DIApi api = MainController.getDIApi();
 
 	/**
 	 * Main command body.

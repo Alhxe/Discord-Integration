@@ -3,18 +3,18 @@ package di.dilogin.discord.command;
 import java.time.Duration;
 import java.util.Optional;
 
-import di.dilogin.controller.MainController;
 import org.bukkit.entity.Player;
 
 import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
 import di.dilogin.controller.LangManager;
+import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
-import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.bukkit.ext.authme.AuthmeHook;
+import di.dilogin.minecraft.cache.TmpCache;
 import di.internal.entity.DiscordCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -35,7 +35,7 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
     /**
      * Main api.
      */
-    private final DIApi api = BukkitApplication.getDIApi();
+    private final DIApi api = MainController.getDIApi();
 
     /**
      * Main command body.

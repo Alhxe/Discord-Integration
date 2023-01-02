@@ -3,17 +3,13 @@ package di.dilogin.controller.impl;
 import java.time.Instant;
 import java.util.Optional;
 
-import org.bukkit.Bukkit;
-
 import di.dicore.api.DIApi;
-import di.dilogin.BukkitApplication;
 import di.dilogin.BungeeApplication;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
+import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.dao.DIUserDaoSqlImpl;
-import di.dilogin.entity.DIUser;
-import di.dilogin.minecraft.bukkit.event.custom.DILoginEvent;
 import di.dilogin.minecraft.bungee.BungeeUtil;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.cache.UserBlockedCache;
@@ -37,7 +33,7 @@ public class DILoginControllerBungeeImpl implements DILoginController {
 	/**
 	 * Get the main plugin api.
 	 */
-	private static final DIApi api = BungeeApplication.getDIApi();
+	private static final DIApi api = MainController.getDIApi();
 
 	@Override
 	public DIUserDao getDIUserDao() {
@@ -46,7 +42,6 @@ public class DILoginControllerBungeeImpl implements DILoginController {
 
 	@Override
 	public EmbedBuilder getEmbedBase() {
-		DIApi api = BungeeApplication.getDIApi();
 		EmbedBuilder embedBuilder = new EmbedBuilder().setColor(
 				Util.hex2Rgb(api.getInternalController().getConfigManager().getString("discord_embed_color")));
 		if (api.getInternalController().getConfigManager().getBoolean("discord_embed_server_image")) {
@@ -65,17 +60,17 @@ public class DILoginControllerBungeeImpl implements DILoginController {
 
 	@Override
 	public boolean isSessionEnabled() {
-		return BungeeApplication.getDIApi().getInternalController().getConfigManager().getBoolean("sessions");
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("sessions");
 	}
 
 	@Override
 	public boolean isSyncroRolEnabled() {
-		return BungeeApplication.getDIApi().getInternalController().getConfigManager().getBoolean("syncro_rol_enable");
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("syncro_rol_enable");
 	}
 
 	@Override
 	public boolean isSyncronizeOptionEnabled() {
-		return BungeeApplication.getDIApi().getInternalController().getConfigManager().getBoolean("syncro_enable");
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("syncro_enable");
 	}
 
 	@Override
@@ -105,8 +100,6 @@ public class DILoginControllerBungeeImpl implements DILoginController {
 
 		ProxiedPlayer player = optionalPlayer.get();
 
-		Bukkit.getScheduler().runTask(BukkitApplication.getPlugin(),
-				() -> Bukkit.getPluginManager().callEvent(new DILoginEvent(new DIUser(playerName, Optional.of(user)))));
 		UserBlockedCache.remove(player.getName());
 		player.sendMessage(LangManager.getString("login_success"));
 

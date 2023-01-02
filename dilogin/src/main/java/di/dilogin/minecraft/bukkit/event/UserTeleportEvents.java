@@ -2,7 +2,6 @@ package di.dilogin.minecraft.bukkit.event;
 
 import java.util.Optional;
 
-import di.dilogin.minecraft.bukkit.BukkitUtil;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -12,9 +11,11 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
+import di.dilogin.controller.MainController;
 import di.dilogin.entity.UserData;
-import di.dilogin.minecraft.controller.UserDataController;
+import di.dilogin.minecraft.bukkit.BukkitUtil;
 import di.dilogin.minecraft.bukkit.event.custom.DILoginEvent;
+import di.dilogin.minecraft.controller.UserDataController;
 import di.internal.controller.file.ConfigManager;
 
 public class UserTeleportEvents implements Listener {
@@ -22,7 +23,7 @@ public class UserTeleportEvents implements Listener {
 	/**
 	 * Main api.
 	 */
-	private final DIApi api = BukkitApplication.getDIApi();
+	private final DIApi api = MainController.getDIApi();
 
 	/**
 	 * Teleport condition.

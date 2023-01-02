@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Optional;
 
-import di.dilogin.BukkitApplication;
 import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.UserSession;
@@ -41,7 +40,10 @@ public class UserSessionCache {
 			return false;
 
 		UserSession user = userOpt.get();
-
+		
+		System.out.println("IP: "+ip+" | "+user.getIp());
+		System.out.println("Name: "+name+" | "+user.getName());
+		
 		if (!user.getIp().equals(ip))
 			return false;
 
@@ -87,7 +89,7 @@ public class UserSessionCache {
 	 * @param ip   Player's ip.
 	 */
 	public static void addSession(String name, String ip) {
-		int minutes = BukkitApplication.getDIApi().getInternalController().getConfigManager()
+		int minutes = MainController.getDIApi().getInternalController().getConfigManager()
 				.getInt("session_time_min");
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.MINUTE, minutes);

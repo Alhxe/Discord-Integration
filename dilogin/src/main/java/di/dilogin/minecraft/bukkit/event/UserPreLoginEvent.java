@@ -22,7 +22,7 @@ public class UserPreLoginEvent implements Listener {
 	/**
 	 * Main API
 	 */
-	private final DIApi api = BukkitApplication.getDIApi();
+	private final DIApi api = MainController.getDIApi();
 
 	/**
 	 * User manager in the database.

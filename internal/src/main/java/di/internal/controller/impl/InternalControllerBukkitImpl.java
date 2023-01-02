@@ -97,6 +97,7 @@ public class InternalControllerBukkitImpl implements PluginController, InternalC
 
     @Override
     public CompletableFuture<String> initConnectionWithBungee() {
+    	plugin.getLogger().info("Establishing connection with BungeeCord...");
         CompletableFuture<String> future = new CompletableFuture<>();
         UserLoginForBungeeCallBukkitEvent event = new UserLoginForBungeeCallBukkitEvent();
         plugin.getServer().getPluginManager().registerEvents(event, plugin);
@@ -108,6 +109,7 @@ public class InternalControllerBukkitImpl implements PluginController, InternalC
                             Util.loadConfigFile(channelController, configManager, player.getName());
                             Util.loadLangFile(channelController, langManager, player.getName());
                             Util.updateBotInfo(channelController, coreController, player.getName());
+                            plugin.getLogger().info("Connection established with BungeeCord");
                             future.complete(s);
                         });
             }, 20);

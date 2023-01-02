@@ -3,7 +3,6 @@ package di.dilogin.minecraft.bungee.command;
 import java.util.concurrent.Executors;
 
 import di.dicore.api.DIApi;
-import di.dilogin.BungeeApplication;
 import di.dilogin.controller.LangManager;
 import di.dilogin.controller.MainController;
 import di.dilogin.entity.CodeGenerator;
@@ -22,7 +21,7 @@ public class RegisterBungeeCommand extends Command {
 	/**
 	 * Main api.
 	 */
-	DIApi api = BungeeApplication.getDIApi();
+	DIApi api = MainController.getDIApi();
 
 	public RegisterBungeeCommand() {
 		super("Register", "", "diregister");
@@ -47,7 +46,7 @@ public class RegisterBungeeCommand extends Command {
 				p.sendMessage(tc);
 			
 
-			long seconds = BungeeApplication.getDIApi().getInternalController().getConfigManager()
+			long seconds = api.getInternalController().getConfigManager()
 					.getLong("register_time_until_kick") * 1000;
 
 			Executors.newCachedThreadPool().submit(() -> {

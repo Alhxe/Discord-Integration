@@ -9,7 +9,7 @@ import di.dilogin.BungeeApplication;
 import di.dilogin.controller.MainController;
 import di.dilogin.dto.DIUserDto;
 import di.dilogin.dto.SessionDto;
-import di.dilogin.minecraft.cache.UserSessionCache;
+import di.dilogin.minecraft.cache.TmpCache;
 import di.internal.dto.BotDto;
 import di.internal.dto.ConnectionDto;
 import di.internal.dto.Demand;
@@ -50,7 +50,7 @@ public class ChannelMessageController implements Listener {
         System.out.println("Data: " + data2);
         System.out.println("Respuesta: " + getResponse(data1, data2));
         String playerName = getPlayerNameFromSubChannel(subChannel);
-        BungeeApplication.getDIApi().getInternalController().getChannelController()
+        MainController.getDIApi().getInternalController().getChannelController()
                 .sendMessageToPluginWithSubChannel(subChannel + "answer", playerName, getResponse(data1, data2));
     }
 
@@ -81,7 +81,7 @@ public class ChannelMessageController implements Listener {
     private String getUserSession(String data) {
     	JsonConverter<SessionDto> converter = new JsonConverter<SessionDto>(SessionDto.class);
     	SessionDto dto = converter.getDto(data);
-    	boolean isValid = UserSessionCache.isValid(dto.getPlayerName(), dto.getIp());
+    	boolean isValid = !TmpCache.containsLogin(dto.getPlayerName()) && !TmpCache.containsRegister(dto.getPlayerName());
     	dto.setValid(isValid);
         return converter.getJson(dto);
     }

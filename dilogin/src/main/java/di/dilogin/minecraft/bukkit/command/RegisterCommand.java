@@ -4,15 +4,14 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Optional;
 
-import di.dilogin.controller.MainController;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import di.dicore.api.DIApi;
-import di.dilogin.BukkitApplication;
 import di.dilogin.controller.LangManager;
+import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
@@ -37,7 +36,7 @@ public class RegisterCommand implements CommandExecutor {
 	/**
 	 * Main api.
 	 */
-	private final DIApi api = BukkitApplication.getDIApi();
+	private final DIApi api = MainController.getDIApi();
 
 	/**
 	 * Reactions emoji.

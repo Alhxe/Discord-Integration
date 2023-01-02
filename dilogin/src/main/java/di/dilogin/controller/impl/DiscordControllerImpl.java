@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.logging.Level;
 
 import di.dicore.api.DIApi;
-import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DiscordController;
 import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
@@ -15,7 +14,10 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 
-public class DiscordControllerInternImpl implements DiscordController {
+/**
+ * Controller used to manage Discord.
+ */
+public class DiscordControllerImpl implements DiscordController {
 
 	@Override
 	public boolean userHasRole(String roleid, String player) {
@@ -31,7 +33,7 @@ public class DiscordControllerInternImpl implements DiscordController {
 
 	@Override
 	public boolean serverHasRole(String roleid) {
-		DIApi api = BukkitApplication.getDIApi();
+		DIApi api = MainController.getDIApi();
 		Guild guild = getGuild();
 		Role role = guild.getRoleById(roleid);
 		if (role == null) {
@@ -44,7 +46,7 @@ public class DiscordControllerInternImpl implements DiscordController {
 
 	@Override
 	public void giveRole(String roleid, String player, String reason) {
-		DIApi api = BukkitApplication.getDIApi();
+		DIApi api = MainController.getDIApi();
 
 		Optional<Member> optMember = getMember(player);
 		if (!optMember.isPresent())
@@ -68,7 +70,7 @@ public class DiscordControllerInternImpl implements DiscordController {
 
 	@Override
 	public void removeRole(String roleid, String player, String reason) {
-		DIApi api = BukkitApplication.getDIApi();
+		DIApi api = MainController.getDIApi();
 
 		Optional<Member> optMember = getMember(player);
 		if (!optMember.isPresent())
@@ -112,7 +114,7 @@ public class DiscordControllerInternImpl implements DiscordController {
 	 * @return optional role.
 	 */
 	private Optional<Role> requiredRole() {
-		DIApi api = BukkitApplication.getDIApi();
+		DIApi api = MainController.getDIApi();
 		Guild guild = getGuild();
 
 		Optional<Long> optionalLong = api.getInternalController().getConfigManager()
@@ -128,6 +130,12 @@ public class DiscordControllerInternImpl implements DiscordController {
 		return Optional.of(role);
 	}
 
+	/**
+	 * Get Discord Member from Minecraft name.
+	 * 
+	 * @param player Minecraft name.
+	 * @return The member if is present on JDA.
+	 */
 	private Optional<Member> getMember(String player) {
 		DIUserDao dao = MainController.getDILoginController().getDIUserDao();
 		Guild guild = getGuild();
@@ -145,8 +153,12 @@ public class DiscordControllerInternImpl implements DiscordController {
 		return Optional.empty();
 	}
 
+	/**
+	 * 
+	 * @return Discord main guild.
+	 */
 	private Guild getGuild() {
-		DIApi api = BukkitApplication.getDIApi();
+		DIApi api = MainController.getDIApi();
 		JDA jda = api.getCoreController().getDiscordApi().get();
 		return jda.getGuildById(api.getCoreController().getBot().getServerId());
 	}

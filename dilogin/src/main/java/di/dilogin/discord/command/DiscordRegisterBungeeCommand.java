@@ -33,7 +33,7 @@ public class DiscordRegisterBungeeCommand implements DiscordCommand {
     /**
      * Main api.
      */
-    private final DIApi api = BungeeApplication.getDIApi();
+    private final DIApi api = MainController.getDIApi();
 
     /**
      * Main command body.

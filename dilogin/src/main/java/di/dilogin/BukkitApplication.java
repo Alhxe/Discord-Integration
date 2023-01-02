@@ -12,8 +12,7 @@ import di.dicore.api.impl.DIApiBukkitImpl;
 import di.dilogin.controller.DBController;
 import di.dilogin.controller.MainController;
 import di.dilogin.controller.impl.DILoginControllerBukkitImpl;
-import di.dilogin.controller.impl.DiscordControllerExternImpl;
-import di.dilogin.controller.impl.DiscordControllerInternImpl;
+import di.dilogin.controller.impl.DiscordControllerImpl;
 import di.dilogin.discord.command.DiscordRegisterBukkitCommand;
 import di.dilogin.discord.event.UserReactionMessageBukkitEvent;
 import di.dilogin.minecraft.bukkit.command.ForceLoginCommand;
@@ -23,8 +22,8 @@ import di.dilogin.minecraft.bukkit.event.UserBlockEvents;
 import di.dilogin.minecraft.bukkit.event.UserLeaveEvent;
 import di.dilogin.minecraft.bukkit.event.UserPreLoginEvent;
 import di.dilogin.minecraft.bukkit.event.UserTeleportEvents;
-import di.dilogin.minecraft.bukkit.event.impl.UserLoginEjemploEventImpl;
-import di.dilogin.minecraft.bukkit.event.impl.UserLoginEventImpl;
+import di.dilogin.minecraft.bukkit.event.impl.UserLoginExternEventImpl;
+import di.dilogin.minecraft.bukkit.event.impl.UserLoginInternEventImpl;
 import di.dilogin.minecraft.bukkit.ext.authme.AuthmeEvents;
 import di.dilogin.minecraft.bukkit.ext.authme.UserLoginEventAuthmeImpl;
 import di.dilogin.minecraft.bukkit.ext.luckperms.GuildMemberRoleEvent;
@@ -57,23 +56,19 @@ public class BukkitApplication extends JavaPlugin {
 		connectWithCoreApi();
 
 		MainController.setDIApi(api);
-
-		MainController.setDILoginController(new DILoginControllerBukkitImpl(api.isBungeeDetected()));
+		MainController.setDILoginController(new DILoginControllerBukkitImpl());
 		MainController.setBukkit(true);
 
 		if (!api.isBungeeDetected()) {
-			MainController.setDiscordController(new DiscordControllerInternImpl());
+			MainController.setDiscordController(new DiscordControllerImpl());
 			DBController.getConnect();
 			initInternCommands();
 			initInternEvents();
 			initDiscordEvents();
 			initDiscordCommands();
 		} else {
-			api.getInternalController().initConnectionWithBungee().whenCompleteAsync((json, throwable) -> {
-				getLogger().info(json);
-				MainController.setDiscordController(new DiscordControllerExternImpl());
-				initExtEvents();
-			});
+			initExtEvents();
+			api.getInternalController().initConnectionWithBungee();
 		}
 		getLogger().info("Plugin started");
 	}
@@ -81,13 +76,6 @@ public class BukkitApplication extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		TmpCache.clearAll();
-	}
-
-	/**
-	 * @return Discord Integration Api.
-	 */
-	public static DIApi getDIApi() {
-		return api;
 	}
 
 	/**
@@ -148,7 +136,7 @@ public class BukkitApplication extends JavaPlugin {
 		} else if (MainController.getDILoginController().isNLoginEnabled()) {
 			initNLoginEvents();
 		} else {
-			getServer().getPluginManager().registerEvents(new UserLoginEventImpl(), plugin);
+			getServer().getPluginManager().registerEvents(new UserLoginInternEventImpl(), plugin);
 		}
 		getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
 		getServer().getPluginManager().registerEvents(new UserLeaveEvent(), plugin);
@@ -158,7 +146,7 @@ public class BukkitApplication extends JavaPlugin {
 	
 	private void initExtEvents() {
 		getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
-		getServer().getPluginManager().registerEvents(new UserLoginEjemploEventImpl(), plugin);
+		getServer().getPluginManager().registerEvents(new UserLoginExternEventImpl(), plugin);
 	}
 
 	/**

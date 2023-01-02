@@ -6,15 +6,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Optional;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.bukkit.entity.Player;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-import di.dilogin.BukkitApplication;
+import di.dilogin.controller.MainController;
 import di.dilogin.entity.UserData;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Pre-login user data controller.
@@ -47,7 +47,7 @@ public class UserDataController {
 		boolean isDeleted = file.delete();
 
 		if(!isDeleted) {
-			BukkitApplication.getDIApi().getInternalController().getLogger().warning("Could not delete file: " + file.getAbsolutePath());
+			MainController.getDIApi().getInternalController().getLogger().warning("Could not delete file: " + file.getAbsolutePath());
 		}
 	}
 
@@ -95,7 +95,7 @@ public class UserDataController {
 	 * @return the player data folder.
 	 */
 	private static File getPlayerDataFolder() {
-		File file = new File(BukkitApplication.getDIApi().getInternalController().getDataFolder(), "PlayerData");
+		File file = new File(MainController.getDIApi().getInternalController().getDataFolder(), "PlayerData");
 
 		if (file.exists())
 			return file;

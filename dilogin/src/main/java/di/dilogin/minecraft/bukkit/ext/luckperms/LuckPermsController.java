@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import org.bukkit.entity.Player;
 
 import di.dicore.api.DIApi;
-import di.dilogin.BukkitApplication;
 import di.dilogin.controller.MainController;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -38,7 +37,7 @@ public class LuckPermsController {
 	/**
 	 * DIApi api instance.
 	 */
-	private static final DIApi diapi = BukkitApplication.getDIApi();
+	private static final DIApi diapi = MainController.getDIApi();
 
 	/**
 	 * Role map from config file.

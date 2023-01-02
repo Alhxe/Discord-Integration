@@ -34,7 +34,7 @@ public class UserReactionMessageBukkitEvent extends ListenerAdapter {
     /**
      * Main api.
      */
-    private final DIApi api = BukkitApplication.getDIApi();
+    private final DIApi api = MainController.getDIApi();
 
     /**
      * Main event body.

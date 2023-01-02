@@ -12,8 +12,8 @@ import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
+import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
-import di.dilogin.dao.DIUserDaoBungeeImpl;
 import di.dilogin.dao.DIUserDaoSqlImpl;
 import di.dilogin.entity.DIUser;
 import di.dilogin.minecraft.bukkit.BukkitUtil;
@@ -41,14 +41,10 @@ public class DILoginControllerBukkitImpl implements DILoginController {
     /**
      * Get the main plugin api.
      */
-    private static final DIApi api = BukkitApplication.getDIApi();
+    private static final DIApi api = MainController.getDIApi();
 
-    public DILoginControllerBukkitImpl(boolean isDataInBungee){
-        if(isDataInBungee){
-            DILoginControllerBukkitImpl.userDao = new DIUserDaoBungeeImpl();
-        } else {
+    public DILoginControllerBukkitImpl(){
             DILoginControllerBukkitImpl.userDao = new DIUserDaoSqlImpl();
-        }
     }
 
     @Override
@@ -58,7 +54,6 @@ public class DILoginControllerBukkitImpl implements DILoginController {
 
     @Override
     public EmbedBuilder getEmbedBase() {
-        DIApi api = BukkitApplication.getDIApi();
         EmbedBuilder embedBuilder = new EmbedBuilder().setColor(
                 Util.hex2Rgb(api.getInternalController().getConfigManager().getString("discord_embed_color")));
         if (api.getInternalController().getConfigManager().getBoolean("discord_embed_server_image")) {
@@ -77,17 +72,17 @@ public class DILoginControllerBukkitImpl implements DILoginController {
 
     @Override
     public boolean isSessionEnabled() {
-        return BukkitApplication.getDIApi().getInternalController().getConfigManager().getBoolean("sessions");
+        return api.getInternalController().getConfigManager().getBoolean("sessions");
     }
 
     @Override
     public boolean isSyncroRolEnabled() {
-        return BukkitApplication.getDIApi().getInternalController().getConfigManager().getBoolean("syncro_rol_enable");
+        return api.getInternalController().getConfigManager().getBoolean("syncro_rol_enable");
     }
 
     @Override
     public boolean isSyncronizeOptionEnabled() {
-        return BukkitApplication.getDIApi().getInternalController().getConfigManager().getBoolean("syncro_enable");
+        return api.getInternalController().getConfigManager().getBoolean("syncro_enable");
     }
 
     @Override
@@ -154,8 +149,7 @@ public class DILoginControllerBukkitImpl implements DILoginController {
         if (!optDIUser.isPresent())
             return;
 
-        DIApi api = BukkitApplication.getDIApi();
-        JDA jda = BukkitApplication.getDIApi().getCoreController().getDiscordApi().get();
+        JDA jda = api.getCoreController().getDiscordApi().get();
         Guild guild = api.getCoreController().getGuild().get();
 
         Member member = guild.retrieveMember(user, true).complete();

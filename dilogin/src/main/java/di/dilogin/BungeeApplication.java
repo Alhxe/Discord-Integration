@@ -7,14 +7,15 @@ import di.dicore.api.impl.DIApiBungeeImpl;
 import di.dilogin.controller.DBController;
 import di.dilogin.controller.MainController;
 import di.dilogin.controller.impl.DILoginControllerBungeeImpl;
-import di.dilogin.controller.impl.DiscordControllerInternImpl;
+import di.dilogin.controller.impl.DiscordControllerImpl;
 import di.dilogin.discord.command.DiscordRegisterBungeeCommand;
 import di.dilogin.discord.event.UserReactionMessageBungeeEvent;
 import di.dilogin.minecraft.bungee.command.RegisterBungeeCommand;
 import di.dilogin.minecraft.bungee.controller.ChannelMessageController;
+import di.dilogin.minecraft.bungee.event.UserLeaveBungeeEvent;
+import di.dilogin.minecraft.bungee.event.UserLoginBungeeEvent;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.internal.exception.NoApiException;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 /**
@@ -39,29 +40,23 @@ public class BungeeApplication extends Plugin {
 		connectWithCoreApi();
 		MainController.setDIApi(api);
 		MainController.setDILoginController(new DILoginControllerBungeeImpl());
-		MainController.setDiscordController(new DiscordControllerInternImpl());
+		MainController.setDiscordController(new DiscordControllerImpl());
 		MainController.setBukkit(true);
 		DBController.getConnect();
 		initDiscordEvents();
 		initDiscordCommands();
 		initCommands();
+		initEvents();
 
 		// Events to get data from the DILogin database.
 		plugin.getProxy().getPluginManager().registerListener(plugin, new ChannelMessageController());
-		
+
 		getLogger().info("Plugin started");
 	}
 
 	@Override
 	public void onDisable() {
 		TmpCache.clearAll();
-	}
-
-	/**
-	 * @return Discord Integration Api.
-	 */
-	public static DIApi getDIApi() {
-		return api;
 	}
 
 	/**
@@ -87,18 +82,23 @@ public class BungeeApplication extends Plugin {
 			plugin.onDisable();
 		}
 	}
-	
+
 	private void initCommands() {
-		ProxyServer.getInstance().getPluginManager().registerCommand(this, new RegisterBungeeCommand());
+		this.getProxy().getPluginManager().registerCommand(this, new RegisterBungeeCommand());
 	}
-	
+
+	private void initEvents() {
+		this.getProxy().getPluginManager().registerListener(this, new UserLoginBungeeEvent());
+		this.getProxy().getPluginManager().registerListener(this, new UserLeaveBungeeEvent());
+	}
+
 	/**
 	 * Records Discord events.
 	 */
 	private void initDiscordEvents() {
 		api.registerDiscordEvent(new UserReactionMessageBungeeEvent());
 		if (MainController.getDILoginController().isSyncroRolEnabled()) {
-			
+
 		}
 	}
 

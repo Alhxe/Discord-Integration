@@ -2,7 +2,6 @@ package di.dilogin.minecraft.bukkit;
 
 import java.util.Optional;
 
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 import di.dilogin.BukkitApplication;
@@ -19,8 +18,7 @@ public class BukkitUtil {
      * @param server Active server.
      * @return The number of the version of server.
      */
-    public static int getServerVersion(Server server) {
-        String version = server.getVersion();
+    public static int getServerVersion(String version) {
         if (version.contains("1.17"))
             return 17;
         if (version.contains("1.16"))

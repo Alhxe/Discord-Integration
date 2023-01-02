@@ -58,7 +58,7 @@ public class UserLoginEventAuthmeImpl implements UserLoginEvent {
 		}
 
 		event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
-		sendLoginMessageRequest(event.getPlayer(), user.getPlayerDiscord().get());
+		sendLoginMessageRequest(event.getPlayer().getName(), user.getPlayerDiscord().get());
 	}
 
 	/**

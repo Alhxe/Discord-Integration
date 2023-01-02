@@ -32,7 +32,7 @@ public class UserReactionMessageBungeeEvent extends ListenerAdapter {
     /**
      * Main api.
      */
-    private final DIApi api = BungeeApplication.getDIApi();
+    private final DIApi api = MainController.getDIApi();
 
     /**
      * Main event body.
@@ -111,7 +111,6 @@ public class UserReactionMessageBungeeEvent extends ListenerAdapter {
 
         message.editMessageEmbeds(getLoginEmbed(user, player)).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
         MainController.getDILoginController().loginUser(player.getName(), user);
-
     }
 
     /**
