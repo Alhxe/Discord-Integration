@@ -1,7 +1,6 @@
 package di.internal.controller;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 /**
  * Channel controller.

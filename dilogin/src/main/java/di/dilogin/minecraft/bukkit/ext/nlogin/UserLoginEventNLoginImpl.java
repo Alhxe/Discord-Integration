@@ -107,7 +107,7 @@ public class UserLoginEventNLoginImpl implements UserLoginEvent {
         String code = CodeGenerator
                 .getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
         String command = api.getCoreController().getBot().getPrefix() + api.getInternalController().getConfigManager().getString("register_command") + " " + code;
-        TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(), null, null, code));
+        TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer().getName(), null, null, code));
         TextComponent message = new TextComponent(LangManager.getString(event.getPlayer().getName(), "register_opt_request")
                 .replace("%register_command%", command));
         message.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, code));

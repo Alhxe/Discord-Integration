@@ -1,8 +1,7 @@
-package di.internal.dto;
+package di.dilogin.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * Contains user information such as name, uuid, etc.

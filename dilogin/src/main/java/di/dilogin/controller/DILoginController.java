@@ -60,7 +60,7 @@ public interface DILoginController {
 	 * Start the player session.
 	 * 
 	 * @param playerName Bukkit player.
-	 * @param user 	 Discord user.
+	 * @param user       Discord user.
 	 */
 	void loginUser(String playerName, User user);
 

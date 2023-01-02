@@ -15,13 +15,13 @@ public class JsonConverter<i> {
     /**
      * The class to transform.
      */
-    private final Class clazz;
+    private final Class<?> clazz;
 
     /**
      * Constructor.
      * @param clazz The class to transform.
      */
-    public JsonConverter(Class clazz) {
+    public JsonConverter(Class<?> clazz) {
         this.clazz = clazz;
     }
 
@@ -31,7 +31,8 @@ public class JsonConverter<i> {
      * @param json json to convert.
      * @return dto converted.
      */
-    public i getDto(String json) {
+    @SuppressWarnings("unchecked")
+	public i getDto(String json) {
         return (i) gson.fromJson(json, clazz);
     }
 

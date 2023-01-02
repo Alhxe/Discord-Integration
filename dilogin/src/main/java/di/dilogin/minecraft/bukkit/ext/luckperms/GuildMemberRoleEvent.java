@@ -5,7 +5,6 @@ import java.util.Optional;
 import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.DIUser;
-import di.dilogin.minecraft.bukkit.ext.luckperms.LuckPermsController;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleRemoveEvent;

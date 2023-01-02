@@ -113,10 +113,10 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 	}
 
 	@Override
-	public int getDiscordUserAccounts(User user) {
+	public int getDiscordUserAccounts(long discordId) {
 		String query = "select count(*) as total from user where discord_id = ?;";
 		try (PreparedStatement ps = conn.prepareStatement(query)) {
-			ps.setLong(1, user.getIdLong());
+			ps.setLong(1, discordId);
 			try (ResultSet rs = ps.executeQuery()) {
 				if (rs.next())
 					return rs.getInt("total");

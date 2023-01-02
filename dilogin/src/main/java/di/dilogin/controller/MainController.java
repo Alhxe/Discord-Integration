@@ -10,79 +10,98 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MainController {
 
-    /**
-     * Main DILoginController.
-     */
-    private static DILoginController controller;
+	/**
+	 * Main DILoginController.
+	 */
+	private static DILoginController controller;
 
-    /**
-     * Main DIApi.
-     */
-    private static DIApi api;
+	/**
+	 * Main Discord Controller.
+	 */
+	private static DiscordController discordController;
 
-    /**
-     * Information about whether the plugin is running in Bukkit.
-     */
-    private static boolean isBukkit = false;
+	/**
+	 * Main DIApi.
+	 */
+	private static DIApi api;
 
-    /**
-     * Information about whether the plugin is running in BungeeCord.
-     */
-    private static boolean isBungee = false;
+	/**
+	 * Information about whether the plugin is running in Bukkit.
+	 */
+	private static boolean isBukkit = false;
 
-    /**
-     * @return Main DILoginController.
-     */
-    public static DILoginController getDILoginController() {
-        return controller;
-    }
+	/**
+	 * Information about whether the plugin is running in BungeeCord.
+	 */
+	private static boolean isBungee = false;
 
-    /**
-     * @param dilogincontroller Main DILoginController.
-     */
-    public static void setDILoginController(DILoginController dilogincontroller) {
-        MainController.controller = dilogincontroller;
-    }
+	/**
+	 * @return Main DILoginController.
+	 */
+	public static DILoginController getDILoginController() {
+		return controller;
+	}
 
-    /**
-     * @return Main DIApi.
-     */
-    public static DIApi getDIApi() {
-        return api;
-    }
+	/**
+	 * @param dilogincontroller Main DILoginController.
+	 */
+	public static void setDILoginController(DILoginController dilogincontroller) {
+		MainController.controller = dilogincontroller;
+	}
 
-    /**
-     * @param diapi Main DIApi.
-     */
-    public static void setDIApi(DIApi diapi) {
-        MainController.api = diapi;
-    }
+	/**
+	 * @return Main DIApi.
+	 */
+	public static DIApi getDIApi() {
+		return api;
+	}
 
-    /**
-     * @return Information about whether the plugin is running in Bukkit.
-     */
-    public static boolean isBukkit() {
-        return isBukkit;
-    }
+	/**
+	 * @param diapi Main DIApi.
+	 */
+	public static void setDIApi(DIApi diapi) {
+		MainController.api = diapi;
+	}
 
-    /**
-     * @param b Information about whether the plugin is running in Bukkit.
-     */
-    public static void setBukkit(boolean b) {
-        MainController.isBukkit = b;
-    }
+	/**
+	 * @return Information about whether the plugin is running in Bukkit.
+	 */
+	public static boolean isBukkit() {
+		return isBukkit;
+	}
 
-    /**
-     * @return Information about whether the plugin is running in BungeeCord.
-     */
-    public static boolean isBungee() {
-        return isBungee;
-    }
+	/**
+	 * @param b Information about whether the plugin is running in Bukkit.
+	 */
+	public static void setBukkit(boolean b) {
+		MainController.isBukkit = b;
+	}
 
-    /**
-     * @param b Information about whether the plugin is running in BungeeCord.
-     */
-    public static void setBungee(boolean b) {
-        MainController.isBungee = b;
-    }
+	/**
+	 * @return Information about whether the plugin is running in BungeeCord.
+	 */
+	public static boolean isBungee() {
+		return isBungee;
+	}
+
+	/**
+	 * @param b Information about whether the plugin is running in BungeeCord.
+	 */
+	public static void setBungee(boolean b) {
+		MainController.isBungee = b;
+	}
+
+	/**
+	 * @return Main discord controller.
+	 */
+	public static DiscordController getDiscordController() {
+		return discordController;
+	}
+
+	/**
+	 * @param dc Discord Controller.
+	 */
+	public static void setDiscordController(DiscordController dc) {
+		discordController = dc;
+	}
 }

@@ -1,18 +1,24 @@
 package di.dilogin.minecraft.bungee.controller;
 
+import java.util.stream.Collectors;
+
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
+
 import di.dilogin.BungeeApplication;
 import di.dilogin.controller.MainController;
-import di.dilogin.dao.DIUserDao;
-import di.internal.dto.*;
+import di.dilogin.dto.DIUserDto;
+import di.dilogin.dto.SessionDto;
+import di.dilogin.minecraft.cache.UserSessionCache;
+import di.internal.dto.BotDto;
+import di.internal.dto.ConnectionDto;
+import di.internal.dto.Demand;
+import di.internal.dto.FileDto;
 import di.internal.dto.converter.JsonConverter;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
-
-import java.util.stream.Collectors;
 
 /**
  * Class used to respond to plugin requests.
@@ -23,11 +29,6 @@ import java.util.stream.Collectors;
  * Data2: Info of demand. The information required by data1.
  */
 public class ChannelMessageController implements Listener {
-
-    /**
-     * DIUser DAO.
-     */
-    private final DIUserDao dao = MainController.getDILoginController().getDIUserDao();
 
     /**
      * Main bungee plugin.
@@ -71,12 +72,22 @@ public class ChannelMessageController implements Listener {
             return getConnection();
         } else if (demand.equalsIgnoreCase(Demand.getBotConfig.name())){
             return getBotConfig();
+        } else if (demand.equalsIgnoreCase(Demand.getSessionStatus.name())) {
+        	return getUserSession(data);
         }
         return "error";
     }
+    
+    private String getUserSession(String data) {
+    	JsonConverter<SessionDto> converter = new JsonConverter<SessionDto>(SessionDto.class);
+    	SessionDto dto = converter.getDto(data);
+    	boolean isValid = UserSessionCache.isValid(dto.getPlayerName(), dto.getIp());
+    	dto.setValid(isValid);
+        return converter.getJson(dto);
+    }
 
     private String getDIUser(String playerName) {
-        JsonConverter<DIUserDto> converter = new JsonConverter(DIUserDto.class);
+        JsonConverter<DIUserDto> converter = new JsonConverter<DIUserDto>(DIUserDto.class);
         DIUserDto dto = new DIUserDto();
         dto.setUuid("Uuid");
         dto.setPlayerName("PlayerName");
@@ -85,21 +96,21 @@ public class ChannelMessageController implements Listener {
     }
 
     private String getConfigFile() {
-        JsonConverter<FileDto> converter = new JsonConverter(FileDto.class);
+        JsonConverter<FileDto> converter = new JsonConverter<FileDto>(FileDto.class);
         FileDto dto = new FileDto();
         dto.setYamlData(MainController.getDIApi().getInternalController().getConfigManager().getMap());
         return converter.getJson(dto);
     }
 
     private String getLanguageFile() {
-        JsonConverter<FileDto> converter = new JsonConverter(FileDto.class);
+        JsonConverter<FileDto> converter = new JsonConverter<FileDto>(FileDto.class);
         FileDto dto = new FileDto();
         dto.setYamlData(MainController.getDIApi().getInternalController().getLangManager().getMap());
         return converter.getJson(dto);
     }
 
     private String getConnection(){
-        JsonConverter<ConnectionDto> converter = new JsonConverter(ConnectionDto.class);
+        JsonConverter<ConnectionDto> converter = new JsonConverter<ConnectionDto>(ConnectionDto.class);
         ConnectionDto dto = new ConnectionDto();
         dto.setServerList(plugin.getProxy().getServers().keySet().stream().collect(Collectors.toList()));
         dto.setOnlinePlayers(plugin.getProxy().getOnlineCount());
@@ -108,7 +119,7 @@ public class ChannelMessageController implements Listener {
     }
 
     private String getBotConfig(){
-        JsonConverter<BotDto> converter = new JsonConverter(BotDto.class);
+        JsonConverter<BotDto> converter = new JsonConverter<BotDto>(BotDto.class);
         BotDto dto = new BotDto();
         dto.setPrefix(MainController.getDIApi().getCoreController().getBot().getPrefix());
         dto.setServerId(MainController.getDIApi().getCoreController().getBot().getServerId());

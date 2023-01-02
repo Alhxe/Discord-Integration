@@ -73,7 +73,7 @@ public class RegisterCommand implements CommandExecutor {
 
 			User user = userOpt.get();
 
-			if (userDao.getDiscordUserAccounts(user) >= api.getInternalController().getConfigManager()
+			if (userDao.getDiscordUserAccounts(user.getIdLong()) >= api.getInternalController().getConfigManager()
 					.getInt("register_max_discord_accounts")) {
 				player.sendMessage(LangManager.getString(player.getName(), "register_max_accounts").replace("%user_discord_id%",
 						arrayToString(args).replace(" ", "")));
@@ -168,7 +168,7 @@ public class RegisterCommand implements CommandExecutor {
 			user.openPrivateChannel().submit()
 					.thenAccept(channel -> channel.sendMessageEmbeds(messageEmbed).submit().thenAccept(message -> {
 						message.addReaction(emoji).queue();
-						TmpCache.addRegister(player.getName(), new TmpMessage(player, user, message, code));
+						TmpCache.addRegister(player.getName(), new TmpMessage(player.getName(), user, message, code));
 					}).whenComplete((message, error) -> {
 						if (error == null)
 							return;
@@ -195,7 +195,7 @@ public class RegisterCommand implements CommandExecutor {
 
 		Message servermessage = serverchannel.sendMessageEmbeds(messageEmbed).submit().join();
 		servermessage.addReaction(emoji).queue();
-		TmpCache.addRegister(player.getName(), new TmpMessage(player, user, servermessage, code));
+		TmpCache.addRegister(player.getName(), new TmpMessage(player.getName(), user, servermessage, code));
 	}
 
 	/**

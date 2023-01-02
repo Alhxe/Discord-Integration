@@ -1,7 +1,5 @@
 package di.dilogin.entity;
 
-import org.bukkit.entity.Player;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,9 +15,9 @@ import net.dv8tion.jda.api.entities.User;
 public class TmpMessage {
 
 	/**
-	 * Bukkit player.
+	 * Player name.
 	 */
-	private Player player;
+	private String player;
 	
 	/**
 	 * Discord user.

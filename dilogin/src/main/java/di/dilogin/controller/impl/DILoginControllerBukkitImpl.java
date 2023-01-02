@@ -3,6 +3,9 @@ package di.dilogin.controller.impl;
 import java.time.Instant;
 import java.util.Optional;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import com.nickuc.login.api.nLoginAPI;
 
 import di.dicore.api.DIApi;
@@ -14,18 +17,16 @@ import di.dilogin.dao.DIUserDaoBungeeImpl;
 import di.dilogin.dao.DIUserDaoSqlImpl;
 import di.dilogin.entity.DIUser;
 import di.dilogin.minecraft.bukkit.BukkitUtil;
-import di.dilogin.minecraft.cache.TmpCache;
-import di.dilogin.minecraft.cache.UserBlockedCache;
 import di.dilogin.minecraft.bukkit.event.custom.DILoginEvent;
 import di.dilogin.minecraft.bukkit.ext.authme.AuthmeHook;
+import di.dilogin.minecraft.cache.TmpCache;
+import di.dilogin.minecraft.cache.UserBlockedCache;
 import di.internal.utils.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 /**
  * DILogin plugin control.
@@ -44,9 +45,9 @@ public class DILoginControllerBukkitImpl implements DILoginController {
 
     public DILoginControllerBukkitImpl(boolean isDataInBungee){
         if(isDataInBungee){
-            this.userDao = new DIUserDaoBungeeImpl();
+            DILoginControllerBukkitImpl.userDao = new DIUserDaoBungeeImpl();
         } else {
-            this.userDao = new DIUserDaoSqlImpl();
+            DILoginControllerBukkitImpl.userDao = new DIUserDaoSqlImpl();
         }
     }
 
@@ -167,4 +168,5 @@ public class DILoginControllerBukkitImpl implements DILoginController {
                     .info("Cannot change the nickname of " + player.getName() + ". Insufficient permissions.");
         }
     }
+
 }

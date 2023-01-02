@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
 
 import di.internal.controller.ChannelController;
 import di.internal.controller.CoreController;
@@ -25,7 +24,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
-import org.bukkit.entity.Player;
 
 /**
  * General utilities.
@@ -62,35 +60,6 @@ public class Util {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         }
-        return Optional.empty();
-    }
-
-    /**
-     * @param guild  Discord guild.
-     * @param string Discord user name with tag.
-     * @return Possible discord user.
-     */
-    public static Optional<User> getDiscordUserByUsernameAndTag(Guild guild, String string) {
-        String name = string.substring(0, string.lastIndexOf('#'));
-        String tag = string.substring(string.lastIndexOf('#') + 1);
-        Optional<Member> cachedUserOpt = Optional.ofNullable(guild.getMemberByTag(name, tag));
-        if (cachedUserOpt.isPresent())
-            return Optional.of(cachedUserOpt.get().getUser());
-
-        List<User> userOpt = new ArrayList<>();
-        guild.retrieveMembersByPrefix(name, 100).onSuccess(members -> {
-            Member member = members.stream().filter(m -> m.getUser().getAsTag().equals(tag)).findFirst().orElse(null);
-            if (member != null) {
-                userOpt.add(member.getUser());
-            } else {
-                System.out.println("More than 100 names have been found that begin with " + string);
-                // there are either more than 100 users with the same name or the member is not
-                // int he server
-            }
-        });
-        if (!userOpt.isEmpty())
-            return Optional.of(userOpt.get(0));
-
         return Optional.empty();
     }
 
@@ -153,7 +122,7 @@ public class Util {
 
     /**
      * Loads the configuration file from bungee.
-     *
+     *s
      * @param controller    Channel controller.
      * @param configManager Config manager.
      * @param playerName    Player name.
@@ -161,7 +130,7 @@ public class Util {
     public static void loadConfigFile(ChannelController controller, ConfigManager configManager, String playerName) {
         controller.sendMessageAndWaitResponse(playerName, "getConfigFile", "").whenCompleteAsync((json, throwable) -> {
             if (json != null) {
-                JsonConverter<FileDto> fileDtoJsonConverter = new JsonConverter(FileDto.class);
+                JsonConverter<FileDto> fileDtoJsonConverter = new JsonConverter<FileDto>(FileDto.class);
                 configManager.setData(fileDtoJsonConverter.getDto(json).getYamlData());
             }
         });
@@ -177,7 +146,7 @@ public class Util {
     public static void loadLangFile(ChannelController controller, YamlManager yamlManager, String playerName) {
         controller.sendMessageAndWaitResponse(playerName, "getLangFile", "").whenCompleteAsync((json, throwable) -> {
             if (json != null) {
-                JsonConverter<FileDto> fileDtoJsonConverter = new JsonConverter(FileDto.class);
+                JsonConverter<FileDto> fileDtoJsonConverter = new JsonConverter<FileDto>(FileDto.class);
                 yamlManager.setData(fileDtoJsonConverter.getDto(json).getYamlData());
             }
         });
@@ -197,5 +166,34 @@ public class Util {
                     BotDto botDto = jsonConverter.getDto(s);
                     coreController.setBotInfo(botDto.getPrefix(), botDto.getServerId());
                 });
+    }
+    
+    /**
+     * @param guild  Discord guild.
+     * @param string Discord user name with tag.
+     * @return Possible discord user.
+     */
+    public static Optional<User> getDiscordUserByUsernameAndTag(Guild guild, String string) {
+        String name = string.substring(0, string.lastIndexOf('#'));
+        String tag = string.substring(string.lastIndexOf('#') + 1);
+        Optional<Member> cachedUserOpt = Optional.ofNullable(guild.getMemberByTag(name, tag));
+        if (cachedUserOpt.isPresent())
+            return Optional.of(cachedUserOpt.get().getUser());
+
+        List<User> userOpt = new ArrayList<>();
+        guild.retrieveMembersByPrefix(name, 100).onSuccess(members -> {
+            Member member = members.stream().filter(m -> m.getUser().getAsTag().equals(tag)).findFirst().orElse(null);
+            if (member != null) {
+                userOpt.add(member.getUser());
+            } else {
+                System.out.println("More than 100 names have been found that begin with " + string);
+                // there are either more than 100 users with the same name or the member is not
+                // int he server
+            }
+        });
+        if (!userOpt.isEmpty())
+            return Optional.of(userOpt.get(0));
+
+        return Optional.empty();
     }
 }

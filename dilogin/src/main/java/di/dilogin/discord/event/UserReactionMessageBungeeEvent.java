@@ -3,29 +3,26 @@ package di.dilogin.discord.event;
 import java.time.Duration;
 import java.util.Optional;
 
-import di.dilogin.controller.MainController;
-import org.bukkit.entity.Player;
-
 import di.dicore.api.DIApi;
-import di.dilogin.BukkitApplication;
+import di.dilogin.BungeeApplication;
 import di.dilogin.controller.LangManager;
+import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
-import di.dilogin.minecraft.bukkit.ext.authme.AuthmeHook;
-import di.dilogin.minecraft.util.Util;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 /**
  * Class for handling discord login or registration events.
  */
-public class UserReactionMessageEvent extends ListenerAdapter {
+public class UserReactionMessageBungeeEvent extends ListenerAdapter {
 
     /**
      * Database user DAO.
@@ -35,7 +32,7 @@ public class UserReactionMessageEvent extends ListenerAdapter {
     /**
      * Main api.
      */
-    private final DIApi api = BukkitApplication.getDIApi();
+    private final DIApi api = BungeeApplication.getDIApi();
 
     /**
      * Main event body.
@@ -65,9 +62,10 @@ public class UserReactionMessageEvent extends ListenerAdapter {
      * @param event      Reaction event.
      * @param tmpMessage Process message.
      */
-    private void registerUser(MessageReactionAddEvent event, TmpMessage tmpMessage) {
+    @SuppressWarnings("deprecation")
+	private void registerUser(MessageReactionAddEvent event, TmpMessage tmpMessage) {
         Message message = tmpMessage.getMessage();
-        Player player = tmpMessage.getPlayer();
+        ProxiedPlayer player = BungeeApplication.getPlugin().getProxy().getPlayer(tmpMessage.getPlayer());
         User user = tmpMessage.getUser();
 
         if (!event.getUser().equals(user))
@@ -84,15 +82,13 @@ public class UserReactionMessageEvent extends ListenerAdapter {
                 .queue();
         userDao.add(new DIUser(player.getName(), Optional.of(user)));
 
-        if (MainController.getDILoginController().isAuthmeEnabled()) {
-            AuthmeHook.register(player, password);
-        } else {
-            if (!Util.isWhiteListed(user)) {
+        
+            if (!MainController.getDiscordController().isWhiteListed(player.getName())) {
                 player.sendMessage(LangManager.getString(player.getName(), "login_without_role_required"));
             } else {
                 MainController.getDILoginController().loginUser(player.getName(), user);
             }
-        }
+        
 
     }
 
@@ -104,7 +100,7 @@ public class UserReactionMessageEvent extends ListenerAdapter {
      */
     private void loginUser(MessageReactionAddEvent event, TmpMessage tmpMessage) {
         Message message = tmpMessage.getMessage();
-        Player player = tmpMessage.getPlayer();
+        ProxiedPlayer player = BungeeApplication.getPlugin().getProxy().getPlayer(tmpMessage.getPlayer());
         User user = tmpMessage.getUser();
 
         if (!event.getUser().equals(user))
@@ -123,7 +119,7 @@ public class UserReactionMessageEvent extends ListenerAdapter {
      * @param player Bukkit player.
      * @return Registration completed message.
      */
-    private MessageEmbed getRegisterEmbed(User user, Player player) {
+    private MessageEmbed getRegisterEmbed(User user, ProxiedPlayer player) {
         return MainController.getDILoginController().getEmbedBase().setTitle(LangManager.getString(user, player.getName(), "register_discord_title"))
                 .setDescription(LangManager.getString(user, player.getName(), "register_discord_success")).build();
     }
@@ -133,7 +129,7 @@ public class UserReactionMessageEvent extends ListenerAdapter {
      * @param player Bukkit player.
      * @return Login completed message.
      */
-    private MessageEmbed getLoginEmbed(User user, Player player) {
+    private MessageEmbed getLoginEmbed(User user, ProxiedPlayer player) {
         return MainController.getDILoginController().getEmbedBase().setTitle(LangManager.getString(user, player.getName(), "login_discord_title"))
                 .setDescription(LangManager.getString(user, player.getName(), "login_discord_success")).build();
     }

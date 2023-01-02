@@ -1,18 +1,22 @@
 package di.dilogin.minecraft.bukkit.ext.luckperms;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import di.dilogin.minecraft.util.Util;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import net.dv8tion.jda.api.entities.Role;
 import org.bukkit.entity.Player;
 
 import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
+import di.dilogin.controller.MainController;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import net.dv8tion.jda.api.entities.Role;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
@@ -68,7 +72,7 @@ public class LuckPermsController {
 
 	/**
 	 * Get the perms of the user.
-	 * @param userName player to get perms.
+	 * @param userName player to get perms.h
 	 * @return the perms of the user.
 	 */
 	public static User getLuckPermsUser(String userName) {
@@ -88,7 +92,7 @@ public class LuckPermsController {
 				String group = entry.getValue();
 
 				boolean isUserInGroup = isUserInGroup(player.getName(), group);
-				boolean isUserInRole = Util.userHasRole(role, player.getName());
+				boolean isUserInRole = MainController.getDiscordController().userHasRole(role, player.getName());
 
 				Role discordRole = diapi.getCoreController().getGuild().get().getRoleById(role);
 				if (isUserInGroup && !isUserInRole){

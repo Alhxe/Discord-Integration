@@ -2,7 +2,6 @@ package di.dilogin.minecraft.bukkit.event;
 
 import java.util.Optional;
 
-import di.dilogin.controller.MainController;
 import org.bukkit.Server;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,7 +10,7 @@ import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
 import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
-import di.dilogin.controller.DILoginController;
+import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.DIUser;
 

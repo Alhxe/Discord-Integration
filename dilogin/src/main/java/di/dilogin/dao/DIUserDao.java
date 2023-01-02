@@ -3,7 +3,6 @@ package di.dilogin.dao;
 import java.util.Optional;
 
 import di.dilogin.entity.DIUser;
-import net.dv8tion.jda.api.entities.User;
 
 /**
  * {@DIUser} DAO.
@@ -56,8 +55,8 @@ public interface DIUserDao {
 	boolean containsDiscordId(long id);
 
 	/**
-	 * @param user Discord User
+	 * @param discordId Discord User id.
 	 * @return How many minecraft accounts you have linked to your discord account.
 	 */
-	int getDiscordUserAccounts(User user);
+	int getDiscordUserAccounts(long discordId);
 }

@@ -2,12 +2,11 @@ package di.dilogin.minecraft.bukkit.ext.luckperms;
 
 import java.util.List;
 
-import di.dilogin.controller.MainController;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import di.dilogin.BukkitApplication;
-import di.dilogin.minecraft.util.Util;
+import di.dilogin.controller.MainController;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.event.EventBus;
 import net.luckperms.api.event.node.NodeAddEvent;
@@ -81,11 +80,11 @@ public class LuckPermsEvents {
 		List<String> roleList = LuckPermsController.getDiscordRoleFromMinecraftRole(group);
 
 		for (String role : roleList) {
-			if (!Util.serverHasRole(role))
+			if (!MainController.getDiscordController().serverHasRole(role))
 				continue;
 
-			if (Util.userHasRole(role, player.getName())) {
-				Util.removeRole(role, player.getName(), "Stop being part of the " + group + " group");
+			if (MainController.getDiscordController().userHasRole(role, player.getName())) {
+				MainController.getDiscordController().removeRole(role, player.getName(), "Stop being part of the " + group + " group");
 			}
 
 		}
@@ -105,11 +104,11 @@ public class LuckPermsEvents {
 		String group = event.getNode().getKey().replace("group.", "");
 		List<String> roleList = LuckPermsController.getDiscordRoleFromMinecraftRole(group);
 		for (String role : roleList) {
-			if (!Util.serverHasRole(role))
+			if (!MainController.getDiscordController().serverHasRole(role))
 				continue;
 
-			if (!Util.userHasRole(role, player.getName())) {
-				Util.giveRole(role, player.getName(), "Belong to the " + group + " group");
+			if (!MainController.getDiscordController().userHasRole(role, player.getName())) {
+				MainController.getDiscordController().giveRole(role, player.getName(), "Belong to the " + group + " group");
 			}
 
 		}

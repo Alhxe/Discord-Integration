@@ -1,9 +1,8 @@
 package di.dilogin.dao;
 
-import di.dilogin.entity.DIUser;
-import net.dv8tion.jda.api.entities.User;
-
 import java.util.Optional;
+
+import di.dilogin.entity.DIUser;
 
 /**
  * {@DIUser} DAO. It is implemented when the database is hosted on bungeecord.
@@ -45,7 +44,7 @@ public class DIUserDaoBungeeImpl implements DIUserDao{
     }
 
     @Override
-    public int getDiscordUserAccounts(User user) {
+    public int getDiscordUserAccounts(long discordId) {
         return 0;
     }
 }

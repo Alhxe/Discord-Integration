@@ -25,4 +25,5 @@ public class DIUser {
 	 * Discord player user. Can be null if user left server.
 	 */
 	private Optional<User> playerDiscord;
+
 }

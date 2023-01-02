@@ -1,14 +1,14 @@
 package di.dilogin.minecraft.bukkit.ext.luckperms;
 
-import di.dilogin.BukkitApplication;
-import di.dilogin.entity.DIUser;
-import di.dilogin.minecraft.bukkit.BukkitUtil;
-import di.dilogin.minecraft.bukkit.event.custom.DILoginEvent;
+import java.util.Optional;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.Optional;
+import di.dilogin.entity.DIUser;
+import di.dilogin.minecraft.bukkit.BukkitUtil;
+import di.dilogin.minecraft.bukkit.event.custom.DILoginEvent;
 
 public class LuckPermsLoginEvent implements Listener {
 

@@ -2,7 +2,6 @@ package di.dilogin.minecraft.bukkit.event;
 
 import java.time.Duration;
 
-import di.dilogin.controller.MainController;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,8 +9,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
-import di.dilogin.controller.DILoginController;
 import di.dilogin.controller.LangManager;
+import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
@@ -87,7 +86,7 @@ public interface UserLoginEvent extends Listener {
 			user.openPrivateChannel().submit()
 					.thenAccept(channel -> channel.sendMessageEmbeds(embed).submit().thenAccept(message -> {
 						message.addReaction(EMOJI).queue();
-						TmpCache.addLogin(player.getName(), new TmpMessage(player, user, message, null));
+						TmpCache.addLogin(player.getName(), new TmpMessage(player.getName(), user, message, null));
 					}).whenComplete((message, error) -> {
 						if (error == null)
 							return;
@@ -111,6 +110,6 @@ public interface UserLoginEvent extends Listener {
 		serverchannel.sendMessage(user.getAsMention()).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
 		Message servermessage = serverchannel.sendMessageEmbeds(embed).submit().join();
 		servermessage.addReaction(EMOJI).queue();
-		TmpCache.addLogin(player.getName(), new TmpMessage(player, user, servermessage, null));
+		TmpCache.addLogin(player.getName(), new TmpMessage(player.getName(), user, servermessage, null));
 	}
 }

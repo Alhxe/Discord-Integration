@@ -1,28 +1,20 @@
 package di.internal.controller.impl;
 
 import java.io.File;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.bukkit.plugin.Plugin;
 
 import di.internal.controller.ChannelController;
 import di.internal.controller.CoreController;
 import di.internal.controller.InternalController;
 import di.internal.controller.PluginController;
-import di.internal.dto.BotDto;
-import di.internal.dto.Demand;
-import di.internal.dto.FileDto;
-import di.internal.dto.converter.JsonConverter;
-import di.internal.entity.DiscordBot;
-import di.internal.event.UserLoginForBungeeCallBukkitEvent;
-import di.internal.interceptor.ChannelBukkitInterceptor;
-import di.internal.utils.Util;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
 import di.internal.controller.file.ConfigManager;
 import di.internal.controller.file.YamlManager;
+import di.internal.dto.Demand;
+import di.internal.event.UserLoginForBungeeCallBukkitEvent;
+import di.internal.utils.Util;
 import lombok.Getter;
 
 /**
@@ -111,7 +103,7 @@ public class InternalControllerBukkitImpl implements PluginController, InternalC
         event.getFirstPlayer().whenCompleteAsync((player, throwable) -> {
             plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
                 String subChannel = Util.getRandomSubChannel(player.getName());
-                channelController.sendMessageAndWaitResponseWithSubChannel(subChannel, player.getName(), "checkConnection", "")
+                channelController.sendMessageAndWaitResponseWithSubChannel(subChannel, player.getName(), Demand.checkConnection.name(), "")
                         .whenCompleteAsync((s, throwable1) -> {
                             Util.loadConfigFile(channelController, configManager, player.getName());
                             Util.loadLangFile(channelController, langManager, player.getName());

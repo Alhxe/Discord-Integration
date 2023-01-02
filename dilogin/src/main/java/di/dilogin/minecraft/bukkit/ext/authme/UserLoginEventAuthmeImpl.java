@@ -2,19 +2,18 @@ package di.dilogin.minecraft.bukkit.ext.authme;
 
 import java.util.Optional;
 
-import di.dilogin.BukkitApplication;
-import di.internal.entity.DiscordBot;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import di.dilogin.BukkitApplication;
 import di.dilogin.controller.LangManager;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
-import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.bukkit.event.UserLoginEvent;
 import di.dilogin.minecraft.bukkit.event.custom.DILoginEvent;
+import di.dilogin.minecraft.cache.TmpCache;
 import fr.xephi.authme.events.LoginEvent;
 
 /**
@@ -72,7 +71,7 @@ public class UserLoginEventAuthmeImpl implements UserLoginEvent {
 	public void initPlayerRegisterRequest(PlayerJoinEvent event, String playerName) {
 		String code = CodeGenerator
 				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
-		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(), null, null, code));
+		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer().getName(), null, null, code));
 	}
 
 	/**
@@ -108,7 +107,7 @@ public class UserLoginEventAuthmeImpl implements UserLoginEvent {
 		String code = CodeGenerator
 				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
 		String command = api.getCoreController().getBot().getPrefix() + api.getInternalController().getConfigManager().getString("register_command") + " " + code;
-		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer(), null, null, code));
+		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer().getName(), null, null, code));
 		event.getPlayer().sendMessage(LangManager.getString(event.getPlayer().getName(), "register_opt_request")
 				.replace("%register_command%", command));
 	}

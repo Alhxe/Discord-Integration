@@ -1,14 +1,13 @@
 package di.dilogin.minecraft.bukkit;
 
+import java.util.Optional;
+
+import org.bukkit.Server;
+import org.bukkit.entity.Player;
+
 import di.dilogin.BukkitApplication;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.bukkit.Bukkit;
-import org.bukkit.Server;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
-import java.util.Optional;
 
 /**
  * Bukkit Util class.

@@ -6,6 +6,7 @@ public enum Demand {
     getConfigFile,
     getDIUser,
     getBotConfig,
-    checkConnection;
+    checkConnection,
+    getSessionStatus;
 
 }
