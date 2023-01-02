@@ -37,4 +37,24 @@ public class AuthmeHook {
 		if (!authmeApi.isRegistered(player.getName()))
 			authmeApi.forceRegister(player, password, true);
 	}
+
+	/**
+	 * Check if player is authenticated on Authme.
+	 * 
+	 * @param player Bukkit player.
+	 * @return True if player is authenticated.
+	 */
+	public static boolean isLogged(Player player) {
+		return authmeApi.isAuthenticated(player);
+	}
+	
+	/**
+	 * Check if player is registered on Authme.
+	 * 
+	 * @param player Bukkit player.
+	 * @return True if player is registered.
+	 */
+	public static boolean isRegistered(Player player) {
+		return authmeApi.isRegistered(player.getName());
+	}
 }
