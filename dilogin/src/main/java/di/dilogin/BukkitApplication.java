@@ -15,9 +15,9 @@ import di.dilogin.controller.impl.DILoginControllerBukkitImpl;
 import di.dilogin.controller.impl.DiscordControllerImpl;
 import di.dilogin.discord.command.DiscordRegisterBukkitCommand;
 import di.dilogin.discord.event.UserReactionMessageBukkitEvent;
-import di.dilogin.minecraft.bukkit.command.ForceLoginCommand;
-import di.dilogin.minecraft.bukkit.command.RegisterCommand;
-import di.dilogin.minecraft.bukkit.command.UnregisterCommand;
+import di.dilogin.minecraft.bukkit.command.ForceLoginBukkitCommand;
+import di.dilogin.minecraft.bukkit.command.RegisterBukkitCommand;
+import di.dilogin.minecraft.bukkit.command.UnregisterBukkitCommand;
 import di.dilogin.minecraft.bukkit.event.UserBlockEvents;
 import di.dilogin.minecraft.bukkit.event.UserLeaveEvent;
 import di.dilogin.minecraft.bukkit.event.UserPreLoginEvent;
@@ -60,6 +60,7 @@ public class BukkitApplication extends JavaPlugin {
 		MainController.setBukkit(true);
 
 		if (!api.isBungeeDetected()) {
+	    	plugin.getLogger().info("No Bungee");
 			MainController.setDiscordController(new DiscordControllerImpl());
 			DBController.getConnect();
 			initInternCommands();
@@ -67,6 +68,7 @@ public class BukkitApplication extends JavaPlugin {
 			initDiscordEvents();
 			initDiscordCommands();
 		} else {
+	    	plugin.getLogger().info("Bungee");
 			initExtEvents();
 			api.getInternalController().initConnectionWithBungee();
 		}
@@ -89,9 +91,9 @@ public class BukkitApplication extends JavaPlugin {
 	 * Add the commands to bukkit.
 	 */
 	private void initInternCommands() {
-		initUniqueCommand("diregister", new RegisterCommand());
-		initUniqueCommand("forcelogin", new ForceLoginCommand());
-		initUniqueCommand("unregister", new UnregisterCommand());
+		initUniqueCommand("diregister", new RegisterBukkitCommand());
+		initUniqueCommand("forcelogin", new ForceLoginBukkitCommand());
+		initUniqueCommand("unregister", new UnregisterBukkitCommand());
 	}
 
 	/**
@@ -120,7 +122,7 @@ public class BukkitApplication extends JavaPlugin {
 				plugin.getPluginLoader().disablePlugin(plugin);
 			}
 		} catch (NoApiException e) {
-			e.printStackTrace();
+			getLogger().log(Level.SEVERE,"BukkitApplication - connectWithCoreApi",e);
 		}
 	}
 

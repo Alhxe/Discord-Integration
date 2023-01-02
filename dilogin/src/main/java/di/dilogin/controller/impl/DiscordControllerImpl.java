@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 
 /**
  * Controller used to manage Discord.
@@ -108,6 +109,17 @@ public class DiscordControllerImpl implements DiscordController {
 		return true;
 	}
 
+	@Override
+	public boolean isWhiteListed(String player, User user) {
+		Optional<Role> optRole = requiredRole();
+		if (optRole.isPresent()) {
+			Role role = optRole.get();
+			Member member = getGuild().getMember(user);
+			return member.getRoles().contains(role);
+		}
+		return true;	
+	}
+
 	/**
 	 * Check for required role to whitelist on config file.
 	 *
@@ -162,5 +174,4 @@ public class DiscordControllerImpl implements DiscordController {
 		JDA jda = api.getCoreController().getDiscordApi().get();
 		return jda.getGuildById(api.getCoreController().getBot().getServerId());
 	}
-
 }

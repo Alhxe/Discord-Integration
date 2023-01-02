@@ -5,13 +5,10 @@ import di.dicore.api.DIApi;
 import di.internal.controller.CoreController;
 import di.internal.controller.InternalController;
 import di.internal.controller.impl.InternalControllerBungeeImpl;
-import di.internal.entity.DiscordBot;
 import di.internal.entity.DiscordCommand;
 import di.internal.exception.NoApiException;
 import lombok.Getter;
 import net.md_5.bungee.api.plugin.Plugin;
-
-import java.util.Optional;
 
 /**
  * Class used to communicate between the rest of the plugins.

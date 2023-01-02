@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import di.dilogin.controller.MainController;
 import di.internal.controller.InternalController;
@@ -56,7 +57,7 @@ public class DBConnectionSqliteImpl implements DBConnection {
 			connection = DriverManager.getConnection("jdbc:sqlite:" + dataFolder);
 			initTables();
 		} catch (SQLException | ClassNotFoundException | IOException e) {
-			e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DBConnectionSlqiteImpl - initTables",e);
 			controller.disablePlugin();
 		}
 
@@ -80,7 +81,7 @@ public class DBConnectionSqliteImpl implements DBConnection {
 			for (String s : sql)
 				stmt.execute(s);
 		} catch (SQLException e) {
-			e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DBConnectionSqliteImpl - initTables",e);
 		}
 	}
 }

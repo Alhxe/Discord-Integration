@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
 
@@ -72,7 +73,7 @@ public class UserDataController {
 			reader.close();
 			return Optional.ofNullable(userData);
 		} catch (IOException e) {
-			e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"UserDataController - getUserDataFromUuid",e);
 		}
 		return Optional.empty();
 	}
@@ -86,7 +87,7 @@ public class UserDataController {
 		try (FileWriter fileWriter = new FileWriter(dataFolder.getAbsolutePath() + "/" + uuid + ".json")) {
 			fileWriter.write(new Gson().toJson(userData));
 		} catch (IOException e) {
-			e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"UserDataController - saveData",e);
 		}
 	}
 

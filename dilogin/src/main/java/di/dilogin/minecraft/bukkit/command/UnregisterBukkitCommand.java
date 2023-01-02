@@ -18,7 +18,7 @@ import di.dilogin.entity.DIUser;
 /**
  * Command to unregister the account.
  */
-public class UnregisterCommand implements CommandExecutor {
+public class UnregisterBukkitCommand implements CommandExecutor {
 
 	/**
 	 * User manager in the database.

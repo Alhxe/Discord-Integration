@@ -25,144 +25,151 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
  */
 public class DiscordRegisterBungeeCommand implements DiscordCommand {
 
-    /**
-     * User manager in the database.
-     */
-    private final DIUserDao userDao = MainController.getDILoginController().getDIUserDao();
+	/**
+	 * User manager in the database.
+	 */
+	private final DIUserDao userDao = MainController.getDILoginController().getDIUserDao();
 
-    /**
-     * Main api.
-     */
-    private final DIApi api = MainController.getDIApi();
+	/**
+	 * Main api.
+	 */
+	private final DIApi api = MainController.getDIApi();
 
-    /**
-     * Main command body.
-     *
-     * @param message It is the message that comes after the command.
-     * @param event   It is the object that includes the event information.
-     */
-    @SuppressWarnings("deprecation")
+	/**
+	 * Main command body.
+	 *
+	 * @param message It is the message that comes after the command.
+	 * @param event   It is the object that includes the event information.
+	 */
+	@SuppressWarnings("deprecation")
 	@Override
-    public void execute(String message, MessageReceivedEvent event) {
+	public void execute(String message, MessageReceivedEvent event) {
 
-        event.getMessage().delete().delay(Duration.ofSeconds(20)).queue();
-        if (userDao.containsDiscordId(event.getAuthor().getIdLong())) {
-            event.getChannel().sendMessage(LangManager.getString("register_already_exists"))
-                    .delay(Duration.ofSeconds(20)).flatMap(Message::delete).queue();
-            return;
-        }
+		event.getMessage().delete().delay(Duration.ofSeconds(20)).queue();
+		if (userDao.containsDiscordId(event.getAuthor().getIdLong())) {
+			event.getChannel().sendMessage(LangManager.getString("register_already_exists"))
+					.delay(Duration.ofSeconds(20)).flatMap(Message::delete).queue();
+			return;
+		}
 
-        // Check account limits.
-        if (userDao.getDiscordUserAccounts(event.getAuthor().getIdLong()) >= api.getInternalController().getConfigManager()
-                .getInt("register_max_discord_accounts")) {
-            event.getChannel().sendMessage(LangManager.getString("register_max_accounts")).delay(Duration.ofSeconds(20))
-                    .flatMap(Message::delete).queue();
-            return;
-        }
+		// Check account limits.
+		if (userDao.getDiscordUserAccounts(event.getAuthor().getIdLong()) >= api.getInternalController()
+				.getConfigManager().getInt("register_max_discord_accounts")) {
+			event.getChannel().sendMessage(LangManager.getString("register_max_accounts")).delay(Duration.ofSeconds(20))
+					.flatMap(Message::delete).queue();
+			return;
+		}
 
-        // Check arguments.
-        if (message.isEmpty()) {
-            event.getChannel().sendMessage(LangManager.getString("register_discord_arguments"))
-                    .delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
-            return;
-        }
+		// Check arguments.
+		if (message.isEmpty()) {
+			event.getChannel().sendMessage(LangManager.getString("register_discord_arguments"))
+					.delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
+			return;
+		}
 
-        Optional<ProxiedPlayer> playerOpt = catchRegister(message, event);
+		Optional<ProxiedPlayer> playerOpt = catchRegister(message, event);
 
-        if (!playerOpt.isPresent()) {
-            event.getChannel().sendMessage(LangManager.getString("register_code_not_found"))
-                    .delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
-            return;
-        }
+		if (!playerOpt.isPresent()) {
+			event.getChannel().sendMessage(LangManager.getString("register_code_not_found"))
+					.delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
+			return;
+		}
 
-        ProxiedPlayer player = playerOpt.get();
+		ProxiedPlayer player = playerOpt.get();
 
-        // Create password.
-        String password = CodeGenerator.getCode(8, api);
-        player.sendMessage(LangManager.getString(event.getAuthor(), player.getName(), "register_success")
-                .replace("%authme_password%", password));
-        // Send message to discord.
-        MessageEmbed messageEmbed = getEmbedMessage(player, event.getAuthor());
-        event.getChannel().sendMessageEmbeds(messageEmbed).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
-        // Remove user from register cache.
-        TmpCache.removeRegister(player.getName());
-        // Add user to data base.
-        userDao.add(new DIUser(player.getName(), Optional.of(event.getAuthor())));
+		// Create password.
+		String password = CodeGenerator.getCode(8, api);
+		player.sendMessage(LangManager.getString(event.getAuthor(), player.getName(), "register_success")
+				.replace("%authme_password%", password));
+		// Send message to discord.
+		MessageEmbed messageEmbed = getEmbedMessage(player, event.getAuthor());
+		event.getChannel().sendMessageEmbeds(messageEmbed).delay(Duration.ofSeconds(10)).flatMap(Message::delete)
+				.queue();
 
-        MainController.getDILoginController().loginUser(player.getName(), event.getAuthor());
-       
+		// Add user to data base.
+		userDao.add(new DIUser(player.getName(), Optional.of(event.getAuthor())));
 
-    }
+		// Check if is whitelisted to login.
+		if (!MainController.getDiscordController().isWhiteListed(player.getName(), event.getAuthor())) {
+			player.sendMessage(LangManager.getString(player.getName(), "login_without_role_required"));
+		} else {
+			TmpCache.removeRegister(player.getName());
+			MainController.getDILoginController().loginUser(player.getName(), event.getAuthor());
+		}
 
-    /**
-     * Catch registration method.
-     *
-     * @param message Args from the message.
-     * @param event   Event of the message.
-     * @return Player if exits and is not registered.
-     */
-    public Optional<ProxiedPlayer> catchRegister(String message, MessageReceivedEvent event) {
-        Optional<ProxiedPlayer> player = Optional.ofNullable(BungeeApplication.getPlugin().getProxy().getPlayer(registerByCode(message).get()));
+	}
 
-        if (!player.isPresent())
-            player = registerByUserName(message, event);
+	/**
+	 * Catch registration method.
+	 *
+	 * @param message Args from the message.
+	 * @param event   Event of the message.
+	 * @return Player if exits and is not registered.
+	 */
+	public Optional<ProxiedPlayer> catchRegister(String message, MessageReceivedEvent event) {
+		Optional<ProxiedPlayer> player = Optional
+				.ofNullable(BungeeApplication.getPlugin().getProxy().getPlayer(registerByCode(message).get()));
 
-        return player;
-    }
+		if (!player.isPresent())
+			player = registerByUserName(message, event);
 
-    /**
-     * Register by code.
-     *
-     * @param message Args from the message.
-     * @return Player if exits and is not registered.
-     */
-    public Optional<String> registerByCode(String message) {
-        // Check code.
-        Optional<TmpMessage> tmpMessageOpt = TmpCache.getRegisterMessageByCode(message);
-        return tmpMessageOpt.map(TmpMessage::getPlayer);
+		return player;
+	}
 
-    }
+	/**
+	 * Register by code.
+	 *
+	 * @param message Args from the message.
+	 * @return Player if exits and is not registered.
+	 */
+	public Optional<String> registerByCode(String message) {
+		// Check code.
+		Optional<TmpMessage> tmpMessageOpt = TmpCache.getRegisterMessageByCode(message);
+		return tmpMessageOpt.map(TmpMessage::getPlayer);
 
-    /**
-     * Register by username.
-     *
-     * @param message Args from the message.
-     * @param event   Event of the message.
-     * @return Player if exits and is not registered.
-     */
-    public Optional<ProxiedPlayer> registerByUserName(String message, MessageReceivedEvent event) {
+	}
 
-        Optional<ProxiedPlayer> playerOpt = Optional.ofNullable(BungeeApplication.getPlugin().getProxy().getPlayer(message));
+	/**
+	 * Register by username.
+	 *
+	 * @param message Args from the message.
+	 * @param event   Event of the message.
+	 * @return Player if exits and is not registered.
+	 */
+	public Optional<ProxiedPlayer> registerByUserName(String message, MessageReceivedEvent event) {
 
-        if (!playerOpt.isPresent())
-            return Optional.empty();
+		Optional<ProxiedPlayer> playerOpt = Optional
+				.ofNullable(BungeeApplication.getPlugin().getProxy().getPlayer(message));
 
-        if (userDao.contains(message)) {
-            event.getChannel().sendMessage(LangManager.getString("register_already_exists"))
-                    .delay(Duration.ofSeconds(20)).flatMap(Message::delete).queue();
-            return Optional.empty();
-        }
-        return playerOpt;
-    }
+		if (!playerOpt.isPresent())
+			return Optional.empty();
 
-    @Override
-    public String getAlias() {
+		if (userDao.contains(message)) {
+			event.getChannel().sendMessage(LangManager.getString("register_already_exists"))
+					.delay(Duration.ofSeconds(20)).flatMap(Message::delete).queue();
+			return Optional.empty();
+		}
+		return playerOpt;
+	}
 
-        return api.getInternalController().getConfigManager().getString("register_command");
-    }
+	@Override
+	public String getAlias() {
 
-    /**
-     * Create the log message according to the configuration.
-     *
-     * @param player Bukkit player.
-     * @param user   Discord user.
-     * @return Embed message configured.
-     */
-    private MessageEmbed getEmbedMessage(ProxiedPlayer player, User user) {
-        EmbedBuilder embedBuilder = MainController.getDILoginController().getEmbedBase()
-                .setTitle(LangManager.getString(player.getName(), "register_discord_title"))
-                .setDescription(LangManager.getString(user, player.getName(), "register_discord_success"));
-        return embedBuilder.build();
-    }
+		return api.getInternalController().getConfigManager().getString("register_command");
+	}
+
+	/**
+	 * Create the log message according to the configuration.
+	 *
+	 * @param player Bukkit player.
+	 * @param user   Discord user.
+	 * @return Embed message configured.
+	 */
+	private MessageEmbed getEmbedMessage(ProxiedPlayer player, User user) {
+		EmbedBuilder embedBuilder = MainController.getDILoginController().getEmbedBase()
+				.setTitle(LangManager.getString(player.getName(), "register_discord_title"))
+				.setDescription(LangManager.getString(user, player.getName(), "register_discord_success"));
+		return embedBuilder.build();
+	}
 
 }

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.logging.Level;
 
 import di.dicore.api.DIApi;
 import di.dilogin.controller.DBController;
@@ -46,7 +47,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 				}
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DIUserDaoSqlImpl",e);
 		}
 		return Optional.empty();
 	}
@@ -63,7 +64,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 				api.getInternalController().getLogger().warning("Unable to add user " + user);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DIUserDaoSqlImpl",e);
 		}
 	}
 
@@ -78,7 +79,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 				api.getInternalController().getLogger().warning("Unable to remove user " + user);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DIUserDaoSqlImpl",e);
 		}
 	}
 
@@ -92,7 +93,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 					return true;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DIUserDaoSqlImpl",e);
 		}
 		return false;
 	}
@@ -107,7 +108,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 					return true;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DIUserDaoSqlImpl",e);
 		}
 		return false;
 	}
@@ -122,7 +123,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 					return rs.getInt("total");
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DIUserDaoSqlImpl",e);
 		}
 		return 0;
 	}
@@ -134,7 +135,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 			ps.setString(1, playerName);
 			ps.execute();
 		} catch (SQLException e) {
-			e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DIUserDaoSqlImpl",e);
 		}
 	}
 
@@ -158,7 +159,7 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 				}
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DIUserDaoSqlImpl",e);
 		}
 		return Optional.empty();
 	}

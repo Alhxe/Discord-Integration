@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import di.dilogin.controller.MainController;
 import lombok.NoArgsConstructor;
@@ -48,7 +49,7 @@ public class DBConnectionMysqlImpl implements DBConnection {
             connection = DriverManager.getConnection("jdbc:mysql://" + url, user, password);
             initTables();
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DBConnectionMysqlImpl - initDB",e);
             MainController.getDIApi().getInternalController().disablePlugin();
         }
 
@@ -72,7 +73,7 @@ public class DBConnectionMysqlImpl implements DBConnection {
             for (String s : sql)
                 stmt.execute(s);
         } catch (SQLException e) {
-            e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DBConnectionMysqlImpl - initTables",e);
         }
     }
 }

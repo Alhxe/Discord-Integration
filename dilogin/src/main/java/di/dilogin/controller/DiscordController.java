@@ -1,5 +1,7 @@
 package di.dilogin.controller;
 
+import net.dv8tion.jda.api.entities.User;
+
 public interface DiscordController {
 	
 	/**
@@ -40,5 +42,14 @@ public interface DiscordController {
      * @return true if is whitelisted.
      */
     public boolean isWhiteListed(String player);
+    
+    /**
+     * Check if user is whitelisted and option is enabled.
+     *
+     * @param player Player to check.
+     * @param User Discord user.
+     * @return true if is whitelisted.
+     */
+    public boolean isWhiteListed(String player, User user);
 	
 }

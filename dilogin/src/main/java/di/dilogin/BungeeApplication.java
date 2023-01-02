@@ -10,7 +10,9 @@ import di.dilogin.controller.impl.DILoginControllerBungeeImpl;
 import di.dilogin.controller.impl.DiscordControllerImpl;
 import di.dilogin.discord.command.DiscordRegisterBungeeCommand;
 import di.dilogin.discord.event.UserReactionMessageBungeeEvent;
+import di.dilogin.minecraft.bungee.command.ForceLoginBungeeCommand;
 import di.dilogin.minecraft.bungee.command.RegisterBungeeCommand;
+import di.dilogin.minecraft.bungee.command.UnregisterBungeeCommand;
 import di.dilogin.minecraft.bungee.controller.ChannelMessageController;
 import di.dilogin.minecraft.bungee.event.UserLeaveBungeeEvent;
 import di.dilogin.minecraft.bungee.event.UserLoginBungeeEvent;
@@ -74,7 +76,7 @@ public class BungeeApplication extends Plugin {
 			try {
 				api = new DIApiBungeeImpl(plugin, this.getClass().getClassLoader(), true, true);
 			} catch (NoApiException e) {
-				e.printStackTrace();
+	            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"BungeeApplication - connectWithCoreApi",e);
 			}
 		} else {
 			plugin.getLogger().log(Level.SEVERE,
@@ -85,6 +87,8 @@ public class BungeeApplication extends Plugin {
 
 	private void initCommands() {
 		this.getProxy().getPluginManager().registerCommand(this, new RegisterBungeeCommand());
+		this.getProxy().getPluginManager().registerCommand(this, new UnregisterBungeeCommand());
+		this.getProxy().getPluginManager().registerCommand(this, new ForceLoginBungeeCommand());
 	}
 
 	private void initEvents() {

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
+import java.util.logging.Level;
 
 import di.dicore.api.DIApi;
 import di.internal.utils.Util;
@@ -166,7 +167,7 @@ public class EventsListener {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            api.getInternalController().getLogger().log(Level.SEVERE, "EventsListener - getName", e);
         }
         return "Unknown";
 

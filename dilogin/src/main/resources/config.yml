@@ -1,3 +1,5 @@
+##################### GLOBAL OPTIONS
+
 #Discord
 channel: CHANNEL_ID
 
@@ -18,15 +20,6 @@ database: 'sqlite'
 #database_host: 'host'
 #database_port: '3306'
 #database_table: 'dilogin'
-
-#Teleport options
-teleport: false
-teleport_x: -207
-teleport_y: 90
-teleport_z: 272
-teleport_world: world
-teleport_yaw: 2.4
-teleport_pitch: 12.9
 
 #Messages
 discord_embed_color: '#466AC7'
@@ -56,9 +49,25 @@ syncro_rol_enable: false
 syncro_rol_list:
        - discord_rol_id: luckperms_group_name
        - another_rol_id: another_luckperms_group_name
-
 #EXAMPLE
 #- 927608230627119184: admin
 
+
+##################### ONLY FOR BUKKIT/SPIGOT/PAPER... (NOT WORK WHEN SERVER IS ON BUNGEE PROXY)
+
+#Teleport options
+teleport: false
+teleport_x: -207
+teleport_y: 90
+teleport_z: 272
+teleport_world: world
+teleport_yaw: 2.4
+teleport_pitch: 12.9
+
 #COMMANDS ALIAS
 register_command: 'register'
+
+##################### BUNGEE OPTIONS
+#Teleport to another server after login
+teleport_server_enabled: false
+teleport_server_name: 'example'

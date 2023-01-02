@@ -26,7 +26,7 @@ import net.dv8tion.jda.api.entities.User;
 /**
  * Command to register as a user.
  */
-public class RegisterCommand implements CommandExecutor {
+public class RegisterBukkitCommand implements CommandExecutor {
 
 	/**
 	 * User manager in the database.

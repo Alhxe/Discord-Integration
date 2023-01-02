@@ -1,10 +1,11 @@
 package di.dilogin.entity;
 
+import java.security.SecureRandom;
+import java.util.Random;
+
 import di.dicore.api.DIApi;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-
-import java.util.Random;
 
 /**
  * Code generator for registration.
@@ -30,7 +31,7 @@ public class CodeGenerator {
 	/**
 	 * Random generator.
 	 */
-	private static Random random = new Random();
+	private static Random random = new SecureRandom();
 
 	/**
 	 * @param length Number of characters for the code.

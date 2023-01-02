@@ -53,7 +53,7 @@ public class ConfigManager implements FileController {
             try {
                 this.yamlData = yaml.load(new FileInputStream(customConfigFile));
             } catch (FileNotFoundException e) {
-                e.printStackTrace();
+                controller.getLogger().log(Level.SEVERE, "ConfiManager constructor", e);
             }
         } else {
             this.yamlData = getOriginalYamlContent(FILENAME, classLoader);

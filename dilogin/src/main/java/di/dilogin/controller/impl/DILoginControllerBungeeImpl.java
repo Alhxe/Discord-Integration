@@ -104,6 +104,11 @@ public class DILoginControllerBungeeImpl implements DILoginController {
 		player.sendMessage(LangManager.getString("login_success"));
 
 		TmpCache.removeLogin(player.getName());
+		
+		if (MainController.getDIApi().getInternalController().getConfigManager().getBoolean("teleport_server_enabled")) {
+			String serverName = MainController.getDIApi().getInternalController().getConfigManager().getString("teleport_server_name");
+            player.connect(BungeeApplication.getPlugin().getProxy().getServerInfo(serverName));
+		}
 	}
 
 	@Override

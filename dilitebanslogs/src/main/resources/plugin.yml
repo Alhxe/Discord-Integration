@@ -1,5 +1,5 @@
 name: DILitebansLogs
 main: di.dilitebanslogs.BukkitApplication
-version: 4.0.0
+version: 4.0.1-beta1
 author: Alhxe
 depend: [DICore,LiteBans]

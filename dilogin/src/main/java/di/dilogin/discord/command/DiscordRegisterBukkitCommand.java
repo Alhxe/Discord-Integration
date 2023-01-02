@@ -90,6 +90,7 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
         // Add user to data base.
         userDao.add(new DIUser(player.getName(), Optional.of(event.getAuthor())));
 
+		// Check if is whitelisted to login.
         if (MainController.getDILoginController().isAuthmeEnabled()) {
             AuthmeHook.register(player, password);
         } else {
