@@ -42,3 +42,4 @@ unregister_success: "%minecraft_username% s account has been deleted."
 
 #Authme
 register_opt_request: "To link this account with your Discord user, use the %register_command% command on our Discord server."
+register_without_authentication: "In order to register with an existing account, you must first login."

@@ -77,6 +77,13 @@ public class DiscordRegisterCommand implements DiscordCommand {
         }
 
         Player player = playerOpt.get();
+        
+		// Check if user is registered on authme and logged.
+		if (DILoginController.isAuthmeEnabled() && AuthmeHook.isRegistered(player) && !AuthmeHook.isLogged(player)) {
+			event.getChannel().sendMessage(LangManager.getString("register_without_authentication"))
+					.delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
+			return;
+		}
 
         // Create password.
         String password = CodeGenerator.getCode(8, api);
