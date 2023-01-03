@@ -158,7 +158,7 @@ public class LuckPermsController {
 	 * @return the role map from config file.
 	 */
 	private static List<Map<String, String>> initRoleList() {
-		List<Map<Object, Object>> tmpList = diapi.getInternalController().getConfigManager().getList("syncro_rol_list");
+		List<Map<Object, Object>> tmpList = diapi.getInternalController().getConfigManager().getListMap("syncro_rol_list");
 		List<Map<String, String>> result = new ArrayList<>();
 		for (Map<Object, Object> m : tmpList) {
 			Map<String, String> tmap = new HashMap<>();

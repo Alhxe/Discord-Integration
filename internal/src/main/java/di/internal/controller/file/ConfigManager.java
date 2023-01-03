@@ -1,8 +1,5 @@
 package di.internal.controller.file;
 
-import di.internal.controller.PluginController;
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -10,6 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
+
+import org.yaml.snakeyaml.Yaml;
+
+import di.internal.controller.PluginController;
 
 /**
  * Configuration file driver.
@@ -123,7 +124,7 @@ public class ConfigManager implements FileController {
      * @param path The value you want to obtain.
      * @return The possible content of the sought value.
      */
-    public List<Map<Object, Object>> getList(String path) {
+    public List<Map<Object, Object>> getListMap(String path) {
         Yaml yaml = new Yaml();
         String value = get(path).replace("=", " : ");
         return yaml.load(value);
@@ -154,5 +155,15 @@ public class ConfigManager implements FileController {
             controller.disablePlugin();
         }
         return "error";
+    }
+    
+    /**
+     * @param path The value you want to obtain.
+     * @return The content list of the sought value.
+     */
+    public List<String> getList(String path){
+    	Yaml yaml = new Yaml();
+    	List<String> r = yaml.load(yamlData.get(path).toString());
+    	return r;
     }
 }
