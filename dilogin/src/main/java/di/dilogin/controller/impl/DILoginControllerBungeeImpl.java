@@ -21,7 +21,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 /**
- * DILogin plugin control.
+ * {@DILoginController} implementation for Bungee Proxy.
  */
 public class DILoginControllerBungeeImpl implements DILoginController {
 
@@ -92,8 +92,7 @@ public class DILoginControllerBungeeImpl implements DILoginController {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void loginUser(String playerName, User user) {
-		Optional<ProxiedPlayer> optionalPlayer = Optional
-				.ofNullable(BungeeApplication.getPlugin().getProxy().getPlayer(playerName));
+		Optional<ProxiedPlayer> optionalPlayer = BungeeUtil.getProxiedPlayer(playerName);
 
 		if (!optionalPlayer.isPresent())
 			return;

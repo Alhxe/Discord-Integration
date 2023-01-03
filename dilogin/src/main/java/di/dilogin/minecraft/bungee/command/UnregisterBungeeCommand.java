@@ -8,6 +8,7 @@ import di.dilogin.controller.LangManager;
 import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.DIUser;
+import di.dilogin.minecraft.bungee.BungeeUtil;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -53,7 +54,12 @@ public class UnregisterBungeeCommand extends Command {
 			return;
 		}
 		DIUser user = optUser.get();
-		ProxiedPlayer player = BungeeApplication.getPlugin().getProxy().getPlayer(nick);
+		Optional<ProxiedPlayer> optPlayer = BungeeUtil.getProxiedPlayer(nick);
+		
+		if(!optPlayer.isPresent())
+			return;
+		
+		ProxiedPlayer player = optPlayer.get();
 		sender.sendMessage(LangManager.getString(nick, "unregister_success"));
 		
 		if(player!=null)

@@ -13,6 +13,9 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
+/**
+ * Class that implements useful methods for login events.
+ */
 public interface UserLoginEventUtils {
 	
 	/**

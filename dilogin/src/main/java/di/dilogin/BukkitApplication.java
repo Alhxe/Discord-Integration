@@ -60,7 +60,7 @@ public class BukkitApplication extends JavaPlugin {
 		MainController.setBukkit(true);
 
 		if (!api.isBungeeDetected()) {
-	    	plugin.getLogger().info("No Bungee");
+			// If api is in own server.
 			MainController.setDiscordController(new DiscordControllerImpl());
 			DBController.getConnect();
 			initInternCommands();
@@ -68,7 +68,7 @@ public class BukkitApplication extends JavaPlugin {
 			initDiscordEvents();
 			initDiscordCommands();
 		} else {
-	    	plugin.getLogger().info("Bungee");
+			// If api is in proxy.
 			initExtEvents();
 			api.getInternalController().initConnectionWithBungee();
 		}
@@ -122,7 +122,7 @@ public class BukkitApplication extends JavaPlugin {
 				plugin.getPluginLoader().disablePlugin(plugin);
 			}
 		} catch (NoApiException e) {
-			getLogger().log(Level.SEVERE,"BukkitApplication - connectWithCoreApi",e);
+			getLogger().log(Level.SEVERE, "BukkitApplication - connectWithCoreApi", e);
 		}
 	}
 
@@ -145,7 +145,10 @@ public class BukkitApplication extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new UserTeleportEvents(), plugin);
 		getServer().getPluginManager().registerEvents(new UserPreLoginEvent(), plugin);
 	}
-	
+
+	/**
+	 * Init Bukkit events when api is in Proxy.
+	 */
 	private void initExtEvents() {
 		getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
 		getServer().getPluginManager().registerEvents(new UserLoginExternEventImpl(), plugin);
@@ -183,6 +186,9 @@ public class BukkitApplication extends JavaPlugin {
 		}
 	}
 
+	/**
+	 * Init events with compatibility with LuckPerms.
+	 */
 	private void initLuckPermsEvents() {
 		getPlugin().getLogger().info("LuckPerms detected, starting plugin compatibility.");
 		new LuckPermsEvents();
@@ -197,5 +203,5 @@ public class BukkitApplication extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new UserLoginEventAuthmeImpl(), plugin);
 		getServer().getPluginManager().registerEvents(new AuthmeEvents(), plugin);
 	}
-	
+
 }

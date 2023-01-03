@@ -14,6 +14,9 @@ import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
+/**
+ * Events when user leave the Proxy.
+ */
 public class UserLeaveBungeeEvent implements Listener{
 	
 	/**

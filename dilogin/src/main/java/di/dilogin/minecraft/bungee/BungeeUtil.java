@@ -13,7 +13,11 @@ import java.util.Optional;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BungeeUtil {
 
-    public static Optional<ProxiedPlayer> getProxiedPlayer(String playerName){
-        return Optional.ofNullable(BungeeApplication.getPlugin().getProxy().getPlayer(playerName));
-    }
+	/**
+	 * @param playerName Minecraft player name.
+	 * @return {@ProxiedPlayer} if player is online.
+	 */
+	public static Optional<ProxiedPlayer> getProxiedPlayer(String playerName) {
+		return Optional.ofNullable(BungeeApplication.getPlugin().getProxy().getPlayer(playerName));
+	}
 }

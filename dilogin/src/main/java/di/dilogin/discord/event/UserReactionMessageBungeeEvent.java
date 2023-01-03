@@ -4,13 +4,13 @@ import java.time.Duration;
 import java.util.Optional;
 
 import di.dicore.api.DIApi;
-import di.dilogin.BungeeApplication;
 import di.dilogin.controller.LangManager;
 import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
+import di.dilogin.minecraft.bungee.BungeeUtil;
 import di.dilogin.minecraft.cache.TmpCache;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -20,7 +20,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 /**
- * Class for handling discord login or registration events.
+ * Class for handling discord login or registration events for Bungee.
  */
 public class UserReactionMessageBungeeEvent extends ListenerAdapter {
 
@@ -65,7 +65,12 @@ public class UserReactionMessageBungeeEvent extends ListenerAdapter {
 	@SuppressWarnings("deprecation")
 	private void registerUser(MessageReactionAddEvent event, TmpMessage tmpMessage) {
 		Message message = tmpMessage.getMessage();
-		ProxiedPlayer player = BungeeApplication.getPlugin().getProxy().getPlayer(tmpMessage.getPlayer());
+		Optional<ProxiedPlayer> optPlayer = BungeeUtil.getProxiedPlayer(tmpMessage.getPlayer());
+		
+		if(!optPlayer.isPresent())
+			return;
+		
+		ProxiedPlayer player = optPlayer.get();
 		User user = tmpMessage.getUser();
 
 		if (!event.getUser().equals(user))
@@ -98,7 +103,12 @@ public class UserReactionMessageBungeeEvent extends ListenerAdapter {
 	 */
 	private void loginUser(MessageReactionAddEvent event, TmpMessage tmpMessage) {
 		Message message = tmpMessage.getMessage();
-		ProxiedPlayer player = BungeeApplication.getPlugin().getProxy().getPlayer(tmpMessage.getPlayer());
+		Optional<ProxiedPlayer> optPlayer = BungeeUtil.getProxiedPlayer(tmpMessage.getPlayer());
+		
+		if(!optPlayer.isPresent())
+			return;
+		
+		ProxiedPlayer player = optPlayer.get();
 		User user = tmpMessage.getUser();
 
 		if (!event.getUser().equals(user))

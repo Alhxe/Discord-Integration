@@ -40,6 +40,7 @@ public class BungeeApplication extends Plugin {
 		plugin = this;
 
 		connectWithCoreApi();
+		
 		MainController.setDIApi(api);
 		MainController.setDILoginController(new DILoginControllerBungeeImpl());
 		MainController.setDiscordController(new DiscordControllerImpl());
@@ -50,7 +51,7 @@ public class BungeeApplication extends Plugin {
 		initCommands();
 		initEvents();
 
-		// Events to get data from the DILogin database.
+		// Events to connect servers with proxy.
 		plugin.getProxy().getPluginManager().registerListener(plugin, new ChannelMessageController());
 
 		getLogger().info("Plugin started");
@@ -85,12 +86,18 @@ public class BungeeApplication extends Plugin {
 		}
 	}
 
+	/**
+	 * Init main Bungee commands.
+	 */
 	private void initCommands() {
 		this.getProxy().getPluginManager().registerCommand(this, new RegisterBungeeCommand());
 		this.getProxy().getPluginManager().registerCommand(this, new UnregisterBungeeCommand());
 		this.getProxy().getPluginManager().registerCommand(this, new ForceLoginBungeeCommand());
 	}
 
+	/**
+	 * Init main Bungee events.
+	 */
 	private void initEvents() {
 		this.getProxy().getPluginManager().registerListener(this, new UserLoginBungeeEvent());
 		this.getProxy().getPluginManager().registerListener(this, new UserLeaveBungeeEvent());

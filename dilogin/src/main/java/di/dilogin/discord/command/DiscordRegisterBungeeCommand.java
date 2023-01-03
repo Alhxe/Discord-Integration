@@ -4,13 +4,13 @@ import java.time.Duration;
 import java.util.Optional;
 
 import di.dicore.api.DIApi;
-import di.dilogin.BungeeApplication;
 import di.dilogin.controller.LangManager;
 import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
+import di.dilogin.minecraft.bungee.BungeeUtil;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.internal.entity.DiscordCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -107,8 +107,7 @@ public class DiscordRegisterBungeeCommand implements DiscordCommand {
 	 * @return Player if exits and is not registered.
 	 */
 	public Optional<ProxiedPlayer> catchRegister(String message, MessageReceivedEvent event) {
-		Optional<ProxiedPlayer> player = Optional
-				.ofNullable(BungeeApplication.getPlugin().getProxy().getPlayer(registerByCode(message).get()));
+		Optional<ProxiedPlayer> player = BungeeUtil.getProxiedPlayer(registerByCode(message).get());
 
 		if (!player.isPresent())
 			player = registerByUserName(message, event);
@@ -138,8 +137,7 @@ public class DiscordRegisterBungeeCommand implements DiscordCommand {
 	 */
 	public Optional<ProxiedPlayer> registerByUserName(String message, MessageReceivedEvent event) {
 
-		Optional<ProxiedPlayer> playerOpt = Optional
-				.ofNullable(BungeeApplication.getPlugin().getProxy().getPlayer(message));
+		Optional<ProxiedPlayer> playerOpt = BungeeUtil.getProxiedPlayer(message);
 
 		if (!playerOpt.isPresent())
 			return Optional.empty();
@@ -154,7 +152,6 @@ public class DiscordRegisterBungeeCommand implements DiscordCommand {
 
 	@Override
 	public String getAlias() {
-
 		return api.getInternalController().getConfigManager().getString("register_command");
 	}
 

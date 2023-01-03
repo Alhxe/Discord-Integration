@@ -7,14 +7,16 @@ import lombok.Setter;
 /**
  * Contains the user's session information.
  */
-@Getter @Setter @AllArgsConstructor
+@Getter
+@Setter
+@AllArgsConstructor
 public class UserSession {
-	
+
 	/**
 	 * Player's name
 	 */
 	private String name;
-	
+
 	/**
 	 * Player's ip.
 	 */

@@ -8,6 +8,7 @@ import di.dilogin.controller.LangManager;
 import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.TmpMessage;
+import di.dilogin.minecraft.bungee.BungeeUtil;
 import di.dilogin.minecraft.cache.TmpCache;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -40,7 +41,12 @@ public class ForceLoginBungeeCommand extends Command {
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 		String nick = args[0];
-		ProxiedPlayer player = BungeeApplication.getPlugin().getProxy().getPlayer(nick);
+		Optional<ProxiedPlayer> optPlayer = BungeeUtil.getProxiedPlayer(nick);
+		
+		if(!optPlayer.isPresent())
+			return;
+		
+		ProxiedPlayer player = optPlayer.get();
 
 		if (player == null) {
 			sender.sendMessage(LangManager.getString("no_player").replace("%nick%", nick));

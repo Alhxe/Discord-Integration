@@ -16,7 +16,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 
 /**
- * Controller used to manage Discord.
+ * {@DiscordController} implementation.
  */
 public class DiscordControllerImpl implements DiscordController {
 

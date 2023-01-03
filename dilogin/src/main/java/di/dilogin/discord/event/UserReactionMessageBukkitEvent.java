@@ -22,7 +22,7 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 /**
- * Class for handling discord login or registration events.
+ * Class for handling discord login or registration events for Bukkit.
  */
 public class UserReactionMessageBukkitEvent extends ListenerAdapter {
 

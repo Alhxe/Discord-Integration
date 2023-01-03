@@ -10,6 +10,9 @@ import di.dilogin.entity.DIUser;
 import di.dilogin.minecraft.bukkit.BukkitUtil;
 import di.dilogin.minecraft.bukkit.event.custom.DILoginEvent;
 
+/**
+ * Class to synchronize LuckPerms roles.
+ */
 public class LuckPermsLoginEvent implements Listener {
 
     @EventHandler

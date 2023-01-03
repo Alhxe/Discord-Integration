@@ -29,7 +29,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
 /**
- * DILogin plugin control.
+ * {@DILoginController} implementation for Bukkit server.
  */
 public class DILoginControllerBukkitImpl implements DILoginController {
 
