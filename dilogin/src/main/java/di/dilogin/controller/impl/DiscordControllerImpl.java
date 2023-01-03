@@ -19,6 +19,8 @@ import net.dv8tion.jda.api.entities.User;
  * {@DiscordController} implementation.
  */
 public class DiscordControllerImpl implements DiscordController {
+	
+	private final static DIApi api = MainController.getDIApi();
 
 	@Override
 	public boolean userHasRole(String roleid, String player) {
@@ -34,7 +36,6 @@ public class DiscordControllerImpl implements DiscordController {
 
 	@Override
 	public boolean serverHasRole(String roleid) {
-		DIApi api = MainController.getDIApi();
 		Guild guild = getGuild();
 		Role role = guild.getRoleById(roleid);
 		if (role == null) {
@@ -47,8 +48,6 @@ public class DiscordControllerImpl implements DiscordController {
 
 	@Override
 	public void giveRole(String roleid, String player, String reason) {
-		DIApi api = MainController.getDIApi();
-
 		Optional<Member> optMember = getMember(player);
 		if (!optMember.isPresent())
 			return;
@@ -71,8 +70,6 @@ public class DiscordControllerImpl implements DiscordController {
 
 	@Override
 	public void removeRole(String roleid, String player, String reason) {
-		DIApi api = MainController.getDIApi();
-
 		Optional<Member> optMember = getMember(player);
 		if (!optMember.isPresent())
 			return;
@@ -112,7 +109,7 @@ public class DiscordControllerImpl implements DiscordController {
 	@Override
 	public boolean isWhiteListed(String player, User user) {
 		Optional<Role> optRole = requiredRole();
-		if (optRole.isPresent()) {
+		if (api.getInternalController().getConfigManager().getBoolean("register_required_role_enabled") && optRole.isPresent()) {
 			Role role = optRole.get();
 			Member member = getGuild().getMember(user);
 			return member.getRoles().contains(role);
@@ -126,7 +123,6 @@ public class DiscordControllerImpl implements DiscordController {
 	 * @return optional role.
 	 */
 	private Optional<Role> requiredRole() {
-		DIApi api = MainController.getDIApi();
 		Guild guild = getGuild();
 
 		Optional<Long> optionalLong = api.getInternalController().getConfigManager()
@@ -170,7 +166,6 @@ public class DiscordControllerImpl implements DiscordController {
 	 * @return Discord main guild.
 	 */
 	private Guild getGuild() {
-		DIApi api = MainController.getDIApi();
 		JDA jda = api.getCoreController().getDiscordApi().get();
 		return jda.getGuildById(api.getCoreController().getBot().getServerId());
 	}

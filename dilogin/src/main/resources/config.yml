@@ -33,8 +33,8 @@ discord_embed_emoji: 'U+2B50'
 sessions: true
 session_time_min: 5
 
-#If you don't want to activate this setting, just leave it as is
 #This option makes that only users with a certain role can log in.
+register_required_role_enabled: false
 register_required_role_id: YOUR_ROLE_ID
 
 #Synchronization of the discord name with that of minecraft.
