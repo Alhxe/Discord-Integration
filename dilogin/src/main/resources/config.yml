@@ -36,7 +36,7 @@ discord_embed_emoji: 'U+2B50'
 
 #This option makes that only users with a certain role can log in.
 register_required_role_enabled: false
-register_required_role_id: YOUR_ROLE_ID
+register_required_role_id: discord_role_id
 
 #Synchronization of the discord name with that of minecraft.
 #When the player logs into the server, their Discord name will be changed to their Minecraft name.
@@ -46,15 +46,14 @@ syncro_enable: false
 ######### LuckPerms
 
 #If u make true, only the following luckperm roles can register/login
-register_rol_list_enabled: false
-register_rol_list:
+register_role_list_enabled: false
+register_role_list:
        - admin
        - moderator
 
-#Sync minecraft server roles with discord. When a role is given on the minecraft server, 
-#the corresponding one will be given on discord and vice versa.
-syncro_rol_enable: false
-syncro_rol_list:
+#Sync minecraft server roles with discord. register_role_list_enabledhe minecrregister_role_liste corresponding one will be given on discord and vice versa.
+syncro_role_enabled: false
+syncro_role_list:
        - discord_rol_id: luckperms_group_name
        - another_rol_id: another_luckperms_group_name
 #EXAMPLE

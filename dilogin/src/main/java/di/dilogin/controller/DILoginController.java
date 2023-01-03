@@ -42,7 +42,7 @@ public interface DILoginController {
 	 * @return True if the system is active.
 	 */
 	default boolean isSyncroRolEnabled() {
-		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("syncro_rol_enable");
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("syncro_role_enabled");
 	}
 
 	/**
@@ -69,7 +69,7 @@ public interface DILoginController {
 	 * @return true if its enabled.
 	 */
 	default boolean isRegisterRolListEnabled() {
-		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("register_rol_list_enabled");
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("register_role_list_enabled");
 	}
 
 	/**

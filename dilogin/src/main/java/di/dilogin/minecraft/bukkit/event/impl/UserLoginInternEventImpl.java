@@ -46,7 +46,7 @@ public class UserLoginInternEventImpl implements UserLoginEvent {
 		// Check if role is required to login
 		if (MainController.getDILoginController().isRegisterRolListEnabled()) {
 			boolean hasEnabledRole = false;
-			List<String> list = api.getInternalController().getConfigManager().getList("register_rol_list");
+			List<String> list = api.getInternalController().getConfigManager().getList("register_role_list");
 			for (String role : list) {
 				if (LuckPermsController.isUserInGroup(playerName, role)) {
 					hasEnabledRole = true;
