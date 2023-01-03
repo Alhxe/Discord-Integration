@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import di.dilogin.controller.MainController;
+import di.dilogin.controller.file.CommandAliasController;
 import di.dilogin.controller.file.LangController;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
@@ -119,7 +120,7 @@ public class UserLoginInternEventImpl implements UserLoginEvent {
 		UserBlockedCache.add(event.getPlayer().getName());
 		String code = CodeGenerator
 				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
-		String command = api.getCoreController().getBot().getPrefix() + api.getInternalController().getConfigManager().getString("register_command") + " " + code;
+		String command = api.getCoreController().getBot().getPrefix() + CommandAliasController.getAlias("register_command") + " " + code;
 		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer().getName(), null, null, code));
 
 		int v = BukkitUtil.getServerVersion(event.getPlayer().getServer().getVersion());
@@ -160,7 +161,7 @@ public class UserLoginInternEventImpl implements UserLoginEvent {
 	public void initPlayerOptionalRegisterRequest(PlayerJoinEvent event, String playerName) {
 		String code = CodeGenerator
 				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
-		String command = api.getCoreController().getBot().getPrefix() + api.getInternalController().getConfigManager().getString("register_command") + " " + code;
+		String command = api.getCoreController().getBot().getPrefix() + CommandAliasController.getAlias("register_command") + " " + code;
 		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer().getName(), null, null, code));
 
 		int v = BukkitUtil.getServerVersion(event.getPlayer().getServer().getVersion());

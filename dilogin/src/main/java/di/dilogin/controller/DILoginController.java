@@ -80,6 +80,33 @@ public interface DILoginController {
 	default boolean isRegisterGiveRoleEnabled() {
 		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("register_give_role_enabled");
 	}
+	
+	/**
+	 * Check if user will get some role after 
+	 *
+	 * @return true if its enabled.
+	 */
+	default boolean isRegisterByNickNameEnabled() {
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("register_by_nickname_enabled");
+	}
+	
+	/**
+	 * Check if user will get some role after 
+	 *
+	 * @return true if its enabled.
+	 */
+	default boolean isRegisterByDiscordIdEnabled() {
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("register_by_discordid_enabled");
+	}
+
+	/**
+	 * Check if user will get some role after 
+	 *
+	 * @return true if its enabled.
+	 */
+	default boolean isRegisterByDiscordCommandEnabled() {
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("register_by_discord_command_enabled");
+	}
 
 	/**
 	 * @return true is Authme is enabled.

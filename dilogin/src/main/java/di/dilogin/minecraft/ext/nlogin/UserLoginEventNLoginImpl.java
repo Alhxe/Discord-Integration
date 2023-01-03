@@ -2,21 +2,21 @@ package di.dilogin.minecraft.ext.nlogin;
 
 import java.util.Optional;
 
-import di.dilogin.BukkitApplication;
-import di.dilogin.controller.file.LangController;
-
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import com.nickuc.login.api.event.bukkit.auth.AuthenticateEvent;
 
+import di.dilogin.BukkitApplication;
+import di.dilogin.controller.file.CommandAliasController;
+import di.dilogin.controller.file.LangController;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
-import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.bukkit.event.UserLoginEvent;
 import di.dilogin.minecraft.bukkit.event.custom.DILoginEvent;
+import di.dilogin.minecraft.cache.TmpCache;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -107,7 +107,7 @@ public class UserLoginEventNLoginImpl implements UserLoginEvent {
     public void initPlayerNLoginRegisterRequest(AuthenticateEvent event, String playerName) {
         String code = CodeGenerator
                 .getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
-        String command = api.getCoreController().getBot().getPrefix() + api.getInternalController().getConfigManager().getString("register_command") + " " + code;
+        String command = api.getCoreController().getBot().getPrefix() + CommandAliasController.getAlias("register_command") + " " + code;
         TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer().getName(), null, null, code));
         TextComponent message = new TextComponent(LangController.getString(event.getPlayer().getName(), "register_opt_request")
                 .replace("%register_command%", command));

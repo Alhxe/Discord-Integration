@@ -8,8 +8,11 @@ register_time_until_kick: 60
 register_max_discord_accounts: 3
 register_code_length: 5
 login_time_until_kick: 30
-messages_only_channel: false #If true, bot will not send private messages.
 register_optional_enabled: false #If true, user decide if they want register.
+register_by_nickname_enabled: true
+register_by_discordid_enabled: true
+register_by_discord_command_enabled: true
+messages_only_channel: false #If true, bot will not send private messages.
 #register_custom_characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' #Only the custom added characters will appear in the +register command.
 
 #Sessions

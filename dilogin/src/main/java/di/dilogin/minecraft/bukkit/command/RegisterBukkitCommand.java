@@ -100,10 +100,13 @@ public class RegisterBukkitCommand implements CommandExecutor {
 	 */
 	private Optional<User> catchRegisterUserOption(String[] args, Player player) {
 		String string = arrayToString(args);
+		
+		Optional<User> userOpt = Optional.empty();
 
-		Optional<User> userOpt = registerById(string);
+		if (MainController.getDILoginController().isRegisterByDiscordIdEnabled())
+			userOpt = registerById(string);
 
-		if (!userOpt.isPresent())
+		if (!userOpt.isPresent() && MainController.getDILoginController().isRegisterByNickNameEnabled())
 			userOpt = registerByName(string);
 
 		if (!userOpt.isPresent()) {

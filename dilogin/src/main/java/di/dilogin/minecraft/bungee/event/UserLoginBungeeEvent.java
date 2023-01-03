@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 
 import di.dicore.api.DIApi;
 import di.dilogin.controller.MainController;
+import di.dilogin.controller.file.CommandAliasController;
 import di.dilogin.controller.file.LangController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.CodeGenerator;
@@ -126,7 +127,7 @@ public class UserLoginBungeeEvent implements Listener, UserLoginEventUtils {
 		String code = CodeGenerator
 				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
 		String command = api.getCoreController().getBot().getPrefix()
-				+ api.getInternalController().getConfigManager().getString("register_command") + " " + code;
+				+ CommandAliasController.getAlias("register_command") + " " + code;
 		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer().getName(), null, null, code));
 
 		TextComponent tc = new TextComponent(LangController.getString(event.getPlayer().getName(), "register_request")
@@ -160,7 +161,7 @@ public class UserLoginBungeeEvent implements Listener, UserLoginEventUtils {
 		String code = CodeGenerator
 				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
 		String command = api.getCoreController().getBot().getPrefix()
-				+ api.getInternalController().getConfigManager().getString("register_command") + " " + code;
+				+ CommandAliasController.getAlias("register_command") + " " + code;
 		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer().getName(), null, null, code));
 
 		TextComponent tc = new TextComponent(LangController
