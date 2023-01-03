@@ -120,7 +120,7 @@ public class UserLoginInternEventImpl implements UserLoginEvent {
 		UserBlockedCache.add(event.getPlayer().getName());
 		String code = CodeGenerator
 				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
-		String command = api.getCoreController().getBot().getPrefix() + CommandAliasController.getAlias("register_command") + " " + code;
+		String command = api.getCoreController().getBot().getPrefix() + CommandAliasController.getAlias("register_discord_command") + " " + code;
 		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer().getName(), null, null, code));
 
 		int v = BukkitUtil.getServerVersion(event.getPlayer().getServer().getVersion());
