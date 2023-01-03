@@ -48,6 +48,9 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
 	 */
 	@Override
 	public void execute(String message, MessageReceivedEvent event) {
+		
+		if (!MainController.getDILoginController().isRegisterByDiscordCommandEnabled())
+			return;
 
 		event.getMessage().delete().delay(Duration.ofSeconds(20)).queue();
 		if (userDao.containsDiscordId(event.getAuthor().getIdLong())) {
