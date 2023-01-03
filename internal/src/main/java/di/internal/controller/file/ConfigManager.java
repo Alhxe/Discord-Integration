@@ -166,4 +166,14 @@ public class ConfigManager implements FileController {
     	List<String> r = yaml.load(yamlData.get(path).toString());
     	return r;
     }
+    
+    /**
+     * @param path The value you want to obtain.
+     * @return The content list of the sought value.
+     */
+    public List<Long> getLongList(String path){
+    	Yaml yaml = new Yaml();
+    	List<Long> r = yaml.load(yamlData.get(path).toString());
+    	return r;
+    }
 }

@@ -87,7 +87,7 @@ public class UserReactionMessageBungeeEvent extends ListenerAdapter {
 				.queue();
 		userDao.add(new DIUser(player.getName(), Optional.of(user)));
 
-		if (!MainController.getDiscordController().isWhiteListed(player.getName(), user)) {
+		if (!MainController.getDiscordController().isWhiteListed(player.getName(), event.getMember())) {
 			player.sendMessage(LangController.getString(player.getName(), "login_without_role_required"));
 		} else {
 			MainController.getDILoginController().loginUser(player.getName(), user);

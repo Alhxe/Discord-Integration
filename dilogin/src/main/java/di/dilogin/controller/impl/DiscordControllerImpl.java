@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.User;
 
 /**
  * {@DiscordController} implementation.
@@ -67,6 +66,22 @@ public class DiscordControllerImpl implements DiscordController {
 							+ ". Reason:  Can't modify a role with higher or equal highest role than yourself");
 		}
 	}
+	
+	@Override
+	public void giveRole(String roleid, String player, Member member, String reason) {
+		Role role = getGuild().getRoleById(roleid);
+
+		try {
+			getGuild().addRoleToMember(member, role).queue();
+			api.getInternalController().getLogger().info(
+					role.getName() + " role has been given to " + member.getUser().getAsTag() + ". Reason: " + reason);
+
+		} catch (Exception e) {
+			api.getInternalController().getLogger().log(Level.SEVERE,
+					" Could not give " + role.getName() + " role to " + member.getUser().getAsTag()
+							+ ". Reason:  Can't modify a role with higher or equal highest role than yourself");
+		}
+	};
 
 	@Override
 	public void removeRole(String roleid, String player, String reason) {
@@ -107,11 +122,10 @@ public class DiscordControllerImpl implements DiscordController {
 	}
 
 	@Override
-	public boolean isWhiteListed(String player, User user) {
+	public boolean isWhiteListed(String player, Member member) {
 		Optional<Role> optRole = requiredRole();
 		if (api.getInternalController().getConfigManager().getBoolean("register_required_role_enabled") && optRole.isPresent()) {
 			Role role = optRole.get();
-			Member member = getGuild().getMember(user);
 			return member.getRoles().contains(role);
 		}
 		return true;	

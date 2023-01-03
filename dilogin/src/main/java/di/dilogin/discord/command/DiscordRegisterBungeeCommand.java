@@ -16,6 +16,7 @@ import di.dilogin.minecraft.bungee.BungeeUtil;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.internal.entity.DiscordCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -57,8 +58,8 @@ public class DiscordRegisterBungeeCommand implements DiscordCommand {
 		// Check account limits.
 		if (userDao.getDiscordUserAccounts(event.getAuthor().getIdLong()) >= api.getInternalController()
 				.getConfigManager().getInt("register_max_discord_accounts")) {
-			event.getChannel().sendMessage(LangController.getString("register_max_accounts")).delay(Duration.ofSeconds(20))
-					.flatMap(Message::delete).queue();
+			event.getChannel().sendMessage(LangController.getString("register_max_accounts"))
+					.delay(Duration.ofSeconds(20)).flatMap(Message::delete).queue();
 			return;
 		}
 
@@ -78,6 +79,7 @@ public class DiscordRegisterBungeeCommand implements DiscordCommand {
 		}
 
 		ProxiedPlayer player = playerOpt.get();
+		Member member = event.getMember();
 
 		// Create password.
 		String password = CodeGenerator.getCode(8, api);
@@ -90,21 +92,23 @@ public class DiscordRegisterBungeeCommand implements DiscordCommand {
 
 		// Add user to data base.
 		userDao.add(new DIUser(player.getName(), Optional.of(event.getAuthor())));
-		
+
 		// Check if user will get some discord role and give to him.
-		if(MainController.getDILoginController().isRegisterGiveRoleEnabled()) {
-			List<String> roleList = MainController.getDIApi().getInternalController().getConfigManager().getList("register_give_role_list");
-			for (String role : roleList) {
-				MainController.getDiscordController().giveRole(role, player.getName(), "Have been registered on the server");
+		if (MainController.getDILoginController().isRegisterGiveRoleEnabled()) {
+			List<Long> roleList = MainController.getDIApi().getInternalController().getConfigManager()
+					.getLongList("register_give_role_list");
+			for (long roleId : roleList) {
+				MainController.getDiscordController().giveRole(roleId + "", player.getName(), member,
+						"by registering on the server.");
 			}
 		}
 
 		// Check if is whitelisted to login.
-		if (!MainController.getDiscordController().isWhiteListed(player.getName(), event.getAuthor())) {
+		if (!MainController.getDiscordController().isWhiteListed(player.getName(), event.getMember())) {
 			player.sendMessage(LangController.getString(player.getName(), "login_without_role_required"));
 		} else {
 			TmpCache.removeRegister(player.getName());
-			MainController.getDILoginController().loginUser(player.getName(), event.getAuthor());
+			MainController.getDILoginController().loginUser(player.getName(), member.getUser());
 		}
 
 	}
