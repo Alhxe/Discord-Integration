@@ -11,7 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>dicore</artifactId>
 	<name>DICore</name>
-	<version>2.4.4</version>
+	<version>2.4.5</version>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
