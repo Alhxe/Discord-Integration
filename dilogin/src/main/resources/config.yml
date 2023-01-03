@@ -64,8 +64,6 @@ teleport_world: world
 teleport_yaw: 2.4
 teleport_pitch: 12.9
 
-#COMMANDS ALIAS
-register_command: 'register'
 
 ##################### BUNGEE OPTIONS
 #Teleport to another server after login

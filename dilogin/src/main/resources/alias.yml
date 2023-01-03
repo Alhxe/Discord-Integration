@@ -1,3 +1,7 @@
+#Minecraft
 register_command: register
 forcelogin_command: forcelogin
 unregister_command: unregister
+
+#Discord
+register_discord_command: register

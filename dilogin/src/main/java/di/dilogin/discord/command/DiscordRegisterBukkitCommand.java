@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
 import di.dilogin.controller.MainController;
+import di.dilogin.controller.file.CommandAliasController;
 import di.dilogin.controller.file.LangController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.CodeGenerator;
@@ -159,8 +160,7 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
 
     @Override
     public String getAlias() {
-
-        return api.getInternalController().getConfigManager().getString("register_command");
+        return CommandAliasController.getAlias("register_discord_command");
     }
 
     /**
