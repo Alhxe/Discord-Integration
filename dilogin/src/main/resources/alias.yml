@@ -1,0 +1,3 @@
+register_command: register
+forcelogin_command: forcelogin
+unregister_command: unregister

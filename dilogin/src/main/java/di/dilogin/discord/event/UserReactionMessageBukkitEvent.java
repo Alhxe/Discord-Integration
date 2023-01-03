@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 
 import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
-import di.dilogin.controller.LangManager;
 import di.dilogin.controller.MainController;
+import di.dilogin.controller.file.LangController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
@@ -77,7 +77,7 @@ public class UserReactionMessageBukkitEvent extends ListenerAdapter {
 
         String password = CodeGenerator.getCode(8, api);
         player.sendMessage(
-                LangManager.getString(user, player.getName(), "register_success").replace("%authme_password%", password));
+                LangController.getString(user, player.getName(), "register_success").replace("%authme_password%", password));
         TmpCache.removeRegister(player.getName());
         message.editMessageEmbeds(getRegisterEmbed(user, player)).delay(Duration.ofSeconds(60)).flatMap(Message::delete)
                 .queue();
@@ -87,7 +87,7 @@ public class UserReactionMessageBukkitEvent extends ListenerAdapter {
             AuthmeHook.register(player, password);
         } else {
             if (!MainController.getDiscordController().isWhiteListed(player.getName())) {
-                player.sendMessage(LangManager.getString(player.getName(), "login_without_role_required"));
+                player.sendMessage(LangController.getString(player.getName(), "login_without_role_required"));
             } else {
                 MainController.getDILoginController().loginUser(player.getName(), user);
             }
@@ -123,8 +123,8 @@ public class UserReactionMessageBukkitEvent extends ListenerAdapter {
      * @return Registration completed message.
      */
     private MessageEmbed getRegisterEmbed(User user, Player player) {
-        return MainController.getDILoginController().getEmbedBase().setTitle(LangManager.getString(user, player.getName(), "register_discord_title"))
-                .setDescription(LangManager.getString(user, player.getName(), "register_discord_success")).build();
+        return MainController.getDILoginController().getEmbedBase().setTitle(LangController.getString(user, player.getName(), "register_discord_title"))
+                .setDescription(LangController.getString(user, player.getName(), "register_discord_success")).build();
     }
 
     /**
@@ -133,8 +133,8 @@ public class UserReactionMessageBukkitEvent extends ListenerAdapter {
      * @return Login completed message.
      */
     private MessageEmbed getLoginEmbed(User user, Player player) {
-        return MainController.getDILoginController().getEmbedBase().setTitle(LangManager.getString(user, player.getName(), "login_discord_title"))
-                .setDescription(LangManager.getString(user, player.getName(), "login_discord_success")).build();
+        return MainController.getDILoginController().getEmbedBase().setTitle(LangController.getString(user, player.getName(), "login_discord_title"))
+                .setDescription(LangController.getString(user, player.getName(), "login_discord_success")).build();
     }
 
 }

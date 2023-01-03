@@ -3,6 +3,8 @@ package di.dilogin.minecraft.bukkit.command;
 import java.util.Optional;
 
 import di.dilogin.controller.MainController;
+import di.dilogin.controller.file.LangController;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,7 +13,6 @@ import org.bukkit.plugin.Plugin;
 
 import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
-import di.dilogin.controller.LangManager;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.DIUser;
 
@@ -55,15 +56,15 @@ public class UnregisterBukkitCommand implements CommandExecutor {
 		Optional<DIUser> optUser = userDao.get(nick);
 
 		if (!optUser.isPresent()) {
-			sender.sendMessage(LangManager.getString("no_player").replace("%nick%", nick));
+			sender.sendMessage(LangController.getString("no_player").replace("%nick%", nick));
 			return true;
 		}
 		DIUser user = optUser.get();
 		Player player = sender.getServer().getPlayer(nick);
-		sender.sendMessage(LangManager.getString(nick, "unregister_success"));
+		sender.sendMessage(LangController.getString(nick, "unregister_success"));
 		
 		if(player!=null)
-			player.kickPlayer(LangManager.getString(player.getName(), "unregister_kick"));
+			player.kickPlayer(LangController.getString(player.getName(), "unregister_kick"));
 		
 		userDao.remove(user);
 		return true;

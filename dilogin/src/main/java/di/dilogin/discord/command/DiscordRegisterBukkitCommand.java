@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 
 import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
-import di.dilogin.controller.LangManager;
 import di.dilogin.controller.MainController;
+import di.dilogin.controller.file.LangController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
@@ -48,7 +48,7 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
 
         event.getMessage().delete().delay(Duration.ofSeconds(20)).queue();
         if (userDao.containsDiscordId(event.getAuthor().getIdLong())) {
-            event.getChannel().sendMessage(LangManager.getString("register_already_exists"))
+            event.getChannel().sendMessage(LangController.getString("register_already_exists"))
                     .delay(Duration.ofSeconds(20)).flatMap(Message::delete).queue();
             return;
         }
@@ -56,14 +56,14 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
         // Check account limits.
         if (userDao.getDiscordUserAccounts(event.getAuthor().getIdLong()) >= api.getInternalController().getConfigManager()
                 .getInt("register_max_discord_accounts")) {
-            event.getChannel().sendMessage(LangManager.getString("register_max_accounts")).delay(Duration.ofSeconds(20))
+            event.getChannel().sendMessage(LangController.getString("register_max_accounts")).delay(Duration.ofSeconds(20))
                     .flatMap(Message::delete).queue();
             return;
         }
 
         // Check arguments.
         if (message.isEmpty()) {
-            event.getChannel().sendMessage(LangManager.getString("register_discord_arguments"))
+            event.getChannel().sendMessage(LangController.getString("register_discord_arguments"))
                     .delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
             return;
         }
@@ -71,7 +71,7 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
         Optional<Player> playerOpt = catchRegister(message, event);
 
         if (!playerOpt.isPresent()) {
-            event.getChannel().sendMessage(LangManager.getString("register_code_not_found"))
+            event.getChannel().sendMessage(LangController.getString("register_code_not_found"))
                     .delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
             return;
         }
@@ -80,14 +80,14 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
         
 		// Check if user is registered on authme and logged.
 		if (MainController.getDILoginController().isAuthmeEnabled() && AuthmeHook.isRegistered(player) && !AuthmeHook.isLogged(player)) {
-			event.getChannel().sendMessage(LangManager.getString("register_without_authentication"))
+			event.getChannel().sendMessage(LangController.getString("register_without_authentication"))
 					.delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
 			return;
 		}
 
         // Create password.
         String password = CodeGenerator.getCode(8, api);
-        player.sendMessage(LangManager.getString(event.getAuthor(), player.getName(), "register_success")
+        player.sendMessage(LangController.getString(event.getAuthor(), player.getName(), "register_success")
                 .replace("%authme_password%", password));
         // Send message to discord.
         MessageEmbed messageEmbed = getEmbedMessage(player, event.getAuthor());
@@ -150,7 +150,7 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
             return Optional.empty();
 
         if (userDao.contains(message)) {
-            event.getChannel().sendMessage(LangManager.getString("register_already_exists"))
+            event.getChannel().sendMessage(LangController.getString("register_already_exists"))
                     .delay(Duration.ofSeconds(20)).flatMap(Message::delete).queue();
             return Optional.empty();
         }
@@ -172,8 +172,8 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
      */
     private MessageEmbed getEmbedMessage(Player player, User user) {
         EmbedBuilder embedBuilder = MainController.getDILoginController().getEmbedBase()
-                .setTitle(LangManager.getString(player.getName(), "register_discord_title"))
-                .setDescription(LangManager.getString(user, player.getName(), "register_discord_success"));
+                .setTitle(LangController.getString(player.getName(), "register_discord_title"))
+                .setDescription(LangController.getString(user, player.getName(), "register_discord_success"));
         return embedBuilder.build();
     }
 

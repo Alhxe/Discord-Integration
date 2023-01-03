@@ -3,13 +3,14 @@ package di.dilogin.minecraft.ext.nlogin;
 import java.util.Optional;
 
 import di.dilogin.BukkitApplication;
+import di.dilogin.controller.file.LangController;
+
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import com.nickuc.login.api.event.bukkit.auth.AuthenticateEvent;
 
-import di.dilogin.controller.LangManager;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
@@ -59,7 +60,7 @@ public class UserLoginEventNLoginImpl implements UserLoginEvent {
             return;
         }
 
-        event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
+        event.getPlayer().sendMessage(LangController.getString(user, "login_request"));
         sendLoginMessageRequest(event.getPlayer().getName(), user.getPlayerDiscord().get());
     }
 
@@ -108,7 +109,7 @@ public class UserLoginEventNLoginImpl implements UserLoginEvent {
                 .getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
         String command = api.getCoreController().getBot().getPrefix() + api.getInternalController().getConfigManager().getString("register_command") + " " + code;
         TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer().getName(), null, null, code));
-        TextComponent message = new TextComponent(LangManager.getString(event.getPlayer().getName(), "register_opt_request")
+        TextComponent message = new TextComponent(LangController.getString(event.getPlayer().getName(), "register_opt_request")
                 .replace("%register_command%", command));
         message.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, code));
         message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Copy").create()));

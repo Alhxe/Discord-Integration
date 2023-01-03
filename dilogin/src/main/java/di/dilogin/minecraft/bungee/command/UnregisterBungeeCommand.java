@@ -4,8 +4,9 @@ import java.util.Optional;
 
 import di.dicore.api.DIApi;
 import di.dilogin.BungeeApplication;
-import di.dilogin.controller.LangManager;
 import di.dilogin.controller.MainController;
+import di.dilogin.controller.file.CommandAliasController;
+import di.dilogin.controller.file.LangController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.DIUser;
 import di.dilogin.minecraft.bungee.BungeeUtil;
@@ -20,7 +21,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 public class UnregisterBungeeCommand extends Command {
 
 	public UnregisterBungeeCommand() {
-		super("Unregister", "sdl.unregister");
+		super(CommandAliasController.getAlias("unregister_command"), "sdl.unregister");
 	}
 
 	/**
@@ -50,7 +51,7 @@ public class UnregisterBungeeCommand extends Command {
 		Optional<DIUser> optUser = userDao.get(nick);
 
 		if (!optUser.isPresent()) {
-			sender.sendMessage(LangManager.getString("no_player").replace("%nick%", nick));
+			sender.sendMessage(LangController.getString("no_player").replace("%nick%", nick));
 			return;
 		}
 		DIUser user = optUser.get();
@@ -60,10 +61,10 @@ public class UnregisterBungeeCommand extends Command {
 			return;
 		
 		ProxiedPlayer player = optPlayer.get();
-		sender.sendMessage(LangManager.getString(nick, "unregister_success"));
+		sender.sendMessage(LangController.getString(nick, "unregister_success"));
 		
 		if(player!=null)
-			MainController.getDILoginController().kickPlayer(nick, LangManager.getString(player.getName(), "unregister_kick"));
+			MainController.getDILoginController().kickPlayer(nick, LangController.getString(player.getName(), "unregister_kick"));
 		userDao.remove(user);
 		return;
 	}

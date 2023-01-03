@@ -4,8 +4,9 @@ import java.time.Duration;
 import java.util.Optional;
 
 import di.dilogin.BungeeApplication;
-import di.dilogin.controller.LangManager;
 import di.dilogin.controller.MainController;
+import di.dilogin.controller.file.CommandAliasController;
+import di.dilogin.controller.file.LangController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.bungee.BungeeUtil;
@@ -24,7 +25,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 public class ForceLoginBungeeCommand extends Command {
 
 	public ForceLoginBungeeCommand() {
-		super("Forcelogin", "sdl.forcelogin");
+		super(CommandAliasController.getAlias("forcelogin_command"), "sdl.forcelogin");
 	}
 
 	/**
@@ -40,6 +41,9 @@ public class ForceLoginBungeeCommand extends Command {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void execute(CommandSender sender, String[] args) {
+		if (args.length<1)
+			return;
+		
 		String nick = args[0];
 		Optional<ProxiedPlayer> optPlayer = BungeeUtil.getProxiedPlayer(nick);
 		
@@ -49,20 +53,20 @@ public class ForceLoginBungeeCommand extends Command {
 		ProxiedPlayer player = optPlayer.get();
 
 		if (player == null) {
-			sender.sendMessage(LangManager.getString("no_player").replace("%nick%", nick));
+			sender.sendMessage(LangController.getString("no_player").replace("%nick%", nick));
 			return;
 		}
 		if (!userDao.contains(player.getName())) {
-			sender.sendMessage(LangManager.getString(player.getName(), "user_not_registered"));
+			sender.sendMessage(LangController.getString(player.getName(), "user_not_registered"));
 			return;
 		}
 		if (!TmpCache.containsLogin(player.getName())) {
-			sender.sendMessage(LangManager.getString(player.getName(), "forcelogin_user_connected"));
+			sender.sendMessage(LangController.getString(player.getName(), "forcelogin_user_connected"));
 			return;
 		}
 		editMessage(player);
 		MainController.getDILoginController().loginUser(player.getName(), null);
-		sender.sendMessage(LangManager.getString(player.getName(), "forcelogin_success"));
+		sender.sendMessage(LangController.getString(player.getName(), "forcelogin_success"));
 		return;
 	}
 
@@ -79,8 +83,8 @@ public class ForceLoginBungeeCommand extends Command {
 		Message message = tmpMessageOpt.get().getMessage();
 		
 		MessageEmbed embed = MainController.getDILoginController().getEmbedBase()
-				.setTitle(LangManager.getString(user, player.getName(), "login_discord_title"))
-				.setDescription(LangManager.getString(user, player.getName(), "login_discord_forced")).build();
+				.setTitle(LangController.getString(user, player.getName(), "login_discord_title"))
+				.setDescription(LangController.getString(user, player.getName(), "login_discord_forced")).build();
 		
 		message.editMessageEmbeds(embed).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
 	}

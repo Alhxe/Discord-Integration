@@ -7,7 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import di.dilogin.BukkitApplication;
-import di.dilogin.controller.LangManager;
+import di.dilogin.controller.file.LangController;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
@@ -57,7 +57,7 @@ public class UserLoginEventAuthmeImpl implements UserLoginEvent {
 			return;
 		}
 
-		event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
+		event.getPlayer().sendMessage(LangController.getString(user, "login_request"));
 		sendLoginMessageRequest(event.getPlayer().getName(), user.getPlayerDiscord().get());
 	}
 
@@ -108,7 +108,7 @@ public class UserLoginEventAuthmeImpl implements UserLoginEvent {
 				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
 		String command = api.getCoreController().getBot().getPrefix() + api.getInternalController().getConfigManager().getString("register_command") + " " + code;
 		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer().getName(), null, null, code));
-		event.getPlayer().sendMessage(LangManager.getString(event.getPlayer().getName(), "register_opt_request")
+		event.getPlayer().sendMessage(LangController.getString(event.getPlayer().getName(), "register_opt_request")
 				.replace("%register_command%", command));
 	}
 }

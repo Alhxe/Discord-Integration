@@ -7,8 +7,8 @@ import java.util.concurrent.Executors;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import di.dilogin.controller.LangManager;
 import di.dilogin.controller.MainController;
+import di.dilogin.controller.file.LangController;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
@@ -75,16 +75,16 @@ public class UserLoginInternEventImpl implements UserLoginEvent {
 				.getLong("login_time_until_kick") * 1000;
 
 		if (!MainController.getDiscordController().isWhiteListed(user.getPlayerName())) {
-			event.getPlayer().sendMessage(LangManager.getString(user, "login_without_role_required"));
+			event.getPlayer().sendMessage(LangController.getString(user, "login_without_role_required"));
 		} else {
-			event.getPlayer().sendMessage(LangManager.getString(user, "login_request"));
+			event.getPlayer().sendMessage(LangController.getString(user, "login_request"));
 			sendLoginMessageRequest(event.getPlayer().getName(), user.getPlayerDiscord().get());
 		}
 		Executors.newCachedThreadPool().submit(() -> {
 			Thread.sleep(seconds);
 			// In case the user has not finished completing the login.
 			if (TmpCache.containsLogin(playerName)) {
-				String message = LangManager.getString(event.getPlayer().getName(), "login_kick_time");
+				String message = LangController.getString(event.getPlayer().getName(), "login_kick_time");
 				MainController.getDILoginController().kickPlayer(event.getPlayer().getName(), message);
 			}
 			return null;
@@ -106,15 +106,15 @@ public class UserLoginInternEventImpl implements UserLoginEvent {
 		int v = BukkitUtil.getServerVersion(event.getPlayer().getServer().getVersion());
 		
 		if (v < 16)
-			event.getPlayer().sendMessage(LangManager.getString(event.getPlayer().getName(), "register_request")
+			event.getPlayer().sendMessage(LangController.getString(event.getPlayer().getName(), "register_request")
 					.replace("%register_command%", command));
 
 		if (v >= 16) {
-			TextComponent tc = new TextComponent(LangManager.getString(event.getPlayer().getName(), "register_request")
+			TextComponent tc = new TextComponent(LangController.getString(event.getPlayer().getName(), "register_request")
 					.replace("%register_command%", command));
 			tc.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, command));
 			tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-					new Text(LangManager.getString(event.getPlayer().getName(), "register_request_copy"))));
+					new Text(LangController.getString(event.getPlayer().getName(), "register_request_copy"))));
 			event.getPlayer().spigot().sendMessage(tc);
 		}
 
@@ -125,7 +125,7 @@ public class UserLoginInternEventImpl implements UserLoginEvent {
 			Thread.sleep(seconds);
 			// In case the user has not finished completing the registration.
 			if (TmpCache.containsRegister(playerName)) {
-				String message = LangManager.getString(event.getPlayer().getName(), "register_kick_time");
+				String message = LangController.getString(event.getPlayer().getName(), "register_kick_time");
 				MainController.getDILoginController().kickPlayer(event.getPlayer().getName(), message);
 			}
 			return null;

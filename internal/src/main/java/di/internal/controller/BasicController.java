@@ -11,29 +11,35 @@ import di.internal.controller.file.YamlManager;
  */
 public interface BasicController {
 
-    /**
-     * @return Plugin logger.
-     */
-    Logger getLogger();
+	/**
+	 * @return Plugin logger.
+	 */
+	Logger getLogger();
 
-    /**
-     * Disable the plugin.
-     */
-    void disablePlugin();
+	/**
+	 * Disable the plugin.
+	 */
+	void disablePlugin();
 
-    /**
-     * @return Plugin configuration data manager.
-     */
-    ConfigManager getConfigManager();
+	/**
+	 * @return Plugin configuration data manager.
+	 */
+	ConfigManager getConfigManager();
 
-    /**
-     * @return Plugin language data manager.
-     */
-    YamlManager getLangManager();
+	/**
+	 * @return Plugin language data manager.
+	 */
+	YamlManager getLangManager();
 
-    /**
-     * @return Plugin data folder.
-     */
-    File getDataFolder();
+	/**
+	 * @param fileName file name.
+	 * @return file data manager.
+	 */
+	YamlManager getFile(String file);
+
+	/**
+	 * @return Plugin data folder.
+	 */
+	File getDataFolder();
 
 }

@@ -20,91 +20,107 @@ import java.util.logging.Logger;
 @Getter
 public class InternalControllerBungeeImpl implements PluginController, InternalController {
 
-    /**
-     * The driver for the plugin configuration file.
-     */
-    private ConfigManager configManager;
+	/**
+	 * The driver for the plugin configuration file.
+	 */
+	private ConfigManager configManager;
 
-    /**
-     * The driver for the plugin lang file.
-     */
-    private YamlManager langManager;
+	/**
+	 * The driver for the plugin lang file.
+	 */
+	private YamlManager langManager;
 
-    /**
-     * The bungee plugin.
-     */
-    private final Plugin plugin;
+	/**
+	 * The bungee plugin.
+	 */
+	private final Plugin plugin;
 
-    /**
-     * Path of the plugin folder.
-     */
-    private File dataFolder;
+	/**
+	 * Path of the plugin folder.
+	 */
+	private File dataFolder;
 
-    /**
-     * The ChannelController.
-     */
-    private final ChannelController channelController;
+	/**
+	 * The ChannelController.
+	 */
+	private final ChannelController channelController;
 
-    /**
-     * Main Class Constructor.
-     *
-     * @param plugin         Bukkit plugin.
-     * @param coreController Core controller.
-     * @param classLoader    Class loader.
-     * @param configFile     True if plugin has config file in DICore folder.
-     * @param langFile       True if plugin has lang file in DICore folder.
-     */
-    public InternalControllerBungeeImpl(Plugin plugin, CoreController coreController, ClassLoader classLoader, boolean configFile,
-                                        boolean langFile) {
-        this.plugin = plugin;
-        if (configFile && langFile)
-            this.dataFolder = getInternalPluginDataFolder(coreController);
-        if (configFile)
-            this.configManager = new ConfigManager(this, dataFolder, classLoader, false);
-        if (langFile)
-            this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader, false);
+	/**
+	 * The classLoader.
+	 */
+	private final ClassLoader classLoader;
 
-        this.channelController = new ChannelControllerBungeeImpl(plugin);
-    }
+	/**
+	 * Main Class Constructor.
+	 *
+	 * @param plugin         Bukkit plugin.
+	 * @param coreController Core controller.
+	 * @param classLoader    Class loader.
+	 * @param configFile     True if plugin has config file in DICore folder.
+	 * @param langFile       True if plugin has lang file in DICore folder.
+	 */
+	public InternalControllerBungeeImpl(Plugin plugin, CoreController coreController, ClassLoader classLoader,
+			boolean configFile, boolean langFile) {
+		this.plugin = plugin;
+		this.classLoader = classLoader;
+		if (configFile && langFile)
+			this.dataFolder = getInternalPluginDataFolder(coreController);
+		if (configFile)
+			this.configManager = new ConfigManager(this, dataFolder, classLoader, false);
+		if (langFile)
+			this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader, false);
 
-    /**
-     * Gets the plugin folder located in the DI folder
-     *
-     * @param coreController Core controller.
-     * @return Plugin folder.
-     */
-    private File getInternalPluginDataFolder(CoreController coreController) {
-        String stringBuilder = coreController.getDataFolder().getAbsolutePath() + "/" + getPluginName();
-        return new File(stringBuilder);
-    }
+		this.channelController = new ChannelControllerBungeeImpl(plugin);
+	}
 
-    /**
-     * @return Logger of plugin.
-     */
-    @Override
-    public Logger getLogger() {
-        return plugin.getLogger();
-    }
+	@Override
+	public YamlManager getFile(String file) {
+		return new YamlManager(this, file + ".yml", dataFolder, classLoader, false);
+	}
 
-    /**
-     * Disable the plugin.
-     */
-    @Override
-    public void disablePlugin() {
-        plugin.onDisable();
-    }
+	/**
+	 * @return Logger of plugin.
+	 */
+	@Override
+	public Logger getLogger() {
+		return plugin.getLogger();
+	}
 
-    @Override
-    public ChannelController getChannelController() {
-        return this.channelController;
-    }
+	/**
+	 * Disable the plugin.
+	 */
+	@Override
+	public void disablePlugin() {
+		plugin.onDisable();
+	}
 
-    @Override
-    public CompletableFuture<String> initConnectionWithBungee() {
-        return null;
-    }
+	@Override
+	public ChannelController getChannelController() {
+		return this.channelController;
+	}
 
-    private String getPluginName() {
-        return plugin.getDescription().getName();
-    }
+	@Override
+	public CompletableFuture<String> initConnectionWithBungee() {
+		return null;
+	}
+
+	/**
+	 * Gets the plugin folder located in the DI folder
+	 *
+	 * @param coreController Core controller.
+	 * @return Plugin folder.
+	 */
+	private File getInternalPluginDataFolder(CoreController coreController) {
+		String stringBuilder = coreController.getDataFolder().getAbsolutePath() + "/" + getPluginName();
+		return new File(stringBuilder);
+	}
+
+	/**
+	 * 
+	 * @return Plugin name.
+	 */
+	private String getPluginName() {
+		return plugin.getDescription().getName();
+	}
+
 }

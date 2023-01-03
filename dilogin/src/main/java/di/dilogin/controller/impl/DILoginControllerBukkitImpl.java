@@ -11,8 +11,8 @@ import com.nickuc.login.api.nLoginAPI;
 import di.dicore.api.DIApi;
 import di.dilogin.BukkitApplication;
 import di.dilogin.controller.DILoginController;
-import di.dilogin.controller.LangManager;
 import di.dilogin.controller.MainController;
+import di.dilogin.controller.file.LangController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.dao.DIUserDaoSqlImpl;
 import di.dilogin.entity.DIUser;
@@ -121,7 +121,7 @@ public class DILoginControllerBukkitImpl implements DILoginController {
 			Bukkit.getScheduler().runTask(BukkitApplication.getPlugin(), () -> Bukkit.getPluginManager()
 					.callEvent(new DILoginEvent(new DIUser(playerName, Optional.of(user)))));
 			UserBlockedCache.remove(player.getName());
-			player.sendMessage(LangManager.getString("login_success"));
+			player.sendMessage(LangController.getString("login_success"));
 		}
 		TmpCache.removeLogin(player.getName());
 	}

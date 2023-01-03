@@ -1,5 +1,6 @@
-package di.dilogin.controller;
+package di.dilogin.controller.file;
 
+import di.dilogin.controller.MainController;
 import di.dilogin.dto.DIUserDto;
 import di.dilogin.entity.DIUser;
 import lombok.AccessLevel;
@@ -11,7 +12,7 @@ import net.dv8tion.jda.api.entities.User;
  * variables. (Placeholders)
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class LangManager {
+public class LangController {
 
 	/**
 	 * @param path Variable searched.

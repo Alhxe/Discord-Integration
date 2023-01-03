@@ -10,8 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import di.dicore.api.DIApi;
-import di.dilogin.controller.LangManager;
 import di.dilogin.controller.MainController;
+import di.dilogin.controller.file.LangController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
@@ -45,47 +45,49 @@ public class RegisterBukkitCommand implements CommandExecutor {
 
 	/**
 	 * Main command body.
-	 * @param sender The sender of the command.
+	 * 
+	 * @param sender  The sender of the command.
 	 * @param command The command.
-	 * @param label The label of the command.
-	 * @param args The arguments of the command.
+	 * @param label   The label of the command.
+	 * @param args    The arguments of the command.
 	 * @return True if the command was executed.
 	 */
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (sender instanceof Player) {
-			Player player = (Player) sender;
+		if (!(sender instanceof Player))
+			return false;
 
-			if (userDao.contains(player.getName())) {
-				player.sendMessage(LangManager.getString(player.getName(), "register_already_exists"));
-				return false;
-			}
+		Player player = (Player) sender;
 
-			if (args.length == 0) {
-				player.sendMessage(LangManager.getString(player.getName(), "register_arguments"));
-				return false;
-			}
-
-			Optional<User> userOpt = catchRegisterUserOption(args, player);
-			if (!userOpt.isPresent())
-				return true;
-
-			User user = userOpt.get();
-
-			if (userDao.getDiscordUserAccounts(user.getIdLong()) >= api.getInternalController().getConfigManager()
-					.getInt("register_max_discord_accounts")) {
-				player.sendMessage(LangManager.getString(player.getName(), "register_max_accounts").replace("%user_discord_id%",
-						arrayToString(args).replace(" ", "")));
-				return true;
-			}
-
-			player.sendMessage(LangManager.getString(user, player.getName(), "register_submit"));
-
-			MessageEmbed messageEmbed = getEmbedMessage(player, user);
-
-			sendMessage(user, player, messageEmbed);
-
+		if (userDao.contains(player.getName())) {
+			player.sendMessage(LangController.getString(player.getName(), "register_already_exists"));
+			return false;
 		}
+
+		if (args.length == 0) {
+			player.sendMessage(LangController.getString(player.getName(), "register_arguments"));
+			return false;
+		}
+
+		Optional<User> userOpt = catchRegisterUserOption(args, player);
+		if (!userOpt.isPresent())
+			return true;
+
+		User user = userOpt.get();
+
+		if (userDao.getDiscordUserAccounts(user.getIdLong()) >= api.getInternalController().getConfigManager()
+				.getInt("register_max_discord_accounts")) {
+			player.sendMessage(LangController.getString(player.getName(), "register_max_accounts")
+					.replace("%user_discord_id%", arrayToString(args).replace(" ", "")));
+			return true;
+		}
+
+		player.sendMessage(LangController.getString(user, player.getName(), "register_submit"));
+
+		MessageEmbed messageEmbed = getEmbedMessage(player, user);
+
+		sendMessage(user, player, messageEmbed);
+
 		return true;
 	}
 
@@ -105,8 +107,8 @@ public class RegisterBukkitCommand implements CommandExecutor {
 			userOpt = registerByName(string);
 
 		if (!userOpt.isPresent()) {
-			player.sendMessage(
-					LangManager.getString(player.getName(), "register_user_not_detected").replace("%user_discord_id%", string));
+			player.sendMessage(LangController.getString(player.getName(), "register_user_not_detected")
+					.replace("%user_discord_id%", string));
 			return Optional.empty();
 		}
 
@@ -149,7 +151,7 @@ public class RegisterBukkitCommand implements CommandExecutor {
 	 * @param messageEmbed Embed message.
 	 */
 	private void sendMessage(User user, Player player, MessageEmbed messageEmbed) {
-		if (!TmpCache.getRegisterMessage(player.getName()).isPresent()){
+		if (!TmpCache.getRegisterMessage(player.getName()).isPresent()) {
 			api.getInternalController().getLogger().severe("Error while sending message to user register");
 			return;
 		}
@@ -180,14 +182,14 @@ public class RegisterBukkitCommand implements CommandExecutor {
 	/**
 	 * Send embed message to the main discord channel.
 	 * 
-	 * @param player Bukkit player.
-	 * @param user   Discord user.
-	 * @param messageEmbed  Embed message.
-	 * @param code   The code to register.
+	 * @param player       Bukkit player.
+	 * @param user         Discord user.
+	 * @param messageEmbed Embed message.
+	 * @param code         The code to register.
 	 */
 	private void sendServerMessage(User user, Player player, MessageEmbed messageEmbed, String code) {
-		TextChannel serverchannel = api.getCoreController().getDiscordApi()
-				.get().getTextChannelById(api.getInternalController().getConfigManager().getLong("channel"));
+		TextChannel serverchannel = api.getCoreController().getDiscordApi().get()
+				.getTextChannelById(api.getInternalController().getConfigManager().getLong("channel"));
 
 		assert serverchannel != null;
 		serverchannel.sendMessage(user.getAsMention()).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
@@ -205,13 +207,14 @@ public class RegisterBukkitCommand implements CommandExecutor {
 	 * @return Embed message configured.
 	 */
 	private MessageEmbed getEmbedMessage(Player player, User user) {
-		EmbedBuilder embedBuilder = new EmbedBuilder().setTitle(LangManager.getString(player.getName(), "register_discord_title"))
-				.setDescription(LangManager.getString(user, player.getName(), "register_discord_desc")).setColor(
+		EmbedBuilder embedBuilder = new EmbedBuilder()
+				.setTitle(LangController.getString(player.getName(), "register_discord_title"))
+				.setDescription(LangController.getString(user, player.getName(), "register_discord_desc")).setColor(
 						Util.hex2Rgb(api.getInternalController().getConfigManager().getString("discord_embed_color")));
 
 		if (api.getInternalController().getConfigManager().getBoolean("discord_embed_server_image")) {
-			Optional<Guild> optGuild = Optional.ofNullable(api.getCoreController().getDiscordApi()
-					.get().getGuildById(api.getCoreController().getConfigManager().getLong("discord_server_id")));
+			Optional<Guild> optGuild = Optional.ofNullable(api.getCoreController().getDiscordApi().get()
+					.getGuildById(api.getCoreController().getConfigManager().getLong("discord_server_id")));
 			if (optGuild.isPresent()) {
 				String url = optGuild.get().getIconUrl();
 				if (url != null)

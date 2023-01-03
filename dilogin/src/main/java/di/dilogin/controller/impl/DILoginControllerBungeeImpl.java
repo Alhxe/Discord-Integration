@@ -6,8 +6,8 @@ import java.util.Optional;
 import di.dicore.api.DIApi;
 import di.dilogin.BungeeApplication;
 import di.dilogin.controller.DILoginController;
-import di.dilogin.controller.LangManager;
 import di.dilogin.controller.MainController;
+import di.dilogin.controller.file.LangController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.dao.DIUserDaoSqlImpl;
 import di.dilogin.entity.DIUser;
@@ -108,7 +108,7 @@ public class DILoginControllerBungeeImpl implements DILoginController {
 		}
 
 		UserBlockedCache.remove(player.getName());
-		player.sendMessage(LangManager.getString("login_success"));
+		player.sendMessage(LangController.getString("login_success"));
 
 		BungeeApplication.getPlugin().getProxy().getScheduler().runAsync(BungeeApplication.getPlugin(),
 				() -> BungeeApplication.getPlugin().getProxy().getPluginManager()

@@ -24,114 +24,125 @@ import lombok.Getter;
 @Getter
 public class InternalControllerBukkitImpl implements PluginController, InternalController {
 
-    /**
-     * The driver for the plugin configuration file.
-     */
-    private ConfigManager configManager;
+	/**
+	 * The driver for the plugin configuration file.
+	 */
+	private ConfigManager configManager;
 
-    /**
-     * The driver for the plugin lang file.
-     */
-    private YamlManager langManager;
+	/**
+	 * The driver for the plugin lang file.
+	 */
+	private YamlManager langManager;
 
-    /**
-     * The bukkit plugin.
-     */
-    private final Plugin plugin;
+	/**
+	 * The bukkit plugin.
+	 */
+	private final Plugin plugin;
 
-    /**
-     * Path of the plugin folder.
-     */
-    private File dataFolder;
+	/**
+	 * Path of the plugin folder.
+	 */
+	private File dataFolder;
 
-    /**
-     * The ChannelController.
-     */
-    private final ChannelController channelController;
+	/**
+	 * The ChannelController.
+	 */
+	private final ChannelController channelController;
 
-    /**
-     * The CoreController.
-     */
-    private final CoreController coreController;
+	/**
+	 * The CoreController.
+	 */
+	private final CoreController coreController;
 
-    /**
-     * Main Class Constructor.
-     *
-     * @param plugin         Bukkit plugin.
-     * @param coreController Core controller.
-     * @param classLoader    Class loader.
-     * @param configFile     True if plugin has config file in DICore folder.
-     * @param langFile       True if plugin has lang file in DICore folder.
-     * @param isDataInBungee True if plugin data is in BungeeCord.
-     */
-    public InternalControllerBukkitImpl(Plugin plugin, CoreController coreController, ClassLoader classLoader, boolean configFile,
-                                        boolean langFile, boolean isDataInBungee) {
-        this.plugin = plugin;
-        this.coreController = coreController;
+	/**
+	 * The classLoader.
+	 */
+	private final ClassLoader classLoader;
 
-        if (configFile && langFile)
-            this.dataFolder = getInternalPluginDataFolder(coreController);
-        if (configFile)
-            this.configManager = new ConfigManager(this, dataFolder, classLoader, isDataInBungee);
-        if (langFile)
-            this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader, isDataInBungee);
+	/**
+	 * Main Class Constructor.
+	 *
+	 * @param plugin         Bukkit plugin.
+	 * @param coreController Core controller.
+	 * @param classLoader    Class loader.
+	 * @param configFile     True if plugin has config file in DICore folder.
+	 * @param langFile       True if plugin has lang file in DICore folder.
+	 * @param isDataInBungee True if plugin data is in BungeeCord.
+	 */
+	public InternalControllerBukkitImpl(Plugin plugin, CoreController coreController, ClassLoader classLoader,
+			boolean configFile, boolean langFile, boolean isDataInBungee) {
+		this.plugin = plugin;
+		this.classLoader = classLoader;
+		this.coreController = coreController;
 
-        this.channelController = new ChannelControllerBukkitImpl(plugin);
+		if (configFile && langFile)
+			this.dataFolder = getInternalPluginDataFolder(coreController);
+		if (configFile)
+			this.configManager = new ConfigManager(this, dataFolder, classLoader, isDataInBungee);
+		if (langFile)
+			this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader, isDataInBungee);
 
-    }
+		this.channelController = new ChannelControllerBukkitImpl(plugin);
 
-    @Override
-    public Logger getLogger() {
-        return plugin.getLogger();
-    }
+	}
 
-    @Override
-    public void disablePlugin() {
-        plugin.getServer().getPluginManager().disablePlugin(plugin);
-    }
+	@Override
+	public YamlManager getFile(String file) {
+		return new YamlManager(this, file + ".yml", dataFolder, classLoader, false);
+	}
 
-    @Override
-    public ChannelController getChannelController() {
-        return this.channelController;
-    }
+	@Override
+	public Logger getLogger() {
+		return plugin.getLogger();
+	}
 
-    @Override
-    public CompletableFuture<String> initConnectionWithBungee() {
-    	plugin.getLogger().info("Establishing connection with BungeeCord...");
-        CompletableFuture<String> future = new CompletableFuture<>();
-        UserLoginForBungeeCallBukkitEvent event = new UserLoginForBungeeCallBukkitEvent();
-        plugin.getServer().getPluginManager().registerEvents(event, plugin);
-        event.getFirstPlayer().whenCompleteAsync((player, throwable) -> {
-            plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
-                String subChannel = Util.getRandomSubChannel(player.getName());
-                channelController.sendMessageAndWaitResponseWithSubChannel(subChannel, player.getName(), Demand.checkConnection.name(), "")
-                        .whenCompleteAsync((s, throwable1) -> {
-                            Util.loadConfigFile(channelController, configManager, player.getName());
-                            Util.loadLangFile(channelController, langManager, player.getName());
-                            Util.updateBotInfo(channelController, coreController, player.getName());
-                            plugin.getLogger().info("Connection established with BungeeCord");
-                            future.complete(s);
-                        });
-            }, 20);
-        });
-        return future;
-    }
+	@Override
+	public void disablePlugin() {
+		plugin.getServer().getPluginManager().disablePlugin(plugin);
+	}
 
-    /**
-     * Gets the plugin folder located in the DI folder
-     *
-     * @param coreController Core controller.
-     * @return Plugin folder.
-     */
-    private File getInternalPluginDataFolder(CoreController coreController) {
-        String stringBuilder = coreController.getDataFolder().getAbsolutePath() + "/" + getPluginName();
-        return new File(stringBuilder);
-    }
+	@Override
+	public ChannelController getChannelController() {
+		return this.channelController;
+	}
 
-    /**
-     * @return Plugin name.
-     */
-    private String getPluginName() {
-        return plugin.getName();
-    }
+	@Override
+	public CompletableFuture<String> initConnectionWithBungee() {
+		plugin.getLogger().info("Establishing connection with BungeeCord...");
+		CompletableFuture<String> future = new CompletableFuture<>();
+		UserLoginForBungeeCallBukkitEvent event = new UserLoginForBungeeCallBukkitEvent();
+		plugin.getServer().getPluginManager().registerEvents(event, plugin);
+		event.getFirstPlayer().whenCompleteAsync((player, throwable) -> {
+			plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+				String subChannel = Util.getRandomSubChannel(player.getName());
+				channelController.sendMessageAndWaitResponseWithSubChannel(subChannel, player.getName(),
+						Demand.checkConnection.name(), "").whenCompleteAsync((s, throwable1) -> {
+							Util.loadConfigFile(channelController, configManager, player.getName());
+							Util.loadLangFile(channelController, langManager, player.getName());
+							Util.updateBotInfo(channelController, coreController, player.getName());
+							plugin.getLogger().info("Connection established with BungeeCord");
+							future.complete(s);
+						});
+			}, 20);
+		});
+		return future;
+	}
+
+	/**
+	 * Gets the plugin folder located in the DI folder
+	 *
+	 * @param coreController Core controller.
+	 * @return Plugin folder.
+	 */
+	private File getInternalPluginDataFolder(CoreController coreController) {
+		String stringBuilder = coreController.getDataFolder().getAbsolutePath() + "/" + getPluginName();
+		return new File(stringBuilder);
+	}
+
+	/**
+	 * @return Plugin name.
+	 */
+	private String getPluginName() {
+		return plugin.getName();
+	}
 }

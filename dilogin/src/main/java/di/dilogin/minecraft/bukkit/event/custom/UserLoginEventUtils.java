@@ -3,8 +3,8 @@ package di.dilogin.minecraft.bukkit.event.custom;
 import java.time.Duration;
 
 import di.dicore.api.DIApi;
-import di.dilogin.controller.LangManager;
 import di.dilogin.controller.MainController;
+import di.dilogin.controller.file.LangController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
@@ -41,8 +41,8 @@ public interface UserLoginEventUtils {
 	 */
 	default void sendLoginMessageRequest(String playerName, User user) {
 		MessageEmbed embed = MainController.getDILoginController().getEmbedBase()
-				.setTitle(LangManager.getString(playerName, "login_discord_title"))
-				.setDescription(LangManager.getString(user, playerName, "login_discord_desc")).build();
+				.setTitle(LangController.getString(playerName, "login_discord_title"))
+				.setDescription(LangController.getString(user, playerName, "login_discord_desc")).build();
 
 		boolean hasMessagesOnlyChannel = api.getInternalController().getConfigManager()
 				.contains("messages_only_channel");
