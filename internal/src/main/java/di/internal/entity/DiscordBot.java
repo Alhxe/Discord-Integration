@@ -4,8 +4,7 @@ import java.util.Optional;
 
 import javax.security.auth.login.LoginException;
 
-import org.bukkit.plugin.Plugin;
-
+import di.internal.controller.CoreController;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.JDA;
@@ -25,7 +24,7 @@ public class DiscordBot {
 	/**
 	 * Javacord Api.
 	 */
-	private JDA api;
+	private Optional<JDA> api;
 
 	/**
 	 * Bot prefix.
@@ -35,7 +34,7 @@ public class DiscordBot {
 	/**
 	 * Main server id.
 	 */
-	private long serverid;
+	private long serverId;
 
 	/**
 	 * Bot CommandHandler.
@@ -43,64 +42,77 @@ public class DiscordBot {
 	private CommandHandler commandHandler;
 
 	/**
+	 * CoreController of plugin.
+	 */
+	private CoreController controller;
+
+	/**
 	 * Main Controller.
 	 * 
 	 * @param prefix   Bot prefix.
-	 * @param serverid Main server id.
+	 * @param serverId Main server id.
 	 * @param token    Bot token.
-	 * @param plugin   Bukkit plugin.
+	 * @param controller  CoreController of plugin.
 	 */
-	public DiscordBot(String prefix, long serverid, String token, Plugin plugin) {
+	public DiscordBot(String prefix, long serverId, String token, CoreController controller) {
 		this.prefix = prefix;
-		this.serverid = serverid;
-		initBot(token, plugin);
+		this.serverId = serverId;
+		this.controller = controller;
+		initBot(token);
+	}
+
+	/**
+	 * Constructor for when the bot is not hosted on the server.
+	 *
+	 * @param prefix  Bot prefix.
+	 * @param serverId Main server id.
+	 */
+	public DiscordBot(String prefix, long serverId){
+		this.prefix = prefix;
+		this.serverId = serverId;
 	}
 
 	/**
 	 * Init bot.
 	 * 
 	 * @param token  Bot token.
-	 * @param plugin Bukkit plugin.
 	 */
-	public void initBot(String token, Plugin plugin) {
+	public void initBot(String token) {
 		try {
-			this.api = JDABuilder.createDefault(token).enableIntents(GatewayIntent.GUILD_PRESENCES,
+			JDA api = JDABuilder.createDefault(token).enableIntents(GatewayIntent.GUILD_PRESENCES,
 					GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MEMBERS).build();
 			api.awaitReady();
-			onConnectToDiscord(plugin);
-			checkPermissions(plugin);
+			this.api = Optional.of(api);
+			onConnectToDiscord();
+			checkPermissions();
 		} catch (LoginException e) {
-			plugin.getLogger().warning("The Bot failed to start. You have not entered a valid token.");
-			plugin.getPluginLoader().disablePlugin(plugin);
+			controller.getLogger().warning("The Bot failed to start. You have not entered a valid token.");
+			controller.disablePlugin();
 		} catch (InterruptedException e) {
-			plugin.getLogger().warning("The Bot failed to start. Reason:");
+			controller.getLogger().warning("The Bot failed to start. Reason:");
 			e.printStackTrace();
-			plugin.getPluginLoader().disablePlugin(plugin);
+			controller.disablePlugin();
 			Thread.currentThread().interrupt();
 		}
 	}
 
 	/**
 	 * When the bot starts successfully it passes here.
-	 * 
-	 * @param plugin Bukkit plugin.
 	 */
-	private void onConnectToDiscord(Plugin plugin) {
-		plugin.getLogger().info("Bot started");
+	private void onConnectToDiscord() {
+		controller.getLogger().info("Bot started");
 		this.commandHandler = new CommandHandler(prefix);
-		api.addEventListener(this.commandHandler);
+		api.get().addEventListener(this.commandHandler);
 	}
 
 	/**
 	 * Check discord server permissions.
-	 * 
-	 * @param api JDA Api.
 	 */
-	private void checkPermissions(Plugin plugin) {
-		Optional<Guild> guildOpt = Optional.ofNullable(api.getGuildById(serverid));
+	private void checkPermissions() {
+		Optional<Guild> guildOpt = Optional.ofNullable(api.get().getGuildById(serverId));
 
 		if (!guildOpt.isPresent()) {
-			plugin.getLogger().warning("I could not find the server with ID " + serverid);
+			controller.getLogger().warning("I could not find the server with ID " + serverId);
 			return;
 		}
 
@@ -111,15 +123,15 @@ public class DiscordBot {
 			return;
 
 		if (!bot.hasPermission(Permission.MESSAGE_WRITE))
-			plugin.getLogger()
+			controller.getLogger()
 					.warning("The bot does not have writes permission on the server, this could cause a conflict!");
 
 		if (!bot.hasPermission(Permission.MESSAGE_MANAGE))
-			plugin.getLogger()
+			controller.getLogger()
 					.warning("The bot is not allowed to handle messages on the server, this could lead to conflict!");
 
 		if (!bot.hasPermission(Permission.MESSAGE_ADD_REACTION))
-			plugin.getLogger().warning(
+			controller.getLogger().warning(
 					"The bot does not have permission to add reactions on the server, this could cause conflict!");
 	}
 }

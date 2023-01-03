@@ -1,6 +1,6 @@
 name: DILogin
 main: di.dilogin.BukkitApplication
-version: 3.4.5
+version: 4.0.1
 author: Alhxe
 depend: [DICore]
 softdepend: [AuthMe, Multiverse-Core, LuckPerms, nLogin]
@@ -17,6 +17,10 @@ commands:
         description: Unregister user
         usage: /unregister <nick>
         permission: sdl.unregister
+    ejemplo:
+        description: Ejemplo de comando
+        usage: /ejemplo
+        aliases: [eje]
 permissions:
     sdl.forcelogin:
         description: Allow to use Forcelogin

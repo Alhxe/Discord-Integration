@@ -7,11 +7,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
+import di.dilogin.controller.MainController;
+import di.internal.controller.InternalController;
 import lombok.NoArgsConstructor;
-import org.bukkit.plugin.Plugin;
-
-import di.dilogin.BukkitApplication;
 
 /**
  * SQLite controller class.
@@ -23,6 +23,11 @@ public class DBConnectionSqliteImpl implements DBConnection {
 	 * Main connection.
 	 */
 	private static Connection connection = null;
+
+	/**
+	 * Main plugin controller.
+	 */
+	private static final InternalController controller = MainController.getDIApi().getInternalController();
 
 	/**
 	 * @return Connection to the database. If it does not exist, it creates it.
@@ -37,25 +42,23 @@ public class DBConnectionSqliteImpl implements DBConnection {
 	 * Init DataBase.
 	 */
 	private void initDB() {
-		BukkitApplication.getPlugin().getLogger().info("Database connection type: SQLITE");
+		controller.getLogger().info("Database connection type: SQLITE");
 		try {
 			File dataFolder = new File(
-					BukkitApplication.getDIApi().getInternalController().getDataFolder().getAbsolutePath(), "users.db");
+					controller.getDataFolder().getAbsolutePath(), "users.db");
 			if (!dataFolder.exists()) {
 				boolean success = dataFolder.createNewFile();
 				if (!success) {
-					BukkitApplication.getPlugin().getLogger().severe("Failed to create database file");
-					Plugin plugin = BukkitApplication.getPlugin();
-					plugin.getPluginLoader().disablePlugin(plugin);
+					controller.getLogger().severe("Failed to create database file");
+					controller.disablePlugin();
 				}
 			}
 			Class.forName("org.sqlite.JDBC");
 			connection = DriverManager.getConnection("jdbc:sqlite:" + dataFolder);
 			initTables();
 		} catch (SQLException | ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-			Plugin plugin = BukkitApplication.getPlugin();
-			plugin.getPluginLoader().disablePlugin(plugin);
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DBConnectionSlqiteImpl - initTables",e);
+			controller.disablePlugin();
 		}
 
 	}
@@ -78,7 +81,7 @@ public class DBConnectionSqliteImpl implements DBConnection {
 			for (String s : sql)
 				stmt.execute(s);
 		} catch (SQLException e) {
-			e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DBConnectionSqliteImpl - initTables",e);
 		}
 	}
 }

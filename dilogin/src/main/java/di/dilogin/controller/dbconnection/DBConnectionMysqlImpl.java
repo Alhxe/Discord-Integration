@@ -5,11 +5,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
+import di.dilogin.controller.MainController;
 import lombok.NoArgsConstructor;
-import org.bukkit.plugin.Plugin;
 
-import di.dilogin.BukkitApplication;
 import di.internal.controller.file.ConfigManager;
 
 /**
@@ -37,8 +37,8 @@ public class DBConnectionMysqlImpl implements DBConnection {
      */
     private void initDB() {
         try {
-            BukkitApplication.getPlugin().getLogger().info("Database connection type: MYSQL");
-            ConfigManager cm = BukkitApplication.getDIApi().getInternalController().getConfigManager();
+            MainController.getDIApi().getInternalController().getLogger().info("Database connection type: MYSQL");
+            ConfigManager cm = MainController.getDIApi().getInternalController().getConfigManager();
             String host = cm.getString("database_host");
             String port = cm.getString("database_port");
             String user = cm.getString("database_username");
@@ -49,9 +49,8 @@ public class DBConnectionMysqlImpl implements DBConnection {
             connection = DriverManager.getConnection("jdbc:mysql://" + url, user, password);
             initTables();
         } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-            Plugin plugin = BukkitApplication.getPlugin();
-            plugin.getPluginLoader().disablePlugin(plugin);
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DBConnectionMysqlImpl - initDB",e);
+            MainController.getDIApi().getInternalController().disablePlugin();
         }
 
     }
@@ -74,7 +73,7 @@ public class DBConnectionMysqlImpl implements DBConnection {
             for (String s : sql)
                 stmt.execute(s);
         } catch (SQLException e) {
-            e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DBConnectionMysqlImpl - initTables",e);
         }
     }
 }

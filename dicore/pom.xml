@@ -11,7 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>dicore</artifactId>
 	<name>DICore</name>
-	<version>2.4.5</version>
+	<version>${project.version}</version>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>com.diproject</groupId>
 			<artifactId>internal</artifactId>
-			<version>1.0.4</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

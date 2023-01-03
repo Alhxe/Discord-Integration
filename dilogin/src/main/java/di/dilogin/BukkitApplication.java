@@ -1,36 +1,49 @@
 package di.dilogin;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 
-import di.dilogin.minecraft.ext.luckperms.LuckPermsLoginEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandMap;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import di.dicore.DIApi;
+import di.dicore.api.DIApi;
+import di.dicore.api.impl.DIApiBukkitImpl;
 import di.dilogin.controller.DBController;
-import di.dilogin.controller.DILoginController;
-import di.dilogin.discord.command.DiscordRegisterCommand;
-import di.dilogin.minecraft.ext.luckperms.GuildMemberRoleEvent;
-import di.dilogin.discord.event.UserReactionMessageEvent;
+import di.dilogin.controller.MainController;
+import di.dilogin.controller.file.CommandAliasController;
+import di.dilogin.controller.impl.DILoginControllerBukkitImpl;
+import di.dilogin.controller.impl.DiscordControllerImpl;
+import di.dilogin.discord.command.DiscordRegisterBukkitCommand;
+import di.dilogin.discord.event.UserReactionMessageBukkitEvent;
+import di.dilogin.minecraft.bukkit.command.ForceLoginBukkitCommand;
+import di.dilogin.minecraft.bukkit.command.RegisterBukkitCommand;
+import di.dilogin.minecraft.bukkit.command.UnregisterBukkitCommand;
+import di.dilogin.minecraft.bukkit.event.UserBlockEvents;
+import di.dilogin.minecraft.bukkit.event.UserLeaveEvent;
+import di.dilogin.minecraft.bukkit.event.UserPreLoginEvent;
+import di.dilogin.minecraft.bukkit.event.UserTeleportEvents;
+import di.dilogin.minecraft.bukkit.event.impl.UserLoginExternEventImpl;
+import di.dilogin.minecraft.bukkit.event.impl.UserLoginInternEventImpl;
 import di.dilogin.minecraft.cache.TmpCache;
-import di.dilogin.minecraft.command.ForceLoginCommand;
-import di.dilogin.minecraft.command.RegisterCommand;
-import di.dilogin.minecraft.command.UnregisterCommand;
-import di.dilogin.minecraft.event.UserBlockEvents;
-import di.dilogin.minecraft.event.UserLeaveEvent;
-import di.dilogin.minecraft.event.UserLoginEventImpl;
-import di.dilogin.minecraft.event.UserPreLoginEvent;
-import di.dilogin.minecraft.event.UserTeleportEvents;
 import di.dilogin.minecraft.ext.authme.AuthmeEvents;
 import di.dilogin.minecraft.ext.authme.UserLoginEventAuthmeImpl;
+import di.dilogin.minecraft.ext.luckperms.GuildMemberRoleEvent;
 import di.dilogin.minecraft.ext.luckperms.LuckPermsEvents;
+import di.dilogin.minecraft.ext.luckperms.LuckPermsLoginBukkitEvent;
 import di.dilogin.minecraft.ext.nlogin.UnregisterNLoginEvents;
 import di.dilogin.minecraft.ext.nlogin.UserLoginEventNLoginImpl;
 import di.internal.exception.NoApiException;
 
 /**
- * Main Discord Integration Login class.
+ * Main DILogin class for Bukkit.
  */
 public class BukkitApplication extends JavaPlugin {
 
@@ -46,27 +59,33 @@ public class BukkitApplication extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		getLogger().info("Plugin started");
 		plugin = getPlugin(getClass());
 
 		connectWithCoreApi();
-		initCommands();
-		initEvents();
-		initDiscordEvents();
-		initDiscordCommands();
-		DBController.getConnect();
+
+		MainController.setDIApi(api);
+		MainController.setDILoginController(new DILoginControllerBukkitImpl());
+		MainController.setBukkit(true);
+
+		if (!api.isBungeeDetected()) {
+			// If api is in own server.
+			MainController.setDiscordController(new DiscordControllerImpl());
+			DBController.getConnect();
+			initInternCommands();
+			initInternEvents();
+			initDiscordEvents();
+			initDiscordCommands();
+		} else {
+			// If api is in proxy.
+			initExtEvents();
+			api.getInternalController().initConnectionWithBungee();
+		}
+		getLogger().info("Plugin started");
 	}
 
 	@Override
 	public void onDisable() {
 		TmpCache.clearAll();
-	}
-
-	/**
-	 * @return Discord Integration Api.
-	 */
-	public static DIApi getDIApi() {
-		return api;
 	}
 
 	/**
@@ -79,66 +98,97 @@ public class BukkitApplication extends JavaPlugin {
 	/**
 	 * Add the commands to bukkit.
 	 */
-	private void initCommands() {
-		initUniqueCommand("diregister", new RegisterCommand());
-		initUniqueCommand("forcelogin", new ForceLoginCommand());
-		initUniqueCommand("unregister", new UnregisterCommand());
+	private void initInternCommands() {
+		registerCommand("diregister", CommandAliasController.getAlias("register_command"),
+				new RegisterBukkitCommand());
+		registerCommand("forcelogin", CommandAliasController.getAlias("forcelogin_command"),
+				new ForceLoginBukkitCommand());
+		registerCommand("unregister", CommandAliasController.getAlias("unregister_command"),
+				new UnregisterBukkitCommand());
 	}
 
 	/**
 	 * Add to each command that the server must respond in case it does not have
 	 * permissions.
-	 * 
+	 *
 	 * @param command  Bukkit command.
 	 * @param executor CommandExecutor.
 	 */
-	private void initUniqueCommand(String command, CommandExecutor executor) {
-		getCommand(command).setExecutor(executor);
-		getCommand(command).setPermissionMessage(api.getCoreController().getLangManager().getString("no_permission"));
+	public void registerCommand(String command, String alias, CommandExecutor executor) {
+		try {
+			List<String> aliases = new ArrayList<>();
+			aliases.add(alias);
+			PluginCommand plc = null;
+			Class<?> cl = PluginCommand.class;
+			Constructor<?> cons = null;
+			cons = cl.getDeclaredConstructor(String.class, Plugin.class);
+			cons.setAccessible(true);
+			plc = (PluginCommand) cons.newInstance(command, this);
+			plc.setAliases(aliases);
+			final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+
+			bukkitCommandMap.setAccessible(true);
+			CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
+			commandMap.register(command, plc);
+			plc.register(commandMap);
+			plc.setPermissionMessage(api.getCoreController().getLangManager().getString("no_permission"));
+			plc.setExecutor(executor);
+		} catch (Exception e) {
+			getServer().getLogger().log(Level.SEVERE, "registerCommand", e);
+		}
 	}
 
 	/**
 	 * Connect with DIApi.
 	 */
 	private void connectWithCoreApi() {
-		if (plugin.getServer().getPluginManager().getPlugin("DICore").isEnabled()) {
-			try {
-				api = new DIApi(plugin, this.getClassLoader(), true, true);
-			} catch (NoApiException e) {
-				e.printStackTrace();
+		try {
+			if (Objects.requireNonNull(plugin.getServer().getPluginManager().getPlugin("DICore")).isEnabled()) {
+				api = new DIApiBukkitImpl(plugin, this.getClassLoader(), true, true);
+			} else {
+				plugin.getLogger().log(Level.SEVERE,
+						"Failed to connect to DICore plugin. Check if it has been turned on correctly.");
+				plugin.getPluginLoader().disablePlugin(plugin);
 			}
-		} else {
-			plugin.getLogger().log(Level.SEVERE,
-					"Failed to connect to DICore plugin. Check if it has been turned on correctly.");
-			plugin.getPluginLoader().disablePlugin(plugin);
+		} catch (NoApiException e) {
+			getLogger().log(Level.SEVERE, "BukkitApplication - connectWithCoreApi", e);
 		}
 	}
 
 	/**
 	 * Init Bukkit events.
 	 */
-	private void initEvents() {
-		if (DILoginController.isLuckPermsEnabled()) {
+	private void initInternEvents() {
+		if (MainController.getDILoginController().isLuckPermsEnabled()) {
 			initLuckPermsEvents();
 		}
-		if (DILoginController.isAuthmeEnabled()) {
+		if (MainController.getDILoginController().isAuthmeEnabled()) {
 			initAuthmeEvents();
-		} else if (DILoginController.isNLoginEnabled()) {
+		} else if (MainController.getDILoginController().isNLoginEnabled()) {
 			initNLoginEvents();
 		} else {
-			initDILoginEvents();
+			getServer().getPluginManager().registerEvents(new UserLoginInternEventImpl(), plugin);
 		}
+		getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
 		getServer().getPluginManager().registerEvents(new UserLeaveEvent(), plugin);
 		getServer().getPluginManager().registerEvents(new UserTeleportEvents(), plugin);
 		getServer().getPluginManager().registerEvents(new UserPreLoginEvent(), plugin);
 	}
 
 	/**
+	 * Init Bukkit events when api is in Proxy.
+	 */
+	private void initExtEvents() {
+		getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
+		getServer().getPluginManager().registerEvents(new UserLoginExternEventImpl(), plugin);
+	}
+
+	/**
 	 * Records Discord events.
 	 */
 	private void initDiscordEvents() {
-		api.registerDiscordEvent(new UserReactionMessageEvent());
-		if (DILoginController.isSyncroRolEnabled()) {
+		api.registerDiscordEvent(new UserReactionMessageBukkitEvent());
+		if (MainController.getDILoginController().isSyncroRolEnabled()) {
 			api.registerDiscordEvent(new GuildMemberRoleEvent());
 		}
 	}
@@ -147,7 +197,7 @@ public class BukkitApplication extends JavaPlugin {
 	 * Init discord commands.
 	 */
 	private void initDiscordCommands() {
-		api.registerDiscordCommand(new DiscordRegisterCommand());
+		api.registerDiscordCommand(new DiscordRegisterBukkitCommand());
 	}
 
 	/**
@@ -165,10 +215,13 @@ public class BukkitApplication extends JavaPlugin {
 		}
 	}
 
-	private void initLuckPermsEvents(){
+	/**
+	 * Init events with compatibility with LuckPerms.
+	 */
+	private void initLuckPermsEvents() {
 		getPlugin().getLogger().info("LuckPerms detected, starting plugin compatibility.");
-		new LuckPermsEvents();
-		getServer().getPluginManager().registerEvents(new LuckPermsLoginEvent(), plugin);
+		new LuckPermsEvents(getPlugin());
+		getServer().getPluginManager().registerEvents(new LuckPermsLoginBukkitEvent(), plugin);
 	}
 
 	/**
@@ -178,14 +231,6 @@ public class BukkitApplication extends JavaPlugin {
 		getPlugin().getLogger().info("Authme detected, starting plugin compatibility.");
 		getServer().getPluginManager().registerEvents(new UserLoginEventAuthmeImpl(), plugin);
 		getServer().getPluginManager().registerEvents(new AuthmeEvents(), plugin);
-	}
-
-	/**
-	 * Init the plugin's default events.
-	 */
-	private void initDILoginEvents() {
-		getServer().getPluginManager().registerEvents(new UserLoginEventImpl(), plugin);
-		getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
 	}
 
 }

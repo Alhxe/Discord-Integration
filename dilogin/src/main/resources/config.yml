@@ -1,3 +1,5 @@
+##################### GLOBAL OPTIONS
+
 #Discord
 channel: CHANNEL_ID
 
@@ -6,8 +8,16 @@ register_time_until_kick: 60
 register_max_discord_accounts: 3
 register_code_length: 5
 login_time_until_kick: 30
-#register_custom_characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' #Only the custom added characters will appear in the +register command.
+register_optional_enabled: false #If true, user decide if they want register.
+register_by_nickname_enabled: true
+register_by_discordid_enabled: true
+register_by_discord_command_enabled: true
 messages_only_channel: false #If true, bot will not send private messages.
+#register_custom_characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' #Only the custom added characters will appear in the +register command.
+
+#Sessions
+sessions: true
+session_time_min: 5
 
 #Database (sqlite or mysql)
 database: 'sqlite'
@@ -19,6 +29,47 @@ database: 'sqlite'
 #database_port: '3306'
 #database_table: 'dilogin'
 
+#Messages
+discord_embed_color: '#466AC7'
+discord_embed_server_image: true
+discord_embed_timestamp: true
+#This is the emoji codepoint. You can find it on some page like https://emojipedia.org/
+#Find the emoji you want and scroll down until you find the "Codepoint" section.
+discord_embed_emoji: 'U+2B50'
+
+register_give_role_enabled: false
+register_give_role_list:
+       - discord_role_id
+       - another_discord_role_id
+
+#This option makes that only users with a certain role can log in.
+register_required_role_enabled: false
+register_required_role_id: discord_role_id
+
+#Synchronization of the discord name with that of minecraft.
+#When the player logs into the server, their Discord name will be changed to their Minecraft name.
+#Remember bot need to have more permissions than regular users.
+syncro_enable: false
+
+######### LuckPerms
+
+#If u make true, only the following luckperm roles can register/login
+register_role_list_enabled: false
+register_role_list:
+       - admin
+       - moderator
+
+#Sync minecraft server roles with discord. register_role_list_enabledhe minecrregister_role_liste corresponding one will be given on discord and vice versa.
+syncro_role_enabled: false
+syncro_role_list:
+       - discord_rol_id: luckperms_group_name
+       - another_rol_id: another_luckperms_group_name
+#EXAMPLE
+#- 927608230627119184: admin
+
+
+##################### ONLY FOR BUKKIT/SPIGOT/PAPER... (NOT WORK WHEN SERVER IS ON BUNGEE PROXY)
+
 #Teleport options
 teleport: false
 teleport_x: -207
@@ -28,37 +79,8 @@ teleport_world: world
 teleport_yaw: 2.4
 teleport_pitch: 12.9
 
-#Messages
-discord_embed_color: '#466AC7'
-discord_embed_server_image: true
-discord_embed_timestamp: true
-#This is the emoji codepoint. You can find it on some page like https://emojipedia.org/
-#Find the emoji you want and scroll down until you find the "Codepoint" section.
-discord_embed_emoji: 'U+2B50'
 
-#Sessions
-sessions: true
-session_time_min: 5
-
-#If you don't want to activate this setting, just leave it as is
-#This option makes that only users with a certain role can log in.
-register_required_role_id: YOUR_ROLE_ID
-
-#Synchronization of the discord name with that of minecraft.
-#When the player logs into the server, their Discord name will be changed to their Minecraft name.
-#Remember bot need to have more permissions than regular users.
-syncro_enable: false
-
-#LUCKPERMS SYNCRO
-#Sync minecraft server roles with discord. When a role is given on the minecraft server, 
-#the corresponding one will be given on discord and vice versa.
-syncro_rol_enable: false
-syncro_rol_list:
-       - discord_rol_id: luckperms_group_name
-       - another_rol_id: another_luckperms_group_name
-
-#EXAMPLE
-#- 927608230627119184: admin
-
-#COMMANDS ALIAS
-register_command: 'register'
+##################### BUNGEE OPTIONS
+#Teleport to another server after login
+teleport_server_enabled: false
+teleport_server_name: 'example'

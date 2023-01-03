@@ -32,7 +32,7 @@ public class CommandHandler extends ListenerAdapter {
 	/**
 	 * Main constructor of CommandHandler.
 	 * 
-	 * @param String Discord Bot prefix.
+	 * @param prefix Discord Bot prefix.
 	 */
 	public CommandHandler(String prefix) {
 		this.prefix = prefix;
@@ -78,7 +78,7 @@ public class CommandHandler extends ListenerAdapter {
 	 * @return First message word without prefix.
 	 */
 	private static String getFirstWord(String prefix, String message) {
-		if (message.indexOf(" ") == -1)
+		if (!message.contains(" "))
 			return message.substring(prefix.length()).toLowerCase();
 		String p = message.substring(prefix.length());
 		return p.split(" ")[0].toLowerCase();
@@ -91,7 +91,7 @@ public class CommandHandler extends ListenerAdapter {
 	 * @return Second message word.
 	 */
 	private static String getSecondWord(String message) {
-		return message.indexOf(" ") != -1 ? message.split(" ")[1].toLowerCase() : "";
+		return message.contains(" ") ? message.split(" ")[1].toLowerCase() : "";
 	}
 
 	/**

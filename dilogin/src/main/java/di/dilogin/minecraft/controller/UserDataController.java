@@ -5,16 +5,17 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.logging.Level;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.bukkit.entity.Player;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 
-import di.dilogin.BukkitApplication;
+import di.dilogin.controller.MainController;
 import di.dilogin.entity.UserData;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Pre-login user data controller.
@@ -47,7 +48,7 @@ public class UserDataController {
 		boolean isDeleted = file.delete();
 
 		if(!isDeleted) {
-			BukkitApplication.getDIApi().getInternalController().getPlugin().getLogger().warning("Could not delete file: " + file.getAbsolutePath());
+			MainController.getDIApi().getInternalController().getLogger().warning("Could not delete file: " + file.getAbsolutePath());
 		}
 	}
 
@@ -72,7 +73,7 @@ public class UserDataController {
 			reader.close();
 			return Optional.ofNullable(userData);
 		} catch (IOException e) {
-			e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"UserDataController - getUserDataFromUuid",e);
 		}
 		return Optional.empty();
 	}
@@ -86,7 +87,7 @@ public class UserDataController {
 		try (FileWriter fileWriter = new FileWriter(dataFolder.getAbsolutePath() + "/" + uuid + ".json")) {
 			fileWriter.write(new Gson().toJson(userData));
 		} catch (IOException e) {
-			e.printStackTrace();
+            MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"UserDataController - saveData",e);
 		}
 	}
 
@@ -95,7 +96,7 @@ public class UserDataController {
 	 * @return the player data folder.
 	 */
 	private static File getPlayerDataFolder() {
-		File file = new File(BukkitApplication.getDIApi().getInternalController().getDataFolder(), "PlayerData");
+		File file = new File(MainController.getDIApi().getInternalController().getDataFolder(), "PlayerData");
 
 		if (file.exists())
 			return file;

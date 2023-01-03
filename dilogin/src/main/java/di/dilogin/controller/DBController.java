@@ -2,7 +2,6 @@ package di.dilogin.controller;
 
 import java.sql.Connection;
 
-import di.dilogin.BukkitApplication;
 import di.dilogin.controller.dbconnection.DBConnection;
 import di.dilogin.controller.dbconnection.DBConnectionMysqlImpl;
 import di.dilogin.controller.dbconnection.DBConnectionSqliteImpl;
@@ -36,7 +35,7 @@ public class DBController {
      * Initializes the connection to the database.
      */
     public static void initConnection() {
-        String db = BukkitApplication.getDIApi().getInternalController().getConfigManager().getString("database");
+        String db = MainController.getDIApi().getInternalController().getConfigManager().getString("database");
         if (db.equalsIgnoreCase("mysql")) {
             conn = new DBConnectionMysqlImpl();
         } else {

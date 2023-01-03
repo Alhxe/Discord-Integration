@@ -1,18 +1,19 @@
 package di.dilogin.minecraft.ext.luckperms;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import di.dilogin.minecraft.util.Util;
+import di.dicore.api.DIApi;
+import di.dilogin.controller.MainController;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import net.dv8tion.jda.api.entities.Role;
-import org.bukkit.entity.Player;
-
-import di.dicore.DIApi;
-import di.dilogin.BukkitApplication;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
@@ -34,12 +35,12 @@ public class LuckPermsController {
 	/**
 	 * DIApi api instance.
 	 */
-	private static final DIApi diapi = BukkitApplication.getDIApi();
+	private static final DIApi diapi = MainController.getDIApi();
 
 	/**
 	 * Role map from config file.
 	 */
-	private static List<Map<String, String>> rolMap = initRoleList();
+	private static final List<Map<String, String>> rolMap = initRoleList();
 
 	/**
 	 * Get the LuckPerms api instance.
@@ -54,28 +55,32 @@ public class LuckPermsController {
 
 	/**
 	 * Check if user is in group role.
-	 * @param player player to check.
+	 * @param playerName player to check.
 	 * @param group group to check.
 	 * @return true if user is in group role, false otherwise.
 	 */
-	public static boolean isUserInGroup(Player player, String group) {
-		return getUsersInGroup(group).join().stream().anyMatch(u->u.getFriendlyName().equalsIgnoreCase(player.getName()));
+	public static boolean isUserInGroup(String playerName, String group) {
+		List<User> a = getUsersInGroup(group).join();
+		for (User u : a) {
+			diapi.getCoreController().getLogger().info(u.getFriendlyName());
+		}
+		return getUsersInGroup(group).join().stream().anyMatch(u->u.getFriendlyName().equalsIgnoreCase(playerName));
 	}
 
 	/**
 	 * Get the perms of the user.
-	 * @param player player to get perms.
+	 * @param userName player to get perms.h
 	 * @return the perms of the user.
 	 */
-	public static User getLuckPermsUser(Player player) {
-		return api.getPlayerAdapter(Player.class).getUser(player);
+	public static User getLuckPermsUser(String userName) {
+		return api.getUserManager().getUser(userName);
 	}
 
 	/**
 	 * Syncronize the roles of the player.
-	 * @param player minecraft player to syncronize.
+	 * @param playerName minecraft player to syncronize.
 	 */
-	public static void syncUserRole(Player player){
+	public static void syncUserRole(String playerName){
 		rolMap.forEach(map -> {
 			Optional<Entry<String, String>> optEntry = map.entrySet().stream().findFirst();
 			if (optEntry.isPresent()) {
@@ -83,48 +88,47 @@ public class LuckPermsController {
 				String role = entry.getKey();
 				String group = entry.getValue();
 
-				boolean isUserInGroup = isUserInGroup(player, group);
-				boolean isUserInRole = Util.userHasRole(role, player.getName());
+				boolean isUserInGroup = isUserInGroup(playerName, group);
+				boolean isUserInRole = MainController.getDiscordController().userHasRole(role, playerName);
 
-				Role discordRole = diapi.getCoreController().getGuild().getRoleById(role);
+				Role discordRole = diapi.getCoreController().getGuild().get().getRoleById(role);
 				if (isUserInGroup && !isUserInRole){
-					removeGroup(player, group, "Removed " + discordRole + " role in discord.");
+					removeGroup(playerName, group, "Removed " + discordRole + " role in discord.");
 				}
 
 				if (!isUserInGroup && isUserInRole){
-					addGroup(player, group, "Get " + discordRole + " role in discord.");
+					addGroup(playerName, group, "Get " + discordRole + " role in discord.");
 				}
 			}
 		});
-
 	}
 
 	/**
 	 * Add the user to the group.
-	 * @param player player to add.
+	 * @param playerName player to add.
 	 * @param group	group to add.
 	 * @param reason Reason to add the group to the user.
 	 */
-	public static void addGroup(Player player, String group, String reason) {
-		User user = getLuckPermsUser(player);
+	public static void addGroup(String playerName, String group, String reason) {
+		User user = getLuckPermsUser(playerName);
 		user.data().add(Node.builder("group." + group).build());
 		api.getUserManager().saveUser(user);
-		diapi.getInternalController().getPlugin().getLogger()
-				.info(group + " group has been given to " + player.getName() + ". Reason: " + reason);
+		diapi.getInternalController().getLogger()
+				.info(group + " group has been given to " + playerName + ". Reason: " + reason);
 	}
 
 	/**
 	 * Remove the user from the group.
-	 * @param player player to remove.
+	 * @param playerName player to remove.
 	 * @param group group to remove.
 	 * @param reason Reason to remove the group from the user.
 	 */
-	public static void removeGroup(Player player, String group, String reason) {
-		User user = getLuckPermsUser(player);
+	public static void removeGroup(String playerName, String group, String reason) {
+		User user = getLuckPermsUser(playerName);
 		user.data().remove(Node.builder("group." + group).build());
 		api.getUserManager().saveUser(user);
-		diapi.getInternalController().getPlugin().getLogger()
-				.info(group + " group has been removed from " + player.getName() + ". Reason: " + reason);
+		diapi.getInternalController().getLogger()
+				.info(group + " group has been removed from " + playerName + ". Reason: " + reason);
 	}
 
 	/**
@@ -154,7 +158,7 @@ public class LuckPermsController {
 	 * @return the role map from config file.
 	 */
 	private static List<Map<String, String>> initRoleList() {
-		List<Map<Object, Object>> tmpList = diapi.getInternalController().getConfigManager().getList("syncro_rol_list");
+		List<Map<Object, Object>> tmpList = diapi.getInternalController().getConfigManager().getListMap("syncro_role_list");
 		List<Map<String, String>> result = new ArrayList<>();
 		for (Map<Object, Object> m : tmpList) {
 			Map<String, String> tmap = new HashMap<>();

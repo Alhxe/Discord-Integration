@@ -4,8 +4,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Optional;
 
-import di.dilogin.BukkitApplication;
-import di.dilogin.controller.DILoginController;
+import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.UserSession;
 import lombok.AccessLevel;
@@ -25,7 +24,7 @@ public class UserSessionCache {
 	/**
 	 * User manager in the database.
 	 */
-	private static final DIUserDao userDao = DILoginController.getDIUserDao();
+	private static final DIUserDao userDao = MainController.getDILoginController().getDIUserDao();
 
 	/**
 	 * Check if the user has a valid session.
@@ -41,11 +40,14 @@ public class UserSessionCache {
 			return false;
 
 		UserSession user = userOpt.get();
-
+		
+		System.out.println("IP: "+ip+" | "+user.getIp());
+		System.out.println("Name: "+name+" | "+user.getName());
+		
 		if (!user.getIp().equals(ip))
 			return false;
 
-		if (Calendar.getInstance().getTimeInMillis() > (sessions.get(user)).longValue())
+		if (Calendar.getInstance().getTimeInMillis() > sessions.get(user))
 			return false;
 		
 		if (!userDao.contains(name)) {
@@ -87,7 +89,7 @@ public class UserSessionCache {
 	 * @param ip   Player's ip.
 	 */
 	public static void addSession(String name, String ip) {
-		int minutes = BukkitApplication.getDIApi().getInternalController().getConfigManager()
+		int minutes = MainController.getDIApi().getInternalController().getConfigManager()
 				.getInt("session_time_min");
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.MINUTE, minutes);
