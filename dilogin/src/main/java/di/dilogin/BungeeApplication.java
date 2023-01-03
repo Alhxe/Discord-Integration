@@ -17,6 +17,8 @@ import di.dilogin.minecraft.bungee.controller.ChannelMessageController;
 import di.dilogin.minecraft.bungee.event.UserLeaveBungeeEvent;
 import di.dilogin.minecraft.bungee.event.UserLoginBungeeEvent;
 import di.dilogin.minecraft.cache.TmpCache;
+import di.dilogin.minecraft.ext.luckperms.LuckPermsEvents;
+import di.dilogin.minecraft.ext.luckperms.LuckPermsLoginBungeeEvent;
 import di.internal.exception.NoApiException;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -101,6 +103,18 @@ public class BungeeApplication extends Plugin {
 	private void initEvents() {
 		this.getProxy().getPluginManager().registerListener(this, new UserLoginBungeeEvent());
 		this.getProxy().getPluginManager().registerListener(this, new UserLeaveBungeeEvent());
+		if (MainController.getDILoginController().isLuckPermsEnabled()) {
+			initLuckPermsEvents();
+		}
+	}
+	
+	/**
+	 * Init events with compatibility with LuckPerms.
+	 */
+	private void initLuckPermsEvents() {
+		getPlugin().getLogger().info("LuckPerms detected, starting plugin compatibility.");
+		new LuckPermsEvents(getPlugin());
+		this.getProxy().getPluginManager().registerListener(this, new LuckPermsLoginBungeeEvent());
 	}
 
 	/**

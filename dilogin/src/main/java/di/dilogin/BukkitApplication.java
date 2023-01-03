@@ -24,14 +24,14 @@ import di.dilogin.minecraft.bukkit.event.UserPreLoginEvent;
 import di.dilogin.minecraft.bukkit.event.UserTeleportEvents;
 import di.dilogin.minecraft.bukkit.event.impl.UserLoginExternEventImpl;
 import di.dilogin.minecraft.bukkit.event.impl.UserLoginInternEventImpl;
-import di.dilogin.minecraft.bukkit.ext.authme.AuthmeEvents;
-import di.dilogin.minecraft.bukkit.ext.authme.UserLoginEventAuthmeImpl;
-import di.dilogin.minecraft.bukkit.ext.luckperms.GuildMemberRoleEvent;
-import di.dilogin.minecraft.bukkit.ext.luckperms.LuckPermsEvents;
-import di.dilogin.minecraft.bukkit.ext.luckperms.LuckPermsLoginEvent;
-import di.dilogin.minecraft.bukkit.ext.nlogin.UnregisterNLoginEvents;
-import di.dilogin.minecraft.bukkit.ext.nlogin.UserLoginEventNLoginImpl;
 import di.dilogin.minecraft.cache.TmpCache;
+import di.dilogin.minecraft.ext.authme.AuthmeEvents;
+import di.dilogin.minecraft.ext.authme.UserLoginEventAuthmeImpl;
+import di.dilogin.minecraft.ext.luckperms.GuildMemberRoleEvent;
+import di.dilogin.minecraft.ext.luckperms.LuckPermsEvents;
+import di.dilogin.minecraft.ext.luckperms.LuckPermsLoginBukkitEvent;
+import di.dilogin.minecraft.ext.nlogin.UnregisterNLoginEvents;
+import di.dilogin.minecraft.ext.nlogin.UserLoginEventNLoginImpl;
 import di.internal.exception.NoApiException;
 
 /**
@@ -191,8 +191,8 @@ public class BukkitApplication extends JavaPlugin {
 	 */
 	private void initLuckPermsEvents() {
 		getPlugin().getLogger().info("LuckPerms detected, starting plugin compatibility.");
-		new LuckPermsEvents();
-		getServer().getPluginManager().registerEvents(new LuckPermsLoginEvent(), plugin);
+		new LuckPermsEvents(getPlugin());
+		getServer().getPluginManager().registerEvents(new LuckPermsLoginBukkitEvent(), plugin);
 	}
 
 	/**

@@ -1,4 +1,4 @@
-package di.dilogin.minecraft.bukkit.ext.authme;
+package di.dilogin.minecraft.ext.authme;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

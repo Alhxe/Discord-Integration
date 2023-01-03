@@ -1,4 +1,4 @@
-package di.dilogin.minecraft.bukkit.ext.nlogin;
+package di.dilogin.minecraft.ext.nlogin;
 
 import java.util.Optional;
 

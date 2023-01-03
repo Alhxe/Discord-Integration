@@ -1,4 +1,4 @@
-package di.dilogin.minecraft.bukkit.ext.luckperms;
+package di.dilogin.minecraft.ext.luckperms;
 
 import java.util.Optional;
 
@@ -11,9 +11,9 @@ import di.dilogin.minecraft.bukkit.BukkitUtil;
 import di.dilogin.minecraft.bukkit.event.custom.DILoginEvent;
 
 /**
- * Class to synchronize LuckPerms roles.
+ * Class to synchronize LuckPerms roles in Bukkit.
  */
-public class LuckPermsLoginEvent implements Listener {
+public class LuckPermsLoginBukkitEvent implements Listener {
 
     @EventHandler
     public void onLogin(DILoginEvent event) {
@@ -22,7 +22,7 @@ public class LuckPermsLoginEvent implements Listener {
         if(!playerOptional.isPresent())
             return;
 
-        LuckPermsController.syncUserRole(playerOptional.get());
+        LuckPermsController.syncUserRole(playerOptional.get().getName());
     }
 
 }

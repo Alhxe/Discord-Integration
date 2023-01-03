@@ -10,6 +10,8 @@ import di.dilogin.controller.LangManager;
 import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.dao.DIUserDaoSqlImpl;
+import di.dilogin.entity.DIUser;
+import di.dilogin.minecraft.bukkit.event.custom.DILoginBungeeEvent;
 import di.dilogin.minecraft.bungee.BungeeUtil;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.cache.UserBlockedCache;
@@ -102,11 +104,17 @@ public class DILoginControllerBungeeImpl implements DILoginController {
 		UserBlockedCache.remove(player.getName());
 		player.sendMessage(LangManager.getString("login_success"));
 
+		BungeeApplication.getPlugin().getProxy().getScheduler().runAsync(BungeeApplication.getPlugin(),
+				() -> BungeeApplication.getPlugin().getProxy().getPluginManager()
+						.callEvent(new DILoginBungeeEvent(new DIUser(playerName, Optional.of(user)))));
+
 		TmpCache.removeLogin(player.getName());
-		
-		if (MainController.getDIApi().getInternalController().getConfigManager().getBoolean("teleport_server_enabled")) {
-			String serverName = MainController.getDIApi().getInternalController().getConfigManager().getString("teleport_server_name");
-            player.connect(BungeeApplication.getPlugin().getProxy().getServerInfo(serverName));
+
+		if (MainController.getDIApi().getInternalController().getConfigManager()
+				.getBoolean("teleport_server_enabled")) {
+			String serverName = MainController.getDIApi().getInternalController().getConfigManager()
+					.getString("teleport_server_name");
+			player.connect(BungeeApplication.getPlugin().getProxy().getServerInfo(serverName));
 		}
 	}
 
