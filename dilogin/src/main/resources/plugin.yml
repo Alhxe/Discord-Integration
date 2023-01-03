@@ -1,6 +1,6 @@
 name: DILogin
 main: di.dilogin.BukkitApplication
-version: 4.0.1-beta1
+version: 4.0.1
 author: Alhxe
 depend: [DICore]
 softdepend: [AuthMe, Multiverse-Core, LuckPerms, nLogin]
