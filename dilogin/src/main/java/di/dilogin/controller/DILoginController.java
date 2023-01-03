@@ -62,6 +62,15 @@ public interface DILoginController {
 	default boolean isRegisterOptionalEnabled() {
 		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("register_optional_enabled");
 	}
+	
+	/**
+	 * Check if register in the server is optional.
+	 *
+	 * @return true if its enabled.
+	 */
+	default boolean isRegisterRolListEnabled() {
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("register_rol_list_enabled");
+	}
 
 	/**
 	 * @return true is Authme is enabled.

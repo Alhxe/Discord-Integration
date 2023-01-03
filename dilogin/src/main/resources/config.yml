@@ -45,6 +45,11 @@ syncro_enable: false
 
 ######### LuckPerms
 
+#If u make true, only the following luckperm roles can register/login
+register_rol_list_enabled: false
+register_rol_list:
+       - admin
+       - moderator
 
 #Sync minecraft server roles with discord. When a role is given on the minecraft server, 
 #the corresponding one will be given on discord and vice versa.

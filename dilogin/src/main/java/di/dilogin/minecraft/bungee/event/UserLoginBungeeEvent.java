@@ -1,5 +1,6 @@
 package di.dilogin.minecraft.bungee.event;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Executors;
@@ -15,6 +16,7 @@ import di.dilogin.minecraft.bukkit.event.custom.UserLoginEventUtils;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.cache.UserBlockedCache;
 import di.dilogin.minecraft.cache.UserSessionCache;
+import di.dilogin.minecraft.ext.luckperms.LuckPermsController;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -48,10 +50,23 @@ public class UserLoginBungeeEvent implements Listener, UserLoginEventUtils {
 		if (MainController.getDILoginController().isSessionEnabled() && UserSessionCache.isValid(playerName, playerIp))
 			return;
 
+		// Check if role is required to login
+		if (MainController.getDILoginController().isRegisterRolListEnabled()) {
+			boolean hasEnabledRole = false;
+			List<String> list = api.getInternalController().getConfigManager().getList("register_rol_list");
+			for (String role : list) {
+				if (LuckPermsController.isUserInGroup(playerName, role)) {
+					hasEnabledRole = true;
+				}
+			}
+			if (!hasEnabledRole)
+				return;
+		}
+
 		// If the user is registered
 		if (userDao.contains(playerName)) {
 			initPlayerLoginRequest(event, playerName);
-		} else if (MainController.getDILoginController().isRegisterOptionalEnabled()){
+		} else if (MainController.getDILoginController().isRegisterOptionalEnabled()) {
 			initPlayerOptionalRegisterRequest(event, playerName);
 		} else {
 			initPlayerRegisterRequest(event, playerName);
