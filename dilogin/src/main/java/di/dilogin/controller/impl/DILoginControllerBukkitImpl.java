@@ -23,9 +23,7 @@ import di.dilogin.minecraft.cache.UserBlockedCache;
 import di.dilogin.minecraft.ext.authme.AuthmeHook;
 import di.internal.utils.Util;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
 /**
@@ -112,7 +110,7 @@ public class DILoginControllerBukkitImpl implements DILoginController {
 		Player player = optionalPlayer.get();
 
 		if (user != null && isSyncronizeOptionEnabled()) {
-			syncUserName(player, user);
+			syncUserName(player.getName(), user);
 		}
 
 		if (isAuthmeEnabled()) {
@@ -137,31 +135,6 @@ public class DILoginControllerBukkitImpl implements DILoginController {
 
 		Runnable task = () -> optionalPlayer.get().kickPlayer(message);
 		Bukkit.getScheduler().runTask(BukkitApplication.getPlugin(), task);
-	}
-
-	/**
-	 * Syncro player's name.
-	 *
-	 * @param player Minecraft player.
-	 */
-	private void syncUserName(Player player, User user) {
-		Optional<DIUser> optDIUser = userDao.get(player.getName());
-
-		if (!optDIUser.isPresent())
-			return;
-
-		JDA jda = api.getCoreController().getDiscordApi().get();
-		Guild guild = api.getCoreController().getGuild().get();
-
-		Member member = guild.retrieveMember(user, true).complete();
-		Member bot = guild.retrieveMember(jda.getSelfUser(), true).complete();
-
-		if (bot.canInteract(member)) {
-			member.modifyNickname(player.getName()).queue();
-		} else {
-			api.getInternalController().getLogger()
-					.info("Cannot change the nickname of " + player.getName() + ". Insufficient permissions.");
-		}
 	}
 
 }

@@ -100,6 +100,12 @@ public class DILoginControllerBungeeImpl implements DILoginController {
 			return;
 
 		ProxiedPlayer player = optionalPlayer.get();
+		
+		System.out.println(user);
+		System.out.println(isSyncronizeOptionEnabled());
+		if (user != null && isSyncronizeOptionEnabled()) {
+			syncUserName(playerName, user);
+		}
 
 		UserBlockedCache.remove(player.getName());
 		player.sendMessage(LangManager.getString("login_success"));

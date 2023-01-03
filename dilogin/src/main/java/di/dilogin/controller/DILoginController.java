@@ -1,7 +1,14 @@
 package di.dilogin.controller;
 
+import java.util.Optional;
+
+import di.dicore.api.DIApi;
 import di.dilogin.dao.DIUserDao;
+import di.dilogin.entity.DIUser;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
 /**
@@ -70,4 +77,32 @@ public interface DILoginController {
 	 * @param playerName Bukkit player.
 	 */
 	void kickPlayer(String playerName, String message);
+
+	/**
+	 * Syncro minecraft name with discord name.
+	 * 
+	 * @param playerName Minecraft player name.
+	 * @param user       Discord user.
+	 */
+	default void syncUserName(String playerName, User user) {
+		DIApi api = MainController.getDIApi();
+		DIUserDao userDao = MainController.getDILoginController().getDIUserDao();
+		Optional<DIUser> optDIUser = userDao.get(playerName);
+
+		if (!optDIUser.isPresent())
+			return;
+
+		JDA jda = api.getCoreController().getDiscordApi().get();
+		Guild guild = api.getCoreController().getGuild().get();
+
+		Member member = guild.retrieveMember(user, true).complete();
+		Member bot = guild.retrieveMember(jda.getSelfUser(), true).complete();
+
+		if (bot.canInteract(member)) {
+			member.modifyNickname(playerName).queue();
+		} else {
+			api.getInternalController().getLogger()
+					.info("Cannot change the nickname of " + playerName + ". Insufficient permissions.");
+		}
+	}
 }
