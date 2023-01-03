@@ -79,7 +79,7 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
         Player player = playerOpt.get();
         
 		// Check if user is registered on authme and logged.
-		if (DILoginController.isAuthmeEnabled() && AuthmeHook.isRegistered(player) && !AuthmeHook.isLogged(player)) {
+		if (MainController.getDILoginController().isAuthmeEnabled() && AuthmeHook.isRegistered(player) && !AuthmeHook.isLogged(player)) {
 			event.getChannel().sendMessage(LangManager.getString("register_without_authentication"))
 					.delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
 			return;
