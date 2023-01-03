@@ -48,12 +48,11 @@ public class UserLoginBungeeEvent implements Listener, UserLoginEventUtils {
 		if (MainController.getDILoginController().isSessionEnabled() && UserSessionCache.isValid(playerName, playerIp))
 			return;
 
-		// We block the user while waiting for their registration or login
-		UserBlockedCache.add(event.getPlayer().getName());
-
 		// If the user is registered
 		if (userDao.contains(playerName)) {
 			initPlayerLoginRequest(event, playerName);
+		} else if (MainController.getDILoginController().isRegisterOptionalEnabled()){
+			initPlayerOptionalRegisterRequest(event, playerName);
 		} else {
 			initPlayerRegisterRequest(event, playerName);
 		}
@@ -66,6 +65,8 @@ public class UserLoginBungeeEvent implements Listener, UserLoginEventUtils {
 	 * @param playerName Player's name.
 	 */
 	public void initPlayerLoginRequest(PostLoginEvent event, String playerName) {
+		// We block the user while waiting for their login
+		UserBlockedCache.add(event.getPlayer().getName());
 		TmpCache.addLogin(playerName, null);
 		Optional<DIUser> userOpt = userDao.get(playerName);
 		if (!userOpt.isPresent())
@@ -105,6 +106,8 @@ public class UserLoginBungeeEvent implements Listener, UserLoginEventUtils {
 	 * @param playerName Player's name.
 	 */
 	public void initPlayerRegisterRequest(PostLoginEvent event, String playerName) {
+		// We block the user while waiting for their registration
+		UserBlockedCache.add(event.getPlayer().getName());
 		String code = CodeGenerator
 				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
 		String command = api.getCoreController().getBot().getPrefix()
@@ -130,6 +133,28 @@ public class UserLoginBungeeEvent implements Listener, UserLoginEventUtils {
 			}
 			return null;
 		});
+	}
+
+	/**
+	 * Contains the main flow of register when is optional.
+	 * 
+	 * @param event      Main register event.
+	 * @param playerName Player's name.
+	 */
+	public void initPlayerOptionalRegisterRequest(PostLoginEvent event, String playerName) {
+		String code = CodeGenerator
+				.getCode(api.getInternalController().getConfigManager().getInt("register_code_length"), api);
+		String command = api.getCoreController().getBot().getPrefix()
+				+ api.getInternalController().getConfigManager().getString("register_command") + " " + code;
+		TmpCache.addRegister(playerName, new TmpMessage(event.getPlayer().getName(), null, null, code));
+
+		TextComponent tc = new TextComponent(LangController
+				.getString(event.getPlayer().getName(), "register_opt_request").replace("%register_command%", command));
+		tc.setClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, command));
+		tc.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+				new Text(LangController.getString(event.getPlayer().getName(), "register_request_copy"))));
+		event.getPlayer().sendMessage(tc);
+
 	}
 
 }

@@ -8,8 +8,13 @@ register_time_until_kick: 60
 register_max_discord_accounts: 3
 register_code_length: 5
 login_time_until_kick: 30
-#register_custom_characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' #Only the custom added characters will appear in the +register command.
 messages_only_channel: false #If true, bot will not send private messages.
+register_optional_enabled: false #If true, user decide if they want register.
+#register_custom_characters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' #Only the custom added characters will appear in the +register command.
+
+#Sessions
+sessions: true
+session_time_min: 5
 
 #Database (sqlite or mysql)
 database: 'sqlite'
@@ -29,10 +34,6 @@ discord_embed_timestamp: true
 #Find the emoji you want and scroll down until you find the "Codepoint" section.
 discord_embed_emoji: 'U+2B50'
 
-#Sessions
-sessions: true
-session_time_min: 5
-
 #This option makes that only users with a certain role can log in.
 register_required_role_enabled: false
 register_required_role_id: YOUR_ROLE_ID
@@ -42,7 +43,9 @@ register_required_role_id: YOUR_ROLE_ID
 #Remember bot need to have more permissions than regular users.
 syncro_enable: false
 
-#LUCKPERMS SYNCRO
+######### LuckPerms
+
+
 #Sync minecraft server roles with discord. When a role is given on the minecraft server, 
 #the corresponding one will be given on discord and vice versa.
 syncro_rol_enable: false

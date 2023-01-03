@@ -70,37 +70,6 @@ public class DILoginControllerBukkitImpl implements DILoginController {
 	}
 
 	@Override
-	public boolean isSessionEnabled() {
-		return api.getInternalController().getConfigManager().getBoolean("sessions");
-	}
-
-	@Override
-	public boolean isSyncroRolEnabled() {
-		return api.getInternalController().getConfigManager().getBoolean("syncro_rol_enable");
-	}
-
-	@Override
-	public boolean isSyncronizeOptionEnabled() {
-		return api.getInternalController().getConfigManager().getBoolean("syncro_enable");
-	}
-
-	@Override
-	public boolean isAuthmeEnabled() {
-		return BukkitApplication.getPlugin().getServer().getPluginManager().isPluginEnabled("AuthMe");
-	}
-
-	@Override
-	public boolean isNLoginEnabled() {
-		return BukkitApplication.getPlugin().getServer().getPluginManager().isPluginEnabled("nLogin");
-	}
-
-	@Override
-	public boolean isLuckPermsEnabled() {
-		return BukkitApplication.getPlugin().getServer().getPluginManager().isPluginEnabled("LuckPerms")
-				&& api.getInternalController().getConfigManager().getBoolean("syncro_rol_enable");
-	}
-
-	@Override
 	public void loginUser(String playerName, User user) {
 		Optional<Player> optionalPlayer = BukkitUtil.getUserPlayerByName(playerName);
 
@@ -135,6 +104,21 @@ public class DILoginControllerBukkitImpl implements DILoginController {
 
 		Runnable task = () -> optionalPlayer.get().kickPlayer(message);
 		Bukkit.getScheduler().runTask(BukkitApplication.getPlugin(), task);
+	}
+	
+	@Override
+	public boolean isAuthmeEnabled() {
+		return BukkitApplication.getPlugin().getServer().getPluginManager().isPluginEnabled("AuthMe");
+	}
+
+	@Override
+	public boolean isNLoginEnabled() {
+		return BukkitApplication.getPlugin().getServer().getPluginManager().isPluginEnabled("nLogin");
+	}
+
+	@Override
+	public boolean isLuckPermsEnabled() {
+		return BukkitApplication.getPlugin().getServer().getPluginManager().isPluginEnabled("LuckPerms");
 	}
 
 }

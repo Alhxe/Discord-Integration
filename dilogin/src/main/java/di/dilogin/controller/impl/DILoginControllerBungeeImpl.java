@@ -60,37 +60,6 @@ public class DILoginControllerBungeeImpl implements DILoginController {
 		return embedBuilder;
 	}
 
-	@Override
-	public boolean isSessionEnabled() {
-		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("sessions");
-	}
-
-	@Override
-	public boolean isSyncroRolEnabled() {
-		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("syncro_rol_enable");
-	}
-
-	@Override
-	public boolean isSyncronizeOptionEnabled() {
-		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("syncro_enable");
-	}
-
-	@Override
-	public boolean isAuthmeEnabled() {
-		return BungeeApplication.getPlugin().getProxy().getPluginManager().getPlugin("AuthMe") != null;
-	}
-
-	@Override
-	public boolean isNLoginEnabled() {
-		return BungeeApplication.getPlugin().getProxy().getPluginManager().getPlugin("nLogin") != null;
-	}
-
-	@Override
-	public boolean isLuckPermsEnabled() {
-		return BungeeApplication.getPlugin().getProxy().getPluginManager().getPlugin("LuckPerms") != null
-				&& api.getInternalController().getConfigManager().getBoolean("syncro_rol_enable");
-	}
-
 	@SuppressWarnings("deprecation")
 	@Override
 	public void loginUser(String playerName, User user) {
@@ -132,5 +101,20 @@ public class DILoginControllerBungeeImpl implements DILoginController {
 			return;
 
 		optionalPlayer.get().disconnect(new TextComponent(message));
+	}
+	
+	@Override
+	public boolean isAuthmeEnabled() {
+		return BungeeApplication.getPlugin().getProxy().getPluginManager().getPlugin("AuthMe") != null;
+	}
+
+	@Override
+	public boolean isNLoginEnabled() {
+		return BungeeApplication.getPlugin().getProxy().getPluginManager().getPlugin("nLogin") != null;
+	}
+
+	@Override
+	public boolean isLuckPermsEnabled() {
+		return BungeeApplication.getPlugin().getProxy().getPluginManager().getPlugin("LuckPerms") != null;
 	}
 }

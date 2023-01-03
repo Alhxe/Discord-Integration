@@ -26,27 +26,42 @@ public interface DILoginController {
 	 * @return The basis for embed messages.
 	 */
 	EmbedBuilder getEmbedBase();
-
+	
 	/**
 	 * Check if the session system is enabled.
 	 *
 	 * @return True if the system is active.
 	 */
-	boolean isSessionEnabled();
+	default boolean isSessionEnabled() {
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("sessions");
+	}
 
 	/**
 	 * Check if the rol syncro system is enabled.
 	 *
 	 * @return True if the system is active.
 	 */
-	boolean isSyncroRolEnabled();
+	default boolean isSyncroRolEnabled() {
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("syncro_rol_enable");
+	}
 
 	/**
 	 * Check if syncro name option is enabled in cofig file.
 	 *
 	 * @return true if its enabled.
 	 */
-	boolean isSyncronizeOptionEnabled();
+	default boolean isSyncronizeOptionEnabled() {
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("syncro_enable");
+	}
+	
+	/**
+	 * Check if register in the server is optional.
+	 *
+	 * @return true if its enabled.
+	 */
+	default boolean isRegisterOptionalEnabled() {
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("register_optional_enabled");
+	}
 
 	/**
 	 * @return true is Authme is enabled.
