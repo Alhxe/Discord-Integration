@@ -71,6 +71,15 @@ public interface DILoginController {
 	default boolean isRegisterRolListEnabled() {
 		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("register_role_list_enabled");
 	}
+	
+	/**
+	 * Check if user will get some role after 
+	 *
+	 * @return true if its enabled.
+	 */
+	default boolean isRegisterGiveRoleEnabled() {
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("register_give_role_enabled");
+	}
 
 	/**
 	 * @return true is Authme is enabled.

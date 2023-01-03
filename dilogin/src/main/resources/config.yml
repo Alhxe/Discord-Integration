@@ -34,6 +34,11 @@ discord_embed_timestamp: true
 #Find the emoji you want and scroll down until you find the "Codepoint" section.
 discord_embed_emoji: 'U+2B50'
 
+register_give_role_enabled: false
+register_give_role_list:
+       - discord_role_id
+       - another_discord_role_id
+
 #This option makes that only users with a certain role can log in.
 register_required_role_enabled: false
 register_required_role_id: discord_role_id

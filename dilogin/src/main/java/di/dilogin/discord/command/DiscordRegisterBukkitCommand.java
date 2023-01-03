@@ -1,6 +1,7 @@
 package di.dilogin.discord.command;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 
 import org.bukkit.entity.Player;
@@ -98,6 +99,14 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
         // Add user to data base.
         userDao.add(new DIUser(player.getName(), Optional.of(event.getAuthor())));
 
+		// Check if user will get some discord role and give to him.
+		if(MainController.getDILoginController().isRegisterGiveRoleEnabled()) {
+			List<String> roleList = MainController.getDIApi().getInternalController().getConfigManager().getList("register_give_role_list");
+			for (String role : roleList) {
+				MainController.getDiscordController().giveRole(role, player.getName(), "Have been registered on the server");
+			}
+		}
+		
 		// Check if is whitelisted to login.
         if (MainController.getDILoginController().isAuthmeEnabled()) {
             AuthmeHook.register(player, password);
