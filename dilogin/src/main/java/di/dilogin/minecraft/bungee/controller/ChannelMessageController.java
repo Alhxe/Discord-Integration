@@ -46,9 +46,6 @@ public class ChannelMessageController implements Listener {
         String data1 = in.readUTF();
         String data2 = in.readUTF();
 
-        System.out.println("Demanda: " + data1);
-        System.out.println("Data: " + data2);
-        System.out.println("Respuesta: " + getResponse(data1, data2));
         String playerName = getPlayerNameFromSubChannel(subChannel);
         MainController.getDIApi().getInternalController().getChannelController()
                 .sendMessageToPluginWithSubChannel(subChannel + "answer", playerName, getResponse(data1, data2));
