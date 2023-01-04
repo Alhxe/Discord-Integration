@@ -56,6 +56,17 @@ public class UserLoginInternEventImpl implements UserLoginEvent {
 			if (!hasEnabledRole)
 				return;
 		}
+
+		if(MainController.getDILoginController().isSyncronizeOptionEnabled() && userDao.contains(playerName)){
+			Optional<DIUser> userOpt = userDao.get(playerName);
+			if(userOpt.isPresent() && userOpt.get().getPlayerDiscord().isPresent()){
+				DIUser user = userOpt.get();
+				MainController.getDILoginController().syncUserName(playerName, user.getPlayerDiscord().get());
+			}
+		}
+
+		if(!MainController.getDILoginController().isLoginSystemEnabled())
+			return;
 		
 		// If the user is registered
 		if (userDao.contains(playerName)) {

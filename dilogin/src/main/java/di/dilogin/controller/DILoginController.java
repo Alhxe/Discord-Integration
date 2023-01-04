@@ -109,6 +109,15 @@ public interface DILoginController {
 	}
 
 	/**
+	 * Check if login system is enabled.
+	 *
+	 * @return true if its enabled.
+	 */
+	default boolean isLoginSystemEnabled() {
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("login_system_enabled");
+	}
+
+	/**
 	 * @return true is Authme is enabled.
 	 */
 	boolean isAuthmeEnabled();

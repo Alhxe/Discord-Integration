@@ -18,6 +18,7 @@ import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.cache.UserBlockedCache;
 import di.dilogin.minecraft.cache.UserSessionCache;
 import di.dilogin.minecraft.ext.luckperms.LuckPermsController;
+import net.dv8tion.jda.api.entities.User;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -63,6 +64,17 @@ public class UserLoginBungeeEvent implements Listener, UserLoginEventUtils {
 			if (!hasEnabledRole)
 				return;
 		}
+
+		if(MainController.getDILoginController().isSyncronizeOptionEnabled() && userDao.contains(playerName)){
+			Optional<DIUser> userOpt = userDao.get(playerName);
+			if(userOpt.isPresent() && userOpt.get().getPlayerDiscord().isPresent()){
+				DIUser user = userOpt.get();
+				MainController.getDILoginController().syncUserName(playerName, user.getPlayerDiscord().get());
+			}
+		}
+
+		if(!MainController.getDILoginController().isLoginSystemEnabled())
+			return;
 
 		// If the user is registered
 		if (userDao.contains(playerName)) {

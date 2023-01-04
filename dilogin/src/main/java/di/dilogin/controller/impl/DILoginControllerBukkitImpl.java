@@ -78,10 +78,6 @@ public class DILoginControllerBukkitImpl implements DILoginController {
 
 		Player player = optionalPlayer.get();
 
-		if (user != null && isSyncronizeOptionEnabled()) {
-			syncUserName(player.getName(), user);
-		}
-
 		if (isAuthmeEnabled()) {
 			AuthmeHook.login(player);
 		} else if (isNLoginEnabled()) {

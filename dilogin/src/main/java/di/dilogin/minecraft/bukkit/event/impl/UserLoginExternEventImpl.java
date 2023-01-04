@@ -2,6 +2,7 @@ package di.dilogin.minecraft.bukkit.event.impl;
 
 import java.util.Objects;
 
+import di.dilogin.controller.DILoginController;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -26,6 +27,9 @@ public class UserLoginExternEventImpl implements Listener{
 	 */
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
+		if(!MainController.getDILoginController().isLoginSystemEnabled())
+			return;
+
 		String playerName = event.getPlayer().getName();
 		String playerIp = Objects.requireNonNull(event.getPlayer().getAddress()).getAddress().toString();
 
