@@ -219,9 +219,11 @@ public class BukkitApplication extends JavaPlugin {
 	 * Init events with compatibility with LuckPerms.
 	 */
 	private void initLuckPermsEvents() {
-		getPlugin().getLogger().info("LuckPerms detected, starting plugin compatibility.");
-		new LuckPermsEvents(getPlugin());
-		getServer().getPluginManager().registerEvents(new LuckPermsLoginBukkitEvent(), plugin);
+		if (MainController.getDILoginController().isSyncroRolEnabled()) {
+			getPlugin().getLogger().info("LuckPerms detected, starting plugin compatibility.");
+			new LuckPermsEvents(getPlugin());
+			getServer().getPluginManager().registerEvents(new LuckPermsLoginBukkitEvent(), plugin);
+		}
 	}
 
 	/**
