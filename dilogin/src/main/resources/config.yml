@@ -8,6 +8,7 @@ register_time_until_kick: 60
 register_max_discord_accounts: 3
 register_code_length: 5
 login_time_until_kick: 30
+login_system_enabled: true #If false, login system will not work. U can use /register command as /link command.
 register_optional_enabled: false #If true, user decide if they want register.
 register_by_nickname_enabled: true
 register_by_discordid_enabled: true
