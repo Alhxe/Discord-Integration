@@ -1,16 +1,9 @@
 package di.dilogin;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandMap;
-import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,7 +11,6 @@ import di.dicore.api.DIApi;
 import di.dicore.api.impl.DIApiBukkitImpl;
 import di.dilogin.controller.DBController;
 import di.dilogin.controller.MainController;
-import di.dilogin.controller.file.CommandAliasController;
 import di.dilogin.controller.impl.DILoginControllerBukkitImpl;
 import di.dilogin.controller.impl.DiscordControllerImpl;
 import di.dilogin.discord.command.DiscordRegisterBukkitCommand;
@@ -69,6 +61,7 @@ public class BukkitApplication extends JavaPlugin {
 
 		if (!api.isBungeeDetected()) {
 			// If api is in own server.
+			System.out.println("API NO ESTÁ CON BUNGE");
 			MainController.setDiscordController(new DiscordControllerImpl());
 			DBController.getConnect();
 			initInternCommands();
@@ -99,44 +92,64 @@ public class BukkitApplication extends JavaPlugin {
 	 * Add the commands to bukkit.
 	 */
 	private void initInternCommands() {
-		registerCommand("diregister", CommandAliasController.getAlias("register_command"),
-				new RegisterBukkitCommand());
-		registerCommand("forcelogin", CommandAliasController.getAlias("forcelogin_command"),
-				new ForceLoginBukkitCommand());
-		registerCommand("unregister", CommandAliasController.getAlias("unregister_command"),
-				new UnregisterBukkitCommand());
+		initUniqueCommand("diregister", new RegisterBukkitCommand());
+		initUniqueCommand("forcelogin", new ForceLoginBukkitCommand());
+		initUniqueCommand("unregister", new UnregisterBukkitCommand());
 	}
 
 	/**
-	 * Add to each command that the server must respond in case it does not have
-	 * permissions.
-	 *
+	 * @@ -103,10 +114,28 @@ private void initInternCommands() {
 	 * @param command  Bukkit command.
 	 * @param executor CommandExecutor.
 	 */
-	public void registerCommand(String command, String alias, CommandExecutor executor) {
-		try {
-			List<String> aliases = new ArrayList<>();
-			aliases.add(alias);
-			PluginCommand plc = null;
-			Class<?> cl = PluginCommand.class;
-			Constructor<?> cons = null;
-			cons = cl.getDeclaredConstructor(String.class, Plugin.class);
-			cons.setAccessible(true);
-			plc = (PluginCommand) cons.newInstance(command, this);
-			plc.setAliases(aliases);
-			final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-
-			bukkitCommandMap.setAccessible(true);
-			CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-			commandMap.register(command, plc);
-			plc.register(commandMap);
-			plc.setPermissionMessage(api.getCoreController().getLangManager().getString("no_permission"));
-			plc.setExecutor(executor);
-		} catch (Exception e) {
-			getServer().getLogger().log(Level.SEVERE, "registerCommand", e);
-		}
+	private void initUniqueCommand(String command, CommandExecutor executor) {
+		Objects.requireNonNull(getCommand(command)).setExecutor(executor);
+		Objects.requireNonNull(getCommand(command))
+				.setPermissionMessage(api.getCoreController().getLangManager().getString("no_permission"));
 	}
+
+//	/**
+//	 * Add the commands to bukkit.
+//	 */
+//	private void initInternCommands() {
+//		registerCommand("diregister", CommandAliasController.getAlias("register_command"),
+//				new RegisterBukkitCommand());
+//		registerCommand("forcelogin", CommandAliasController.getAlias("forcelogin_command"),
+//				new ForceLoginBukkitCommand());
+//		registerCommand("unregister", CommandAliasController.getAlias("unregister_command"),
+//				new UnregisterBukkitCommand());
+//	}
+//
+//	/**
+//	 * Add to each command that the server must respond in case it does not have
+//	 * permissions.
+//	 *
+//	 * @param command  Bukkit command.
+//	 * @param executor CommandExecutor.
+//	 */
+//	public void registerCommand(String command, String alias, CommandExecutor executor) {
+//		try {
+//			List<String> aliases = new ArrayList<>();
+//			aliases.add(alias);
+//			PluginCommand plc = null;
+//			Class<?> cl = PluginCommand.class;
+//			Constructor<?> cons = null;
+//			cons = cl.getDeclaredConstructor(String.class, Plugin.class);
+//			cons.setAccessible(true);
+//			plc = (PluginCommand) cons.newInstance(command, this);
+//			plc.setAliases(aliases);
+//			final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+//
+//			bukkitCommandMap.setAccessible(true);
+//			CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
+//			commandMap.register(command, plc);
+//			plc.register(commandMap);
+//			plc.setPermissionMessage(api.getCoreController().getLangManager().getString("no_permission"));
+//			plc.setExecutor(executor);
+//		} catch (Exception e) {
+//			getServer().getLogger().log(Level.SEVERE, "registerCommand", e);
+//		}
+//	}
 
 	/**
 	 * Connect with DIApi.
