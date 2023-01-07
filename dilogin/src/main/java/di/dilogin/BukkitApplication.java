@@ -61,7 +61,6 @@ public class BukkitApplication extends JavaPlugin {
 
 		if (!api.isBungeeDetected()) {
 			// If api is in own server.
-			System.out.println("API NO ESTÁ CON BUNGE");
 			MainController.setDiscordController(new DiscordControllerImpl());
 			DBController.getConnect();
 			initInternCommands();

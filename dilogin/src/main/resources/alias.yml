@@ -1,3 +1,5 @@
+#Alias SYSTEM is only working in BungeeCord due to a bug in Bukkit
+
 #Minecraft
 register_command: register
 forcelogin_command: forcelogin
