@@ -2,7 +2,6 @@ package di.dilogin.minecraft.bukkit.event.impl;
 
 import java.util.Objects;
 
-import di.dilogin.controller.DILoginController;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
