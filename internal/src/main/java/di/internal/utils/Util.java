@@ -6,7 +6,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 
 import di.internal.controller.ChannelController;
@@ -24,6 +24,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
 /**
  * General utilities.
@@ -40,28 +41,28 @@ public class Util {
                 Integer.valueOf(colorStr.substring(3, 5), 16),
                 Integer.valueOf(colorStr.substring(5, 7), 16));
     }
+    
+	/**
+	 * @param api Discord JDA api.
+	 * @param id  Discord user id.
+	 * @return Possible user based on their ID.
+	 */
+	public static Optional<User> getDiscordUserById(JDA api, long id) {
+		try {
+			Optional<User> cachedUserOpt = Optional.ofNullable(api.getUserById(id));
+			if (cachedUserOpt.isPresent())
+				return cachedUserOpt;
 
-    /**
-     * @param api Discord JDA api.
-     * @param id  Discord user id.
-     * @return Possible user based on their ID.
-     */
-    public static Optional<User> getDiscordUserById(JDA api, long id) {
-        Optional<User> cachedUserOpt = Optional.ofNullable(api.getUserById(id));
-        if (cachedUserOpt.isPresent())
-            return cachedUserOpt;
+			CompletableFuture<User> request = api.retrieveUserById(id).submit();
+			Optional<User> userOpt = Optional.ofNullable(request.join());
+			if (userOpt.isPresent())
+				return userOpt;
 
-        try {
-            Optional<User> userOpt = Optional.ofNullable(api.retrieveUserById(id).submit().get());
-            if (userOpt.isPresent())
-                return userOpt;
-
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            Thread.currentThread().interrupt();
-        }
-        return Optional.empty();
-    }
+			return Optional.empty();
+		} catch (ErrorResponseException e) {
+			return Optional.empty();
+		}
+	} 
 
     /**
      * Delete a message after a certain time.
