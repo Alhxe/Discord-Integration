@@ -75,7 +75,7 @@ public class DILoginControllerBungeeImpl implements DILoginController {
 
 		BungeeApplication.getPlugin().getProxy().getScheduler().runAsync(BungeeApplication.getPlugin(),
 				() -> BungeeApplication.getPlugin().getProxy().getPluginManager()
-						.callEvent(new DILoginBungeeEvent(new DIUser(playerName, Optional.of(user)))));
+						.callEvent(new DILoginBungeeEvent(new DIUser(playerName, Optional.ofNullable(user)))));
 
 		TmpCache.removeLogin(player.getName());
 

@@ -84,7 +84,7 @@ public class DILoginControllerBukkitImpl implements DILoginController {
 			nLoginAPI.getApi().forceLogin(player.getName());
 		} else {
 			Bukkit.getScheduler().runTask(BukkitApplication.getPlugin(), () -> Bukkit.getPluginManager()
-					.callEvent(new DILoginEvent(new DIUser(playerName, Optional.of(user)))));
+					.callEvent(new DILoginEvent(new DIUser(playerName, Optional.ofNullable(user)))));
 			UserBlockedCache.remove(player.getName());
 			player.sendMessage(LangController.getString("login_success"));
 		}
