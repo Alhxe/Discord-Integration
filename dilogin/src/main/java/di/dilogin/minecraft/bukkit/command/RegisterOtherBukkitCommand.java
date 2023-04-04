@@ -8,10 +8,7 @@ import di.dilogin.entity.DIUser;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.internal.utils.Util;
 import net.dv8tion.jda.api.entities.*;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 import java.util.Optional;
@@ -42,7 +39,7 @@ public class RegisterOtherBukkitCommand implements CommandExecutor {
 	 */
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (!(sender instanceof Player || sender instanceof ConsoleCommandSender)) {
+		if (!(sender instanceof Player || sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender)) {
 			return false;
 		}
 
