@@ -42,7 +42,7 @@ public class RegisterOtherBukkitCommand implements CommandExecutor {
 	 */
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (!(sender instanceof Player) && !(sender instanceof ConsoleCommandSender)) {
+		if (!(sender instanceof Player || sender instanceof ConsoleCommandSender)) {
 			return false;
 		}
 
