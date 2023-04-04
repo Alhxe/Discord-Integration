@@ -15,6 +15,7 @@ import di.dilogin.controller.impl.DILoginControllerBukkitImpl;
 import di.dilogin.controller.impl.DiscordControllerImpl;
 import di.dilogin.discord.command.DiscordRegisterBukkitCommand;
 import di.dilogin.discord.event.UserReactionMessageBukkitEvent;
+import di.dilogin.minecraft.bukkit.command.RegisterOtherBukkitCommand;
 import di.dilogin.minecraft.bukkit.command.ForceLoginBukkitCommand;
 import di.dilogin.minecraft.bukkit.command.RegisterBukkitCommand;
 import di.dilogin.minecraft.bukkit.command.UnregisterBukkitCommand;
@@ -91,6 +92,7 @@ public class BukkitApplication extends JavaPlugin {
 	 * Add the commands to bukkit.
 	 */
 	private void initInternCommands() {
+		initUniqueCommand("diregisterother", new RegisterOtherBukkitCommand());
 		initUniqueCommand("diregister", new RegisterBukkitCommand());
 		initUniqueCommand("forcelogin", new ForceLoginBukkitCommand());
 		initUniqueCommand("unregister", new UnregisterBukkitCommand());
