@@ -48,7 +48,7 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
 	 */
 	@Override
 	public void execute(String message, MessageReceivedEvent event) {
-		
+
 		if (!MainController.getDILoginController().isRegisterByDiscordCommandEnabled())
 			return;
 
@@ -133,8 +133,11 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
 	 * @return Player if exits and is not registered.
 	 */
 	public Optional<Player> catchRegister(String message, MessageReceivedEvent event) {
-		Optional<Player> player = Optional
-				.ofNullable(BukkitApplication.getPlugin().getServer().getPlayer(registerByCode(message).get()));
+		Optional<String> code = registerByCode(message);
+		Optional<Player> player = Optional.empty();
+		if(code.isPresent()){
+		    player = Optional.ofNullable(BukkitApplication.getPlugin().getServer().getPlayer(code.get()));
+		}
 
 		if (!player.isPresent())
 			player = registerByUserName(message, event);
@@ -165,7 +168,7 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
 	public Optional<Player> registerByUserName(String message, MessageReceivedEvent event) {
 
 		Optional<Player> playerOpt = Optional
-				.ofNullable(BukkitApplication.getPlugin().getServer().getPlayer("message"));
+				.ofNullable(BukkitApplication.getPlugin().getServer().getPlayer(message));
 
 		if (!playerOpt.isPresent())
 			return Optional.empty();
