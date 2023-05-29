@@ -10,7 +10,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <project.version>4.0.3</project.version>
+        <project.version>4.0.4</project.version>
     </properties>
 
     <modules>
