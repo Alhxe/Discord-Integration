@@ -41,9 +41,6 @@ public class UserSessionCache {
 
 		UserSession user = userOpt.get();
 		
-		System.out.println("IP: "+ip+" | "+user.getIp());
-		System.out.println("Name: "+name+" | "+user.getName());
-		
 		if (!user.getIp().equals(ip))
 			return false;
 
