@@ -11,6 +11,10 @@ register_user_not_detected: "I have not found any user with id %user_discord_id%
 register_submit: "I have sent you a message on Discord. Read it to be able to finish the registration."
 register_opt_request: "To link this account with your Discord user, use the %register_command% command on our Discord server."
 
+register_other_already_exists: "User already registered."
+register_other_arguments: "Enter user nickname and discord id."
+register_other_success: "Account %minecraft_username% created."
+
 register_discord_arguments: "Enter the registration code."
 register_discord_title: "Register in %minecraft_servername%."
 register_discord_success: "Your account has been successfully linked with **%minecraft_username%**."

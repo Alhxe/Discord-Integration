@@ -5,6 +5,10 @@ author: Alhxe
 depend: [DICore]
 softdepend: [AuthMe, Multiverse-Core, LuckPerms, nLogin]
 commands:
+    diregisterother:
+        description: Register user from another user or console
+        usage: /diregisterother <username> <discord_id>
+        aliases: [ registerother ]
     diregister:
         description: User register
         usage: /diregister <discord_id>
@@ -22,6 +26,9 @@ commands:
         usage: /ejemplo
         aliases: [eje]
 permissions:
+    sdl.registerother:
+        description: Allow to register other player
+        default: op
     sdl.forcelogin:
         description: Allow to use Forcelogin
         default: op
