@@ -44,10 +44,10 @@ public class DBConnectionMysqlImpl implements DBConnection {
             String user = cm.getString("database_username");
             String password = cm.getString("database_password");
             String table = cm.getString("database_table");
-            String url = host + ":" + port + "/" + table + "?characterEncoding=utf8";
-            String autoRecconect = cm.getString("database_autoRecconect");
+            String autoReconnect = cm.getString("database_autoReconnect");
+            String url = host + ":" + port + "/" + table + "?characterEncoding=utf8" + "&" + "autoReconnect=" + autoReconnect;
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://" + url, user, password, autoRecconect);
+            connection = DriverManager.getConnection("jdbc:mysql://" + url, user, password);
             initTables();
         } catch (SQLException | ClassNotFoundException e) {
             MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE,"DBConnectionMysqlImpl - initDB",e);
