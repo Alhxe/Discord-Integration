@@ -44,7 +44,8 @@ public class DBConnectionMysqlImpl implements DBConnection {
             String user = cm.getString("database_username");
             String password = cm.getString("database_password");
             String table = cm.getString("database_table");
-            String url = host + ":" + port + "/" + table + "?characterEncoding=utf8";
+            String autoReconnect = cm.getString("database_autoReconnect");
+            String url = host + ":" + port + "/" + table + "?characterEncoding=utf8" + "&" + "autoReconnect=" + autoReconnect;
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection("jdbc:mysql://" + url, user, password);
             initTables();

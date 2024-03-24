@@ -29,6 +29,7 @@ database: 'sqlite'
 #database_host: 'host'
 #database_port: '3306'
 #database_table: 'dilogin'
+#database_autoReconnect: false # should the plugin try to automatically reconnect to database? true/false (default: false)
 
 #Messages
 discord_embed_color: '#466AC7'
