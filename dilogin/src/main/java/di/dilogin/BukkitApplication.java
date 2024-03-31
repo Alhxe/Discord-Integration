@@ -192,7 +192,7 @@ public class BukkitApplication extends JavaPlugin {
 	 */
 	private void initExtEvents() {
 		getServer().getPluginManager().registerEvents(new UserBlockEvents(), plugin);
-		getServer().getPluginManager().registerEvents(new UserLoginExternEventImpl(), plugin);
+		getServer().getPluginManager().registerEvents(new UserLoginExternEventImpl(plugin), plugin);
 	}
 
 	/**
