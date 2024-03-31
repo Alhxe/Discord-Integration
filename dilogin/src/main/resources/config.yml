@@ -19,6 +19,7 @@ messages_only_channel: false #If true, bot will not send private messages.
 #Sessions
 sessions: true
 session_time_min: 5
+session_persist: false #If true, after the server restarts, the sessions are maintained (they are saved in a file)
 
 #Database (sqlite or mysql)
 database: 'sqlite'

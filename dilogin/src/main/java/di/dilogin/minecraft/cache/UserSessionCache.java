@@ -7,6 +7,7 @@ import java.util.Optional;
 import di.dilogin.controller.MainController;
 import di.dilogin.dao.DIUserDao;
 import di.dilogin.entity.UserSession;
+import di.dilogin.minecraft.controller.EncryptionController;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -34,6 +35,14 @@ public class UserSessionCache {
 	 * @return true if user has a valid session.
 	 */
 	public static boolean isValid(String name, String ip) {
+		
+		//Check if session is in file
+		if (MainController.getDILoginController().isSessionFileEnabled() && 
+				SessionFileController.sessionExists(new UserSession(name, EncryptionController.encrypt(ip)))) {
+			SessionFileController.removeSession(name);
+			return true;
+		}
+		
 		Optional<UserSession> userOpt = getSessionByUserName(name);
 
 		if (!userOpt.isPresent())
@@ -90,7 +99,9 @@ public class UserSessionCache {
 				.getInt("session_time_min");
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.MINUTE, minutes);
-		sessions.put(new UserSession(name, ip), c.getTimeInMillis());
+		UserSession sesion = new UserSession(name,ip);
+		sessions.put(sesion, c.getTimeInMillis());
+		SessionFileController.addSession(sesion, c.getTimeInMillis());
 	}
 
 }

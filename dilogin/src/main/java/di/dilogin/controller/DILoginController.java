@@ -35,6 +35,15 @@ public interface DILoginController {
 	default boolean isSessionEnabled() {
 		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("sessions");
 	}
+	
+	/**
+	 * Check if the session file system is enabled.
+	 *
+	 * @return True if the system is active.
+	 */
+	default boolean isSessionFileEnabled() {
+		return MainController.getDIApi().getInternalController().getConfigManager().getBoolean("session_persist");
+	}
 
 	/**
 	 * Check if the rol syncro system is enabled.

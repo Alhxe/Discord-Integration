@@ -1,5 +1,7 @@
 package di.dilogin.entity;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +12,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class UserSession {
+public class UserSession implements Serializable{
+
+	/**
+	 * Default serial ID
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Player's name
