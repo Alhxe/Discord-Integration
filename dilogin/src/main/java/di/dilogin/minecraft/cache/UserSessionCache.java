@@ -101,7 +101,9 @@ public class UserSessionCache {
 		c.add(Calendar.MINUTE, minutes);
 		UserSession sesion = new UserSession(name,ip);
 		sessions.put(sesion, c.getTimeInMillis());
-		SessionFileController.addSession(sesion, c.getTimeInMillis());
+		if(MainController.getDILoginController().isSessionFileEnabled() && !SessionFileController.sessionExists(sesion)) {
+			SessionFileController.addSession(sesion, c.getTimeInMillis());
+		}
 	}
 
 }
