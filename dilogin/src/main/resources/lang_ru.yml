@@ -9,6 +9,10 @@ register_code_not_found: "Вы ввели неверный код."
 register_user_not_detected: "Не найден ни один пользователь с ID %user_discord_id%."
 register_submit: "Вам отправлено сообщение в Discord. Прочитайте его для завершения регистрации."
 
+register_other_already_exists: "&bИгрок уже зарегистрирован"
+register_other_arguments: "&7Введите никнейм и &bдискорд id &7пользователя"
+register_other_success: "&7Аккаунт &b%minecraft_username% &7создан"
+
 register_discord_arguments: "Введите код регистрации."
 register_discord_title: "Зарегистрируйтесь на сервере %minecraft_servername%."
 register_discord_success: "Ваш аккаунт успешно связан с **%minecraft_username%**."
