@@ -9,6 +9,7 @@ import di.dilogin.controller.MainController;
 import di.dilogin.controller.file.CommandAliasController;
 import di.dilogin.controller.file.LangController;
 import di.dilogin.dao.DIUserDao;
+import di.dilogin.discord.util.DiscordMessageDeleter;
 import di.dilogin.entity.CodeGenerator;
 import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
@@ -51,7 +52,8 @@ public class DiscordRegisterBungeeCommand implements DiscordCommand {
 		if (!MainController.getDILoginController().isRegisterByDiscordCommandEnabled())
 			return;
 
-		event.getMessage().delete().delay(Duration.ofSeconds(20)).queue();
+		DiscordMessageDeleter.deleteMessage(20, event.getMessage());
+		
 		if (userDao.containsDiscordId(event.getAuthor().getIdLong())) {
 			event.getChannel().sendMessage(LangController.getString("register_already_exists"))
 					.delay(Duration.ofSeconds(20)).flatMap(Message::delete).queue();

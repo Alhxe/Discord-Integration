@@ -3,8 +3,6 @@ package di.internal.utils;
 import java.awt.Color;
 import java.io.InputStream;
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -177,24 +175,37 @@ public class Util {
     public static Optional<User> getDiscordUserByUsernameAndTag(Guild guild, String string) {
         String name = string.substring(0, string.lastIndexOf('#'));
         String tag = string.substring(string.lastIndexOf('#') + 1);
-        Optional<Member> cachedUserOpt = Optional.ofNullable(guild.getMemberByTag(name, tag));
-        if (cachedUserOpt.isPresent())
-            return Optional.of(cachedUserOpt.get().getUser());
 
-        List<User> userOpt = new ArrayList<>();
-        guild.retrieveMembersByPrefix(name, 100).onSuccess(members -> {
-            Member member = members.stream().filter(m -> m.getUser().getAsTag().equals(tag)).findFirst().orElse(null);
-            if (member != null) {
-                userOpt.add(member.getUser());
-            } else {
+        Optional<Member> cachedUserOpt = Optional.ofNullable(guild.getMemberByTag(name, tag));
+        if (cachedUserOpt.isPresent()) {
+            return Optional.of(cachedUserOpt.get().getUser());
+        }
+
+        CompletableFuture<Optional<User>> futureResult = new CompletableFuture<>();
+
+        // Load members asynchronously
+        guild.loadMembers().onSuccess(members -> {
+            long count = members.stream()
+                               .filter(m -> m.getUser().getName().equalsIgnoreCase(name) && m.getUser().getAsTag().equals(tag))
+                               .count();
+
+            if (count > 100) {
                 System.out.println("More than 100 names have been found that begin with " + string);
-                // there are either more than 100 users with the same name or the member is not
-                // int he server
+                futureResult.complete(Optional.empty());
+            } else {
+                // If there are less than or equal to 100 members, try to find the user
+                Optional<Member> matchingMember = members.stream()
+                                                         .filter(m -> m.getUser().getName().equalsIgnoreCase(name) && m.getUser().getAsTag().equals(tag))
+                                                         .findFirst();
+                if (matchingMember.isPresent()) {
+                    futureResult.complete(Optional.of(matchingMember.get().getUser()));
+                } else {
+                    futureResult.complete(Optional.empty());
+                }
             }
         });
-        if (!userOpt.isEmpty())
-            return Optional.of(userOpt.get(0));
 
-        return Optional.empty();
+        // Wait for the result to be available and return it
+        return futureResult.join();
     }
 }

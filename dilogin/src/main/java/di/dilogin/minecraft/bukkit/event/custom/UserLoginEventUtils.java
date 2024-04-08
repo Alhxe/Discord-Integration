@@ -1,6 +1,7 @@
 package di.dilogin.minecraft.bukkit.event.custom;
 
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 
 import di.dicore.api.DIApi;
 import di.dilogin.controller.MainController;
@@ -10,6 +11,7 @@ import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
@@ -36,34 +38,47 @@ public interface UserLoginEventUtils {
 	/**
 	 * Send message to login.
 	 * 
-	 * @param player Minecraft player name.
+	 * @param playerName Minecraft player name.
 	 * @param user   Discord user.
 	 */
 	default void sendLoginMessageRequest(String playerName, User user) {
-		MessageEmbed embed = MainController.getDILoginController().getEmbedBase()
-				.setTitle(LangController.getString(playerName, "login_discord_title"))
-				.setDescription(LangController.getString(user, playerName, "login_discord_desc")).build();
+	    MessageEmbed embed = MainController.getDILoginController().getEmbedBase()
+	            .setTitle(LangController.getString(playerName, "login_discord_title"))
+	            .setDescription(LangController.getString(user, playerName, "login_discord_desc")).build();
 
-		boolean hasMessagesOnlyChannel = api.getInternalController().getConfigManager()
-				.contains("messages_only_channel");
+	    boolean hasMessagesOnlyChannel = api.getInternalController().getConfigManager()
+	            .contains("messages_only_channel");
 
-		if (hasMessagesOnlyChannel)
-			hasMessagesOnlyChannel = api.getInternalController().getConfigManager().getBoolean("messages_only_channel");
+	    if (hasMessagesOnlyChannel)
+	        hasMessagesOnlyChannel = api.getInternalController().getConfigManager().getBoolean("messages_only_channel");
 
-		if (hasMessagesOnlyChannel) {
-			sendServerMessage(user, playerName, embed);
-		} else {
-			user.openPrivateChannel().submit()
-					.thenAccept(channel -> channel.sendMessageEmbeds(embed).submit().thenAccept(message -> {
-						message.addReaction(EMOJI).queue();
-						TmpCache.addLogin(playerName, new TmpMessage(playerName, user, message, null));
-					}).whenComplete((message, error) -> {
-						if (error == null)
-							return;
+	    if (hasMessagesOnlyChannel) {
+	        sendServerMessage(user, playerName, embed);
+	    } else {
+	        user.openPrivateChannel().submit()
+	                .thenAccept(channel -> sendMessage(channel, embed, playerName, user))
+	                .exceptionally(e -> {
+	                    MainController.getDIApi().getInternalController().getLogger().severe(e.toString());
+	                    sendServerMessage(user, playerName, embed);
+	                    return null;
+	                });
+	    }
+	}
 
-						sendServerMessage(user, playerName, embed);
-					}));
-		}
+	/**
+	 * Send message using a PrivateChannel.
+	 * 
+	 * @param channel Discord PrivateChannel.
+	 * @param embed Embed message.
+	 * @param playerName Minecraft player name.
+	 * @param user Discord user.
+	 */
+	default void sendMessage(PrivateChannel channel, MessageEmbed embed, String playerName, User user) {
+	    CompletableFuture<Message> sendMessageFuture = channel.sendMessageEmbeds(embed).submit();
+	    sendMessageFuture.thenAccept(message -> {
+	        message.addReaction(EMOJI).queue();
+	        TmpCache.addLogin(playerName, new TmpMessage(playerName, user, message, null));
+	    });
 	}
 
 	/**
@@ -82,5 +97,4 @@ public interface UserLoginEventUtils {
 		servermessage.addReaction(EMOJI).queue();
 		TmpCache.addLogin(playerName, new TmpMessage(playerName, user, servermessage, null));
 	}
-
 }
