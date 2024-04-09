@@ -9,10 +9,13 @@ import di.dilogin.controller.MainController;
 import di.dilogin.controller.impl.DILoginControllerBungeeImpl;
 import di.dilogin.controller.impl.DiscordControllerImpl;
 import di.dilogin.discord.command.DiscordRegisterBungeeCommand;
+import di.dilogin.discord.command.UserInfoDiscordCommand;
 import di.dilogin.discord.event.UserReactionMessageBungeeEvent;
+import di.dilogin.discord.util.SlashCommandsConfiguration;
 import di.dilogin.minecraft.bungee.command.ForceLoginBungeeCommand;
 import di.dilogin.minecraft.bungee.command.RegisterBungeeCommand;
 import di.dilogin.minecraft.bungee.command.UnregisterBungeeCommand;
+import di.dilogin.minecraft.bungee.command.UserInfoBungeeCommand;
 import di.dilogin.minecraft.bungee.controller.ChannelMessageController;
 import di.dilogin.minecraft.bungee.event.UserLeaveBungeeEvent;
 import di.dilogin.minecraft.bungee.event.UserLoginBungeeEvent;
@@ -50,6 +53,7 @@ public class BungeeApplication extends Plugin {
 		DBController.getConnect();
 		initDiscordEvents();
 		initDiscordCommands();
+		initDiscordSlashCommands();
 		initCommands();
 		initEvents();
 
@@ -95,6 +99,7 @@ public class BungeeApplication extends Plugin {
 		this.getProxy().getPluginManager().registerCommand(this, new RegisterBungeeCommand());
 		this.getProxy().getPluginManager().registerCommand(this, new UnregisterBungeeCommand());
 		this.getProxy().getPluginManager().registerCommand(this, new ForceLoginBungeeCommand());
+		this.getProxy().getPluginManager().registerCommand(this, new UserInfoBungeeCommand());
 	}
 
 	/**
@@ -118,6 +123,17 @@ public class BungeeApplication extends Plugin {
 			this.getProxy().getPluginManager().registerListener(this, new LuckPermsLoginBungeeEvent());
 		}
 	}
+	
+	/**
+	 * Init slash commands.
+	 */
+	private void initDiscordSlashCommands() {
+		if (MainController.getDILoginController().isSlashCommandsEnabled()) {
+			SlashCommandsConfiguration.configureSlashCommands(api);
+			api.registerDiscordSlashCommand(new DiscordRegisterBungeeCommand());
+			api.registerDiscordSlashCommand(new UserInfoDiscordCommand());
+		}
+	}
 
 	/**
 	 * Records Discord events.
@@ -134,5 +150,6 @@ public class BungeeApplication extends Plugin {
 	 */
 	private void initDiscordCommands() {
 		api.registerDiscordCommand(new DiscordRegisterBungeeCommand());
+		api.registerDiscordCommand(new UserInfoDiscordCommand());
 	}
 }

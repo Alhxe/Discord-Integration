@@ -6,6 +6,9 @@ discord_server_prefix: '+'
 #Minecraft
 server_name: 'YourServerName'
 
+#BungeeCord
+bungeecord: false
+
 #Bot status
 status_type: 1
 status_content: 'There are %minecraft_players% players'

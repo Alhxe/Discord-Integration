@@ -111,4 +111,10 @@ public class DILoginControllerBungeeImpl implements DILoginController {
 	public boolean isLuckPermsEnabled() {
 		return BungeeApplication.getPlugin().getProxy().getPluginManager().getPlugin("LuckPerms") != null;
 	}
+	
+	@Override
+	public boolean isSlashCommandsEnabled() {
+		return api.getInternalController().getConfigManager().getBoolean("discord_slash_commands");
+	}
+
 }

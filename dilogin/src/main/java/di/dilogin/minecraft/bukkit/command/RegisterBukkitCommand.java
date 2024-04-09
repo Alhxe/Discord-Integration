@@ -20,8 +20,9 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 /**
  * Command to register as a user.
@@ -170,7 +171,7 @@ public class RegisterBukkitCommand implements CommandExecutor {
         } else {
             user.openPrivateChannel().submit()
                     .thenAccept(channel -> channel.sendMessageEmbeds(messageEmbed).submit().thenAccept(message -> {
-                        message.addReaction(emoji).queue();
+                        message.addReaction(Emoji.fromFormatted(emoji)).queue();
                         TmpCache.addRegister(player.getName(), new TmpMessage(player.getName(), user, message, code));
                     }).whenComplete((message, error) -> {
                         if (error == null)
@@ -197,7 +198,7 @@ public class RegisterBukkitCommand implements CommandExecutor {
         serverchannel.sendMessage(user.getAsMention()).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
 
         Message servermessage = serverchannel.sendMessageEmbeds(messageEmbed).submit().join();
-        servermessage.addReaction(emoji).queue();
+        servermessage.addReaction(Emoji.fromFormatted(emoji)).queue();
         TmpCache.addRegister(player.getName(), new TmpMessage(player.getName(), user, servermessage, code));
     }
 

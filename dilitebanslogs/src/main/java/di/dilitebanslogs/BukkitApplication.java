@@ -3,13 +3,13 @@ package di.dilitebanslogs;
 import java.util.Optional;
 import java.util.logging.Level;
 
-import di.dicore.api.impl.DIApiBukkitImpl;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import di.dicore.api.DIApi;
+import di.dicore.api.impl.DIApiBukkitImpl;
 import di.internal.exception.NoApiException;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 /**
  * Main class of DILiteBansLogs plugin.

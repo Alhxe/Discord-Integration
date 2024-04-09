@@ -2,8 +2,6 @@ package di.internal.entity;
 
 import java.util.Optional;
 
-import javax.security.auth.login.LoginException;
-
 import di.internal.controller.CoreController;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +38,11 @@ public class DiscordBot {
 	 * Bot CommandHandler.
 	 */
 	private CommandHandler commandHandler;
+	
+	/**
+	 * Bot SlashCommandHandler.
+	 */
+	private SlashCommandHandler slashCommandHandler;
 
 	/**
 	 * CoreController of plugin.
@@ -80,19 +83,19 @@ public class DiscordBot {
 	public void initBot(String token) {
 		try {
 			JDA api = JDABuilder.createDefault(token).enableIntents(GatewayIntent.GUILD_PRESENCES,
-					GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MEMBERS).build();
+					GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT).build();
 			api.awaitReady();
 			this.api = Optional.of(api);
 			onConnectToDiscord();
 			checkPermissions();
-		} catch (LoginException e) {
-			controller.getLogger().warning("The Bot failed to start. You have not entered a valid token.");
-			controller.disablePlugin();
 		} catch (InterruptedException e) {
 			controller.getLogger().warning("The Bot failed to start. Reason:");
 			e.printStackTrace();
 			controller.disablePlugin();
 			Thread.currentThread().interrupt();
+		} catch (Exception e) {
+			controller.getLogger().warning("The Bot failed to start. You have not entered a valid token.");
+			controller.disablePlugin();
 		}
 	}
 
@@ -102,7 +105,9 @@ public class DiscordBot {
 	private void onConnectToDiscord() {
 		controller.getLogger().info("Bot started");
 		this.commandHandler = new CommandHandler(prefix);
+		this.slashCommandHandler = new SlashCommandHandler();
 		api.get().addEventListener(this.commandHandler);
+		api.get().addEventListener(this.slashCommandHandler);
 	}
 
 	/**
@@ -122,7 +127,7 @@ public class DiscordBot {
 		if (bot.hasPermission(Permission.ADMINISTRATOR))
 			return;
 
-		if (!bot.hasPermission(Permission.MESSAGE_WRITE))
+		if (!bot.hasPermission(Permission.MESSAGE_SEND))
 			controller.getLogger()
 					.warning("The bot does not have writes permission on the server, this could cause a conflict!");
 

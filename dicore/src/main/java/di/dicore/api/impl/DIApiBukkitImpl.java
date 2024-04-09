@@ -8,6 +8,7 @@ import org.bukkit.plugin.Plugin;
 import di.internal.controller.CoreController;
 import di.internal.controller.InternalController;
 import di.internal.entity.DiscordCommand;
+import di.internal.entity.DiscordSlashCommand;
 import di.internal.exception.NoApiException;
 import lombok.Getter;
 
@@ -65,9 +66,14 @@ public class DIApiBukkitImpl implements DIApi {
     public void registerDiscordCommand(DiscordCommand command) {
         this.coreController.getBot().getCommandHandler().registerCommand(command);
     }
+    
+	@Override
+	public void registerDiscordSlashCommand(DiscordSlashCommand command) {
+		this.coreController.getBot().getSlashCommandHandler().registerCommand(command);
+	}
 
     @Override
     public boolean isBungeeDetected() {
-        return plugin.getServer().spigot().getConfig().getBoolean("settings.bungeecord");
+        return this.coreController.getConfigManager().getBoolean("bungeecord");
     }
 }

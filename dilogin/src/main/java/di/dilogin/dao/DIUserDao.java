@@ -1,5 +1,6 @@
 package di.dilogin.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import di.dilogin.entity.DIUser;
@@ -20,6 +21,12 @@ public interface DIUserDao {
 	 * @return Returns the user from the database.
 	 */
 	Optional<DIUser> get(long discordid);
+	
+	/**
+	 * @param discord Discord user id.
+	 * @return Returns the user list from the database.
+	 */
+	Optional<List<DIUser>> getList(long discordid);
 
 	/**
 	 * Add a user to the database.
@@ -59,4 +66,10 @@ public interface DIUserDao {
 	 * @return How many minecraft accounts you have linked to your discord account.
 	 */
 	int getDiscordUserAccounts(long discordId);
+	
+	/**
+	 * 
+	 * @return All users registered
+	 */
+	List<DIUser> getAllUsers();
 }

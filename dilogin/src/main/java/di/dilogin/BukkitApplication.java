@@ -14,10 +14,14 @@ import di.dilogin.controller.MainController;
 import di.dilogin.controller.impl.DILoginControllerBukkitImpl;
 import di.dilogin.controller.impl.DiscordControllerImpl;
 import di.dilogin.discord.command.DiscordRegisterBukkitCommand;
+import di.dilogin.discord.command.UserInfoDiscordCommand;
+import di.dilogin.discord.command.UserListDiscordCommand;
 import di.dilogin.discord.event.UserReactionMessageBukkitEvent;
+import di.dilogin.discord.util.SlashCommandsConfiguration;
 import di.dilogin.minecraft.bukkit.command.ForceLoginBukkitCommand;
 import di.dilogin.minecraft.bukkit.command.RegisterBukkitCommand;
 import di.dilogin.minecraft.bukkit.command.UnregisterBukkitCommand;
+import di.dilogin.minecraft.bukkit.command.UserInfoBukkitCommand;
 import di.dilogin.minecraft.bukkit.event.UserBlockEvents;
 import di.dilogin.minecraft.bukkit.event.UserLeaveEvent;
 import di.dilogin.minecraft.bukkit.event.UserPreLoginEvent;
@@ -67,6 +71,7 @@ public class BukkitApplication extends JavaPlugin {
 			initInternEvents();
 			initDiscordEvents();
 			initDiscordCommands();
+			initDiscordSlashCommands();
 		} else {
 			// If api is in proxy.
 			initExtEvents();
@@ -94,6 +99,7 @@ public class BukkitApplication extends JavaPlugin {
 		initUniqueCommand("diregister", new RegisterBukkitCommand());
 		initUniqueCommand("forcelogin", new ForceLoginBukkitCommand());
 		initUniqueCommand("unregister", new UnregisterBukkitCommand());
+		initUniqueCommand("userinfo", new UserInfoBukkitCommand());
 	}
 
 	/**
@@ -106,49 +112,6 @@ public class BukkitApplication extends JavaPlugin {
 		Objects.requireNonNull(getCommand(command))
 				.setPermissionMessage(api.getCoreController().getLangManager().getString("no_permission"));
 	}
-
-//	/**
-//	 * Add the commands to bukkit.
-//	 */
-//	private void initInternCommands() {
-//		registerCommand("diregister", CommandAliasController.getAlias("register_command"),
-//				new RegisterBukkitCommand());
-//		registerCommand("forcelogin", CommandAliasController.getAlias("forcelogin_command"),
-//				new ForceLoginBukkitCommand());
-//		registerCommand("unregister", CommandAliasController.getAlias("unregister_command"),
-//				new UnregisterBukkitCommand());
-//	}
-//
-//	/**
-//	 * Add to each command that the server must respond in case it does not have
-//	 * permissions.
-//	 *
-//	 * @param command  Bukkit command.
-//	 * @param executor CommandExecutor.
-//	 */
-//	public void registerCommand(String command, String alias, CommandExecutor executor) {
-//		try {
-//			List<String> aliases = new ArrayList<>();
-//			aliases.add(alias);
-//			PluginCommand plc = null;
-//			Class<?> cl = PluginCommand.class;
-//			Constructor<?> cons = null;
-//			cons = cl.getDeclaredConstructor(String.class, Plugin.class);
-//			cons.setAccessible(true);
-//			plc = (PluginCommand) cons.newInstance(command, this);
-//			plc.setAliases(aliases);
-//			final Field bukkitCommandMap = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-//
-//			bukkitCommandMap.setAccessible(true);
-//			CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
-//			commandMap.register(command, plc);
-//			plc.register(commandMap);
-//			plc.setPermissionMessage(api.getCoreController().getLangManager().getString("no_permission"));
-//			plc.setExecutor(executor);
-//		} catch (Exception e) {
-//			getServer().getLogger().log(Level.SEVERE, "registerCommand", e);
-//		}
-//	}
 
 	/**
 	 * Connect with DIApi.
@@ -210,6 +173,19 @@ public class BukkitApplication extends JavaPlugin {
 	 */
 	private void initDiscordCommands() {
 		api.registerDiscordCommand(new DiscordRegisterBukkitCommand());
+		api.registerDiscordCommand(new UserInfoDiscordCommand());
+		api.registerDiscordCommand(new UserListDiscordCommand());
+	}
+	
+	/**
+	 * Init slash commands.
+	 */
+	private void initDiscordSlashCommands() {
+		if (MainController.getDILoginController().isSlashCommandsEnabled()) {
+			SlashCommandsConfiguration.configureSlashCommands(api);
+			api.registerDiscordSlashCommand(new DiscordRegisterBukkitCommand());
+			api.registerDiscordSlashCommand(new UserInfoDiscordCommand());
+		}
 	}
 
 	/**

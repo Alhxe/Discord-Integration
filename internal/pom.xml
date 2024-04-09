@@ -36,12 +36,16 @@
 		<dependency>
 			<groupId>net.dv8tion</groupId>
 			<artifactId>JDA</artifactId>
-			<version>4.4.0_350</version>
+			<version>5.0.0-beta.22</version>
 			<scope>provided</scope>
 			<exclusions>
 				<exclusion>
 					<artifactId>slf4j-api</artifactId>
 					<groupId>org.slf4j</groupId>
+				</exclusion>
+				<exclusion>
+					<groupId>club.minnced</groupId>
+					<artifactId>opus-java</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

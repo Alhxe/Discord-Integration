@@ -3,6 +3,7 @@ package di.dicore.api;
 import di.internal.controller.CoreController;
 import di.internal.controller.InternalController;
 import di.internal.entity.DiscordCommand;
+import di.internal.entity.DiscordSlashCommand;
 
 public interface DIApi {
 
@@ -29,6 +30,13 @@ public interface DIApi {
      * @param command Discord command.
      */
     void registerDiscordCommand(DiscordCommand command);
+     
+    /**
+     * Add a new slash command to command handler.
+     *
+     * @param command  Slash discord command.
+     */
+    void registerDiscordSlashCommand(DiscordSlashCommand command);
 
     /**
      * @return true if bungee is enabled. False if server is bungeecord or is bukkit and is bungeecord settings false.

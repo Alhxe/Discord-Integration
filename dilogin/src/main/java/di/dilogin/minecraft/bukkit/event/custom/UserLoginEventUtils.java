@@ -11,9 +11,10 @@ import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.PrivateChannel;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 
 /**
  * Class that implements useful methods for login events.
@@ -33,7 +34,7 @@ public interface UserLoginEventUtils {
 	/**
 	 * Reactions emoji.
 	 */
-	String EMOJI = api.getInternalController().getConfigManager().getString("discord_embed_emoji");
+	Emoji EMOJI = Emoji.fromFormatted(api.getInternalController().getConfigManager().getString("discord_embed_emoji"));
 	
 	/**
 	 * Send message to login.

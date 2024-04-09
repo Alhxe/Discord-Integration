@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 
@@ -164,4 +166,49 @@ public class DIUserDaoSqlImpl implements DIUserDao {
 		return Optional.empty();
 	}
 
+	@Override
+	public Optional<List<DIUser>> getList(long discordId) {
+	    String query = "SELECT username FROM user WHERE discord_id = ?;";
+	    List<DIUser> userList = new ArrayList<>();
+	    try (PreparedStatement ps = conn.prepareStatement(query)) {
+	        ps.setLong(1, discordId);
+	        try (ResultSet rs = ps.executeQuery()) {
+	            while (rs.next()) {
+	                String playerName = rs.getString(1);
+	                Optional<User> userOpt = Util.getDiscordUserById(api.getCoreController().getDiscordApi().get(), discordId);
+	                if (userOpt.isPresent()) {
+	                    userList.add(new DIUser(playerName, userOpt));
+	                } else {
+	                    api.getInternalController().getLogger().warning("Unable to get discord user with id " + discordId);
+	                }
+	            }
+	        }
+	    } catch (SQLException e) {
+	        MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE, "DIUserDaoSqlImpl", e);
+	    }
+	    return Optional.of(userList);
+	}
+	
+	@Override
+	public List<DIUser> getAllUsers() {
+	    String query = "SELECT username, discord_id FROM user;";
+	    List<DIUser> userList = new ArrayList<>();
+	    try (PreparedStatement ps = conn.prepareStatement(query)) {
+	        try (ResultSet rs = ps.executeQuery()) {
+	            while (rs.next()) {
+	                String playerName = rs.getString("username");
+	                long discordId = rs.getLong("discord_id");
+	                Optional<User> userOpt = Util.getDiscordUserById(api.getCoreController().getDiscordApi().get(), discordId);
+	                if (userOpt.isPresent()) {
+	                    userList.add(new DIUser(playerName, userOpt));
+	                } else {
+	                    api.getInternalController().getLogger().warning("Unable to get discord user with id " + discordId);
+	                }
+	            }
+	        }
+	    } catch (SQLException e) {
+	        MainController.getDIApi().getInternalController().getLogger().log(Level.SEVERE, "DIUserDaoSqlImpl", e);
+	    }
+	    return userList;
+	}
 }

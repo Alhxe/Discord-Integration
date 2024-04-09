@@ -1,3 +1,4 @@
+##DO NOT USE SPACES FOR SLASH COMMANDS
 #Register
 register_request: "&cTo register, use the command &6%register_command% &con our discord server or use here &6/register <discord_id>"
 register_request_copy: "Copy command on clipboard"
@@ -16,6 +17,11 @@ register_discord_title: "Register in %minecraft_servername%."
 register_discord_success: "Your account has been successfully linked with **%minecraft_username%**."
 register_discord_desc: "To complete your registration you just have to react to this message. Once you accept, **%minecraft_username%** s account will be linked with this Discord user."
 
+register_discord_slash_description: "Register user into minecraft server"
+register_discord_slash_option_code_title: "Code"
+register_discord_slash_option_code_description: "Enter the code received from the minecraft server"
+
+
 #Login
 login_request: "Log in from the message I sent you on Discord."
 login_success: "&cLogin successfully!"
@@ -28,18 +34,49 @@ login_discord_title: "Login to %minecraft_servername%."
 login_discord_desc: "Request to connect to the server from **%minecraft_username%** account. Not you? Report it on our server."
 login_discord_success: "**%minecraft_username%** account login has been approved."
 
+
 #GobalCommands
 no_player: "No user found whose nickname is %nick%"
 user_not_registered: "User %minecraft_username% is not registered."
+
 
 #ForceLogin
 forcelogin_user_connected: "User has already logged in."
 forcelogin_success: "The %minecraft_username% session has started."
 login_discord_forced: "Login has been forced."
 
+
+#UserInfo
+userinfo_discord_no_argument: "No argument provided. Please provide a valid Discord user ID, mention, or Minecraft username."
+userinfo_discord_no_valid: "User information not found. Please make sure the provided Discord user ID, mention, or Minecraft username is correct."
+userinfo_discord_title: "User info"
+userinfo_discord_player_name: "Player Name"
+userinfo_discord_id: "Discord ID"
+userinfo_discord_tag: "Mention"
+
+userinfo_discord_slash_description: "Get the information associated with the user"
+userinfo_discord_slash_option_minecraftname_title: "Player_name"
+userinfo_discord_slash_option_minecraftname_description: "Username in minecraft"
+userinfo_discord_slash_option_discordid_title: "discord_id"
+userinfo_discord_slash_option_discordid_description: "Discord user ID"
+userinfo_discord_slash_option_mention_title: "mention"
+userinfo_discord_slash_option_mention_description: "User mention (@user format)"
+
+
+#UserList
+userlist_discord_title: "User list"
+userlist_discord_description: "Total users %totalusers%"
+userlist_discord_footer: "Page %page%/%total%"
+
+userlist_discord_slash_description: "User registered list"
+userlist_discord_slash_option_page_title: "Page"
+userlist_discord_slash_option_page_description: "Value of the page"
+
+
 #Unregister
 unregister_kick: "Your account has been unregistered."
 unregister_success: "%minecraft_username% s account has been deleted."
+
 
 #Authme
 register_without_authentication: "In order to register with an existing account, you must first login."

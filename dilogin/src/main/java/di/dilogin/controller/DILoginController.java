@@ -140,6 +140,11 @@ public interface DILoginController {
 	 * @return true is LuckPerms is enabled.
 	 */
 	boolean isLuckPermsEnabled();
+	
+	/**
+	 * @return true is SlashCommands is enabled.
+	 */
+	boolean isSlashCommandsEnabled();
 
 	/**
 	 * Start the player session.
@@ -172,9 +177,9 @@ public interface DILoginController {
 
 		JDA jda = api.getCoreController().getDiscordApi().get();
 		Guild guild = api.getCoreController().getGuild().get();
-
-		Member member = guild.retrieveMember(user, true).complete();
-		Member bot = guild.retrieveMember(jda.getSelfUser(), true).complete();
+		
+		Member member = guild.retrieveMemberById(user.getIdLong()).complete();
+		Member bot = guild.retrieveMemberById(jda.getSelfUser().getIdLong()).complete();
 
 		if (bot.canInteract(member)) {
 			member.modifyNickname(playerName).queue();

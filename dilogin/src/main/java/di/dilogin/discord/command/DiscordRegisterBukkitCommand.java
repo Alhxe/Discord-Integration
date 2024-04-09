@@ -19,25 +19,36 @@ import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.cache.TmpCache;
 import di.dilogin.minecraft.ext.authme.AuthmeHook;
 import di.internal.entity.DiscordCommand;
+import di.internal.entity.DiscordSlashCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class DiscordRegisterBukkitCommand implements DiscordCommand {
+public class DiscordRegisterBukkitCommand implements DiscordCommand, DiscordSlashCommand {
 
     private final DIUserDao userDao = MainController.getDILoginController().getDIUserDao();
     private final DIApi api = MainController.getDIApi();
 
     @Override
     public void execute(String message, MessageReceivedEvent event) {
+        execute(event, message, event.getAuthor());
+    }
+    
+    @Override
+    public void execute(SlashCommandInteractionEvent event) {
+    	event.deferReply().setEphemeral(true).queue();
+        execute(event, event.getOption("code").getAsString(), event.getUser());
+    }
+
+    private void execute(Object event, String message, User discordUser) {
         if (!MainController.getDILoginController().isRegisterByDiscordCommandEnabled()) return;
 
-        DiscordMessageDeleter.deleteMessage(20, event.getMessage());
+        DiscordMessageDeleter.deleteMessage(20, event instanceof MessageReceivedEvent ? ((MessageReceivedEvent) event).getMessage() : null);
 
-        User discordUser = event.getAuthor();
         if (userDao.containsDiscordId(discordUser.getIdLong())) {
             sendTempMessage(event, LangController.getString("register_already_exists"));
             return;
@@ -67,13 +78,13 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
         }
 
         String password = CodeGenerator.getCode(8, api);
-        player.sendMessage(LangController.getString(event.getAuthor(), player.getName(), "register_success").replace("%authme_password%", password));
-        sendMessageToDiscord(player, discordUser);
+        player.sendMessage(LangController.getString(discordUser, player.getName(), "register_success").replace("%authme_password%", password));
+        sendTempEmbedMessage(event, getEmbedMessage(player, discordUser));
         TmpCache.removeRegister(player.getName());
         userDao.add(new DIUser(player.getName(), Optional.of(discordUser)));
 
         if (MainController.getDILoginController().isRegisterGiveRoleEnabled()) {
-            giveRolesToUser(event.getMember(), player.getName());
+            giveRolesToUser(event instanceof MessageReceivedEvent ? ((MessageReceivedEvent) event).getMember() : null, player.getName());
         }
 
         if (MainController.getDILoginController().isAuthmeEnabled()) {
@@ -83,36 +94,34 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
         }
     }
 
-    private void sendTempMessage(MessageReceivedEvent event, String message) {
-        event.getChannel().sendMessage(message).delay(Duration.ofSeconds(20)).flatMap(Message::delete).queue();
+    private void sendTempMessage(Object event, String message) {
+        if (event instanceof MessageReceivedEvent) {
+            ((MessageReceivedEvent) event).getChannel().sendMessage(message).delay(Duration.ofSeconds(20)).flatMap(Message::delete).queue();
+        } else if (event instanceof SlashCommandInteractionEvent) {
+            ((SlashCommandInteractionEvent) event).getHook().sendMessage(message).setEphemeral(true).queue();
+        }
+    }
+    
+    private void sendTempEmbedMessage(Object event, MessageEmbed message) {
+        if (event instanceof MessageReceivedEvent) {
+            ((MessageReceivedEvent) event).getChannel().sendMessageEmbeds(message).delay(Duration.ofSeconds(20)).flatMap(Message::delete).queue();
+        } else if (event instanceof SlashCommandInteractionEvent) {
+            ((SlashCommandInteractionEvent) event).getHook().sendMessageEmbeds(message).setEphemeral(true).queue();
+        }
     }
 
-    private Optional<Player> catchRegister(String message, MessageReceivedEvent event) {
+    private Optional<Player> catchRegister(String message, Object event) {
         Optional<String> code = registerByCode(message);
         if (code.isPresent()) {
             return Optional.ofNullable(BukkitApplication.getPlugin().getServer().getPlayer(code.get()));
         }
 
-        return registerByUserName(message, event);
+        return Optional.empty();
     }
 
     private Optional<String> registerByCode(String message) {
         Optional<TmpMessage> tmpMessageOpt = TmpCache.getRegisterMessageByCode(message);
         return tmpMessageOpt.map(TmpMessage::getPlayer);
-    }
-
-    private Optional<Player> registerByUserName(String message, MessageReceivedEvent event) {
-        Optional<Player> playerOpt = Optional.ofNullable(BukkitApplication.getPlugin().getServer().getPlayer(message));
-        if (!playerOpt.isPresent()) {
-            sendTempMessage(event, LangController.getString("register_already_exists"));
-        }
-        return playerOpt;
-    }
-
-    private void sendMessageToDiscord(Player player, User discordUser) {
-        MessageEmbed messageEmbed = getEmbedMessage(player, discordUser);
-        discordUser.openPrivateChannel().submit()
-                .thenAccept(channel -> channel.sendMessageEmbeds(messageEmbed).delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue());
     }
 
     private MessageEmbed getEmbedMessage(Player player, User discordUser) {
@@ -125,7 +134,7 @@ public class DiscordRegisterBukkitCommand implements DiscordCommand {
     private void giveRolesToUser(Member member, String playerName) {
         List<Long> roleList = MainController.getDIApi().getInternalController().getConfigManager().getLongList("register_give_role_list");
         for (long roleId : roleList) {
-            MainController.getDiscordController().giveRole(String.valueOf(roleId), member.getId(), "by registering on the server.");
+            MainController.getDiscordController().giveRole(String.valueOf(roleId), member != null ? member.getId() : null, "by registering on the server.");
         }    
     }
 

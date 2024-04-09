@@ -21,6 +21,7 @@ sessions: true
 session_time_min: 5
 session_persist: false #If true, after the server restarts, the sessions are maintained (they are saved in a file)
 
+
 #Database (sqlite or mysql)
 database: 'sqlite'
 
@@ -54,6 +55,12 @@ register_required_role_id: discord_role_id
 #Remember bot need to have more permissions than regular users.
 syncro_enable: false
 
+#Enable or disable slash commands
+discord_slash_commands: true
+
+
+
+
 ######### LuckPerms
 
 #If u make true, only the following luckperm roles can register/login
@@ -62,13 +69,15 @@ register_role_list:
        - admin
        - moderator
 
-#Sync minecraft server roles with discord. register_role_list_enabledhe minecrregister_role_liste corresponding one will be given on discord and vice versa.
+#Sync minecraft server roles with discord. Corresponding one will be given on discord and vice versa.
 syncro_role_enabled: false
 syncro_role_list:
        - discord_rol_id: luckperms_group_name
        - another_rol_id: another_luckperms_group_name
 #EXAMPLE
 #- 927608230627119184: admin
+
+
 
 
 ##################### ONLY FOR BUKKIT/SPIGOT/PAPER... (NOT WORK WHEN SERVER IS ON BUNGEE PROXY)
@@ -81,6 +90,9 @@ teleport_z: 272
 teleport_world: world
 teleport_yaw: 2.4
 teleport_pitch: 12.9
+
+
+
 
 
 ##################### BUNGEE OPTIONS

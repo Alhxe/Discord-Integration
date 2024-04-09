@@ -117,4 +117,9 @@ public class DILoginControllerBukkitImpl implements DILoginController {
 		return BukkitApplication.getPlugin().getServer().getPluginManager().isPluginEnabled("LuckPerms");
 	}
 
+	@Override
+	public boolean isSlashCommandsEnabled() {
+		return api.getInternalController().getConfigManager().getBoolean("discord_slash_commands");
+	}
+
 }

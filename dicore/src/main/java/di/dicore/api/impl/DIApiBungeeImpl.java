@@ -6,6 +6,7 @@ import di.internal.controller.CoreController;
 import di.internal.controller.InternalController;
 import di.internal.controller.impl.InternalControllerBungeeImpl;
 import di.internal.entity.DiscordCommand;
+import di.internal.entity.DiscordSlashCommand;
 import di.internal.exception.NoApiException;
 import lombok.Getter;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -57,6 +58,11 @@ public class DIApiBungeeImpl implements DIApi {
     public void registerDiscordCommand(DiscordCommand command) {
         this.coreController.getBot().getCommandHandler().registerCommand(command);
     }
+    
+	@Override
+	public void registerDiscordSlashCommand(DiscordSlashCommand command) {
+		this.coreController.getBot().getSlashCommandHandler().registerCommand(command);
+	}
 
     @Override
     public boolean isBungeeDetected() {
