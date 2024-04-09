@@ -4,7 +4,7 @@
 register_command: register
 forcelogin_command: forcelogin
 unregister_command: unregister
-unserinfo_command: userinfo
+userinfo_command: userinfo
 
 #Discord
 register_discord_command: register
