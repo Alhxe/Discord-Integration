@@ -22,7 +22,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 /**
  * Class for handling discord login or registration events for Bungee.
  */
-public class UserReactionMessageBungeeEvent extends ListenerAdapter {
+public class UserLoginReactionMessageBungeeEvent extends ListenerAdapter {
 
 	/**
 	 * Database user DAO.

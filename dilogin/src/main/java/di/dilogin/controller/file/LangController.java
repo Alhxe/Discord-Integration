@@ -40,7 +40,7 @@ public class LangController {
 	 */
 	public static String getString(DIUser user, String path) {
 		return getString(user.getPlayerName(), path).replace("%discriminated_discord_name%",
-				user.getPlayerDiscord().get().getName() + "#" + user.getPlayerDiscord().get().getDiscriminator());
+				user.getPlayerDiscord().get().getName());
 	}
 
 	/**
@@ -60,6 +60,6 @@ public class LangController {
 	 */
 	public static String getString(User user, String playerName, String path) {
 		return getString(playerName, path).replace("%discriminated_discord_name%",
-				user.getName() + "#" + user.getDiscriminator());
+				user.getName());
 	}
 }

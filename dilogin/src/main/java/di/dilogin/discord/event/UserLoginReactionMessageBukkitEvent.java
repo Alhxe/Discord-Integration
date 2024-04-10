@@ -24,7 +24,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 /**
  * Class for handling discord login or registration events for Bukkit.
  */
-public class UserReactionMessageBukkitEvent extends ListenerAdapter {
+public class UserLoginReactionMessageBukkitEvent extends ListenerAdapter {
 
     /**
      * Database user DAO.

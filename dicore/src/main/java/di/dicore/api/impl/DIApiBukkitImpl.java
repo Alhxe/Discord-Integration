@@ -52,7 +52,7 @@ public class DIApiBukkitImpl implements DIApi {
         this.plugin = plugin;
         this.coreController = BukkitApplication.getInternalController();
         this.internalController = new InternalControllerBukkitImpl(plugin, coreController, classLoader,
-                configFile, langFile, isBungeeDetected());
+                configFile, langFile, isInternalBungeeDetected());
 
         plugin.getLogger().info("DICore has successfully connected with " + plugin.getName());
     }
@@ -74,6 +74,10 @@ public class DIApiBukkitImpl implements DIApi {
 
     @Override
     public boolean isBungeeDetected() {
-        return this.coreController.getConfigManager().getBoolean("bungeecord");
+       return this.internalController.getConfigManager().getBoolean("bungeecord");
+    }
+    
+    private boolean isInternalBungeeDetected() {
+    	return plugin.getServer().spigot().getConfig().getBoolean("settings.bungeecord");
     }
 }

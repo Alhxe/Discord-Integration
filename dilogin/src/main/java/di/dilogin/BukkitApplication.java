@@ -16,7 +16,7 @@ import di.dilogin.controller.impl.DiscordControllerImpl;
 import di.dilogin.discord.command.DiscordRegisterBukkitCommand;
 import di.dilogin.discord.command.UserInfoDiscordCommand;
 import di.dilogin.discord.command.UserListDiscordCommand;
-import di.dilogin.discord.event.UserReactionMessageBukkitEvent;
+import di.dilogin.discord.event.UserLoginReactionMessageBukkitEvent;
 import di.dilogin.discord.util.SlashCommandsConfiguration;
 import di.dilogin.minecraft.bukkit.command.ForceLoginBukkitCommand;
 import di.dilogin.minecraft.bukkit.command.RegisterBukkitCommand;
@@ -162,7 +162,7 @@ public class BukkitApplication extends JavaPlugin {
 	 * Records Discord events.
 	 */
 	private void initDiscordEvents() {
-		api.registerDiscordEvent(new UserReactionMessageBukkitEvent());
+		api.registerDiscordEvent(new UserLoginReactionMessageBukkitEvent());
 		if (MainController.getDILoginController().isSyncroRolEnabled()) {
 			api.registerDiscordEvent(new GuildMemberRoleEvent());
 		}
@@ -185,6 +185,7 @@ public class BukkitApplication extends JavaPlugin {
 			SlashCommandsConfiguration.configureSlashCommands(api);
 			api.registerDiscordSlashCommand(new DiscordRegisterBukkitCommand());
 			api.registerDiscordSlashCommand(new UserInfoDiscordCommand());
+			api.registerDiscordSlashCommand(new UserListDiscordCommand());
 		}
 	}
 

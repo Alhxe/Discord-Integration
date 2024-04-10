@@ -1,6 +1,6 @@
 name: DILogin
 main: di.dilogin.BungeeApplication
-version: 4.3.1-beta1
+version: 4.3.1-beta2
 author: Alhxe
 depends: [DICore]
 softdepends: [AuthMe, Multiverse-Core, LuckPerms, nLogin]
@@ -8,16 +8,16 @@ softdepends: [AuthMe, Multiverse-Core, LuckPerms, nLogin]
 permissions:
     sdl.forcelogin:
         description: Allow to use Forcelogin
-        default: op
+        default: admin
     sdl.unregister:
         description: Allow to use Unregister
-        default: op
+        default: admin
     sdl.userinfo:
         description: User info
-        default: op
+        default: admin
     sdl.*:
         description: Allow to use all permissions
-        default: op
+        default: admin
         children:
             sdl.forcelogin: true
             sdl.unregister: true

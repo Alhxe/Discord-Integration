@@ -1,3 +1,6 @@
+#BungeeCord
+bungeecord: false
+
 #Discord
 log_channel: CHANNEL_ID
 #send_to_pm: true NOT AVAIABLE YET

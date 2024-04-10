@@ -40,10 +40,11 @@ public class UserListDiscordCommand implements DiscordCommand, DiscordSlashComma
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         int pageNumber = 1;
-        String pageOption = event.getOption("page").getAsString();
+        event.deferReply().setEphemeral(true).queue();
         try {
+        	String pageOption = event.getOption("page").getAsString();
             pageNumber = Integer.parseInt(pageOption);
-        } catch (NumberFormatException ignored) {
+        } catch (Exception e) {
             // Invalid page number format, default to page 1
         }
         sendPage(event, pageNumber);
@@ -89,7 +90,7 @@ public class UserListDiscordCommand implements DiscordCommand, DiscordSlashComma
         if (event instanceof MessageReceivedEvent) {
             ((MessageReceivedEvent) event).getChannel().sendMessageEmbeds(messageEmbed).queue();
         } else if (event instanceof SlashCommandInteractionEvent) {
-            ((SlashCommandInteractionEvent) event).getHook().sendMessageEmbeds(messageEmbed).queue();
+            ((SlashCommandInteractionEvent) event).getHook().sendMessageEmbeds(messageEmbed).setEphemeral(true).queue();
         }
     }
 

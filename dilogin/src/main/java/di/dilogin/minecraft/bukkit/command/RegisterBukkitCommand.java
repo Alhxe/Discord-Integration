@@ -139,11 +139,8 @@ public class RegisterBukkitCommand implements CommandExecutor {
      * @return Possible user.
      */
     private Optional<User> registerByName(String string) {
-        if (!usernameAndTagIsValid(string))
-            return Optional.empty();
-
         Guild guild = api.getCoreController().getGuild().get();
-        return Util.getDiscordUserByUsernameAndTag(guild, string);
+        return Util.getDiscordUserByUsername(guild, string);
     }
 
     /**
@@ -257,33 +254,6 @@ public class RegisterBukkitCommand implements CommandExecutor {
     private static boolean isIdValid(String id) {
         try {
             Long.parseLong(id);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * Check if the discord user name and tag is valid.
-     * 
-     * @param string Discord username with discriminator.
-     * @return True if username with tag is valid.
-     */
-    private static boolean usernameAndTagIsValid(String string) {
-        if (!string.contains("#"))
-            return false;
-
-        String name = string.substring(0, string.lastIndexOf('#'));
-        String tag = string.substring(string.lastIndexOf('#') + 1);
-
-        if (name.length() < 1)
-            return false;
-
-        if (tag.length() != 4)
-            return false;
-
-        try {
-            Integer.parseInt(tag);
             return true;
         } catch (Exception e) {
             return false;

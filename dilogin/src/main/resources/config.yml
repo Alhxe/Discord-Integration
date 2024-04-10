@@ -1,4 +1,6 @@
 ##################### GLOBAL OPTIONS
+#BungeeCord
+bungeecord: false
 
 #Discord
 channel: CHANNEL_ID

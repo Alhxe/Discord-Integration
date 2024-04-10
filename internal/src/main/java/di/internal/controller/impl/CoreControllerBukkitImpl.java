@@ -56,8 +56,8 @@ public class CoreControllerBukkitImpl implements PluginController, CoreControlle
 		this.classLoader = classLoader;
 		this.dataFolder = plugin.getDataFolder();
 		this.configManager = new ConfigManager(this, plugin.getDataFolder(), classLoader, isDataInBungee);
-		this.langManager = new YamlManager(this, "lang.yml", plugin.getDataFolder(), classLoader, isDataInBungee);
-		if (!isDataInBungee) {
+		this.langManager = new YamlManager(this, "lang.yml", plugin.getDataFolder(), classLoader, configManager.getBoolean("bungeecord"));
+		if (!configManager.getBoolean("bungeecord")) {
 			this.bot = initBot();
 		}
 	}

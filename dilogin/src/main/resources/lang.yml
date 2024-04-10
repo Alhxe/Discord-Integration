@@ -1,6 +1,6 @@
 ##DO NOT USE SPACES FOR SLASH COMMANDS
 #Register
-register_request: "&cTo register, use the command &6%register_command% &con our discord server or use here &6/register <discord_id>"
+register_request: "&cTo register, use the command &6%register_command% &con our discord server or use here &6/register <discord_username> or <discord_id>"
 register_request_copy: "Copy command on clipboard"
 register_already_exists: "You are already registered."
 register_arguments: "Enter the discord user id."
@@ -8,7 +8,7 @@ register_success: "This account has been successfully linked with %discriminated
 register_kick_time: "You have taken too long to register."
 register_max_accounts: "You have reached the account limit."
 register_code_not_found: "The code you have entered is not valid."
-register_user_not_detected: "I have not found any user with id %user_discord_id%."
+register_user_not_detected: "I have not found any user with username/id %user_discord_id%."
 register_submit: "I have sent you a message on Discord. Read it to be able to finish the registration."
 register_opt_request: "To link this account with your Discord user, use the %register_command% command on our Discord server."
 

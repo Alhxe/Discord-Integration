@@ -78,10 +78,17 @@ public class InternalControllerBukkitImpl implements PluginController, InternalC
 		if (configFile && langFile)
 			this.dataFolder = getInternalPluginDataFolder(coreController);
 		if (configFile)
-			this.configManager = new ConfigManager(this, dataFolder, classLoader, isDataInBungee);
-		if (langFile)
-			this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader, isDataInBungee);
+			this.configManager = new ConfigManager(this, dataFolder, classLoader, false);
 
+		boolean isBungeeCord = this.configManager.getBoolean("bungeecord");
+
+		if (configFile)
+			this.configManager = new ConfigManager(this, dataFolder, classLoader, isBungeeCord);
+		if (langFile)
+			this.langManager = new YamlManager(this, "lang.yml", dataFolder, classLoader, isBungeeCord);
+
+		this.configManager.setBoolean("bungeecord", isBungeeCord);
+		
 		this.channelController = new ChannelControllerBukkitImpl(plugin);
 
 	}

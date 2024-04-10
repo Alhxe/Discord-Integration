@@ -176,4 +176,24 @@ public class ConfigManager implements FileController {
     	List<Long> r = yaml.load(yamlData.get(path).toString());
     	return r;
     }
+    
+    /**
+     * Sets a boolean value for the specified key in the YAML data map if the key exists and the current value associated with the key is a boolean.
+     *
+     * @param key      The key for which the boolean value needs to be set.
+     * @param value    The boolean value to set.
+     */
+    public void setBoolean(String key, boolean value) {
+        if (yamlData.containsKey(key)) {
+            Object existingValue = yamlData.get(key);
+            if (existingValue instanceof Boolean) {
+                yamlData.put(key, value);
+            } else {
+            	controller.getLogger().log(Level.SEVERE, "The existing value is not a boolean.");
+            }
+        } else {
+        	controller.getLogger().log(Level.SEVERE, "The specified key does not exist in the map.");
+        }
+    }
+
 }

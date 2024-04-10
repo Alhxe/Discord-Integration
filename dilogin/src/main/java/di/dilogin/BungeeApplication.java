@@ -10,7 +10,8 @@ import di.dilogin.controller.impl.DILoginControllerBungeeImpl;
 import di.dilogin.controller.impl.DiscordControllerImpl;
 import di.dilogin.discord.command.DiscordRegisterBungeeCommand;
 import di.dilogin.discord.command.UserInfoDiscordCommand;
-import di.dilogin.discord.event.UserReactionMessageBungeeEvent;
+import di.dilogin.discord.command.UserListDiscordCommand;
+import di.dilogin.discord.event.UserLoginReactionMessageBungeeEvent;
 import di.dilogin.discord.util.SlashCommandsConfiguration;
 import di.dilogin.minecraft.bungee.command.ForceLoginBungeeCommand;
 import di.dilogin.minecraft.bungee.command.RegisterBungeeCommand;
@@ -132,6 +133,7 @@ public class BungeeApplication extends Plugin {
 			SlashCommandsConfiguration.configureSlashCommands(api);
 			api.registerDiscordSlashCommand(new DiscordRegisterBungeeCommand());
 			api.registerDiscordSlashCommand(new UserInfoDiscordCommand());
+			api.registerDiscordSlashCommand(new UserListDiscordCommand());
 		}
 	}
 
@@ -139,7 +141,7 @@ public class BungeeApplication extends Plugin {
 	 * Records Discord events.
 	 */
 	private void initDiscordEvents() {
-		api.registerDiscordEvent(new UserReactionMessageBungeeEvent());
+		api.registerDiscordEvent(new UserLoginReactionMessageBungeeEvent());
 		if (MainController.getDILoginController().isSyncroRolEnabled()) {
 
 		}

@@ -1,3 +1,6 @@
+#BungeeCord (remember turn true or false in every config file)
+bungeecord: false
+
 #Discord
 bot_token: YOUR_TOKEN
 discord_server_id: SERVER_ID
@@ -5,9 +8,6 @@ discord_server_prefix: '+'
 
 #Minecraft
 server_name: 'YourServerName'
-
-#BungeeCord
-bungeecord: false
 
 #Bot status
 status_type: 1
