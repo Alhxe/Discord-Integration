@@ -1,12 +1,12 @@
 #Register
-register_request: "&cДля регистрации используйте &6%register_command% &cна нашем Discord сервере или используйте команду &6/register <discord_id>"
+register_request: "&cЧтобы зарегистрироваться, используйте команду &6%register_command% &cна нашем сервере discord или используйте здесь &6/register <discord_никнейм> или <discord_id>"
 register_already_exists: "Вы уже зарегистрированы."
 register_arguments: "Введите ID пользователя Discord."
 register_success: "Этот аккаунт успешно связан с %discriminated_discord_name%."
 register_kick_time: "Истекло время для регистрации."
 register_max_accounts: "Вы достигли максимального количества регистраций для этого аккаунта."
 register_code_not_found: "Вы ввели неверный код."
-register_user_not_detected: "Не найден ни один пользователь с ID %user_discord_id%."
+register_user_not_detected: "Я не нашел ни одного пользователя с discord никнеймом/id %user_discord_id%."
 register_submit: "Вам отправлено сообщение в Discord. Прочитайте его для завершения регистрации."
 
 register_discord_arguments: "Введите код регистрации."
@@ -39,3 +39,5 @@ unregister_success: "Аккаунт %minecraft_username% был удалён."
 
 #Authme
 register_opt_request: "Чтобы связать этот аккаунт с вашим Discord, используйте %register_command% на нашем Discord сервере."
+
+
