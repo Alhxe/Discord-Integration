@@ -39,5 +39,3 @@ unregister_success: "Аккаунт %minecraft_username% был удалён."
 
 #Authme
 register_opt_request: "Чтобы связать этот аккаунт с вашим Discord, используйте %register_command% на нашем Discord сервере."
-
-
