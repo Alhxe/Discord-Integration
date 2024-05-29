@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 
 /**
@@ -38,6 +39,7 @@ public class DiscordMessageDeleter {
             @Override
             public void run() {
                 try {
+                	if((message.isFromType(ChannelType.PRIVATE) && message.getAuthor().isBot()) || !message.isFromType(ChannelType.PRIVATE)) {
                     message.delete().queue(
                             success -> timer.cancel(), // Cancel the timer after successful deletion
                             failure -> {
@@ -47,6 +49,7 @@ public class DiscordMessageDeleter {
                                     timer.cancel(); // Cancel the timer if no more retries are left
                                 }
                             });
+                	}
                 } catch (ErrorResponseException e) {
                     if (retries > 0) {
                         scheduleRetry(message, RETRY_DELAY_SECONDS, retries - 1); // Retry after the delay
