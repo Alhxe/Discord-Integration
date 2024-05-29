@@ -1,6 +1,7 @@
 package di.dilogin.discord.event;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
 
 import di.dicore.api.DIApi;
@@ -12,6 +13,7 @@ import di.dilogin.entity.DIUser;
 import di.dilogin.entity.TmpMessage;
 import di.dilogin.minecraft.bungee.BungeeUtil;
 import di.dilogin.minecraft.cache.TmpCache;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -80,6 +82,11 @@ public class UserLoginReactionMessageBungeeEvent extends ListenerAdapter {
 			return;
 
 		String password = CodeGenerator.getCode(8, api);
+		
+        if (MainController.getDILoginController().isRegisterGiveRoleEnabled()) {
+            giveRolesToUser(event instanceof MessageReactionAddEvent ? ((MessageReactionAddEvent) event).getMember() : null, player.getName());
+        }
+        
 		player.sendMessage(LangController.getString(user, player.getName(), "register_success")
 				.replace("%authme_password%", password));
 		TmpCache.removeRegister(player.getName());
@@ -143,5 +150,18 @@ public class UserLoginReactionMessageBungeeEvent extends ListenerAdapter {
 				.setTitle(LangController.getString(user, player.getName(), "login_discord_title"))
 				.setDescription(LangController.getString(user, player.getName(), "login_discord_success")).build();
 	}
+	
+    /**
+	 * Give roles defined on config file
+	 * 
+	 * @param member     Discord member
+	 * @param playerName Bukkiet player name
+	 */
+    private void giveRolesToUser(Member member, String playerName) {
+        List<Long> roleList = MainController.getDIApi().getInternalController().getConfigManager().getLongList("register_give_role_list");
+        for (long roleId : roleList) {
+            MainController.getDiscordController().giveRole(String.valueOf(roleId), member != null ? member.getId() : null, "by registering on the server.");
+        }    
+    }
 
 }
