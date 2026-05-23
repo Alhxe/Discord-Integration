@@ -1,0 +1,122 @@
+##НЕ ИСПОЛЬЗУЙТЕ ПРОБЕЛЫ В SLASH-КОМАНДАХ
+#Register
+register_request: "&cДля регистрации используйте команду &6%register_command% &cна нашем Discord-сервере или здесь &6/register <discord_username> или <discord_id>"
+register_request_copy: "Скопировать команду в буфер обмена"
+register_already_exists: "Вы уже зарегистрированы."
+register_arguments: "Введите ID пользователя Discord."
+register_success: "Этот аккаунт был успешно привязан к %discriminated_discord_name%."
+register_kick_time: "Вы слишком долго регистрировались."
+register_max_accounts: "Вы достигли лимита аккаунтов."
+register_code_not_found: "Введённый вами код недействителен."
+register_user_not_detected: "Не удалось найти пользователя с именем/ID %user_discord_id%."
+register_submit: "Я отправил вам сообщение в Discord. Прочитайте его, чтобы завершить регистрацию."
+register_opt_request: "Чтобы привязать этот аккаунт к вашему Discord-пользователю, используйте команду %register_command% на нашем Discord-сервере."
+
+register_discord_arguments: "Введите код регистрации."
+
+#Prejoin verification flow
+prejoin_register_kick_message: "&eВы не зарегистрированы.&r\n\nОтправьте &6+confirm %code%&r боту в Discord, чтобы завершить регистрацию, затем переподключитесь.\n&7Код действителен %ttl_min% минут."
+prejoin_confirm_missing_code: "Использование: +confirm <code>"
+prejoin_confirm_invalid_code: "Этот код недействителен или срок его действия истёк. Переподключитесь к серверу, чтобы получить новый."
+prejoin_confirm_success: "Регистрация подтверждена для %minecraft_username%. Теперь вы можете подключиться к серверу."
+prejoin_rate_limited: "&cСлишком много попыток подключения.&r Подождите минуту перед повторной попыткой."
+prejoin_login_kick_message: "&eТребуется подтверждение входа.&r\n\nПроверьте личные сообщения Discord и отреагируйте на сообщение, которое мы только что отправили, затем переподключитесь."
+prejoin_login_kick_pending: "&eПодтверждение входа уже ожидает ответа.&r Проверьте личные сообщения Discord и подтвердите вход, затем переподключитесь."
+prejoin_login_kick_unavailable: "&cСейчас невозможно отправить подтверждение входа.&r Discord недоступен или ваш аккаунт больше не привязан."
+prejoin_login_dm_title: "Запрос входа для %minecraft_servername%"
+prejoin_login_dm_desc: "**%minecraft_username%** пытается подключиться. Отреагируйте на это сообщение, чтобы разрешить вход. Если это не вы, проигнорируйте сообщение и сообщите администрации."
+prejoin_login_dm_confirmed: "Вход подтверждён. Теперь переподключитесь к серверу."
+prejoin_authme_password_dm: "Ваш пароль AuthMe для **%minecraft_username%**: `%authme_password%`. Переподключитесь в течение льготного периода, чтобы активировать его."
+prejoin_login_dm_button_approve: "Подтвердить"
+prejoin_login_dm_button_deny: "Отклонить"
+prejoin_login_dm_expired: "Срок действия этого запроса на вход истёк. Переподключитесь к серверу, чтобы получить новый."
+prejoin_login_dm_not_owner: "Только привязанный аккаунт может подтвердить этот вход."
+prejoin_login_dm_denied: "Вход отклонён. Если это были не вы, смените пароль Discord."
+
+#Welcome DM
+welcome_dm_title: "Добро пожаловать на %minecraft_servername%!"
+welcome_dm_body: "Привет, **%minecraft_username%**, ваш аккаунт привязан.\n\nОзнакомьтесь с каналом правил и приятной игры!"
+
+#Status embed
+status_embed_title: "%minecraft_servername% — текущий статус"
+status_embed_players_field: "Игроки"
+status_embed_tps_field: "TPS"
+status_embed_uptime_field: "Время работы"
+status_embed_online_list_field: "Онлайн"
+
+#Whitelist gate
+whitelist_gate_embed_title: "Запрос на whitelist"
+whitelist_gate_embed_desc: "Игрок **%minecraft_username%** (IP `%ip%`) попытался подключиться. Подтвердите, чтобы добавить его в whitelist, или отклоните запрос."
+whitelist_gate_button_approve: "Подтвердить"
+whitelist_gate_button_deny: "Отклонить"
+whitelist_gate_no_permission: "У вас нет роли, необходимой для подтверждения запросов."
+whitelist_gate_approved: "%admin% подтвердил доступ для **%minecraft_username%**. Теперь он может подключиться."
+whitelist_gate_denied: "%admin% отклонил запрос для %minecraft_username%."
+register_discord_title: "Регистрация на %minecraft_servername%."
+register_discord_success: "Ваш аккаунт был успешно привязан к **%minecraft_username%**."
+register_discord_desc: "Чтобы завершить регистрацию, вам нужно просто отреагировать на это сообщение. После подтверждения аккаунт **%minecraft_username%** будет привязан к этому Discord-пользователю."
+
+register_discord_slash_description: "Зарегистрировать пользователя на Minecraft-сервере"
+register_discord_slash_option_code_title: "Код"
+register_discord_slash_option_code_description: "Введите код, полученный с Minecraft-сервера"
+
+
+#Login
+login_request: "Войдите через сообщение, которое я отправил вам в Discord."
+login_success: "&cВход выполнен успешно!"
+login_kick_time: "Вы слишком долго подключались."
+login_without_role_required: "У вас нет необходимой роли для доступа к серверу."
+login_not_authorized: "Ваше имя пользователя уже авторизовано на этом сервере."
+login_user_not_discord: "Зарегистрированный пользователь отсутствует на сервере."
+
+login_discord_title: "Вход на %minecraft_servername%."
+login_discord_desc: "Запрос на подключение к серверу от аккаунта **%minecraft_username%**. Это не вы? Сообщите об этом на нашем сервере."
+login_discord_success: "Вход в аккаунт **%minecraft_username%** был подтверждён."
+
+
+#GobalCommands
+no_player: "Пользователь с ником %nick% не найден"
+user_not_registered: "Пользователь %minecraft_username% не зарегистрирован."
+
+
+#ForceLogin
+forcelogin_user_connected: "Пользователь уже вошёл."
+forcelogin_success: "Сессия %minecraft_username% была запущена."
+login_discord_forced: "Вход был принудительно выполнен."
+
+
+#UserInfo
+userinfo_discord_no_argument: "Аргумент не указан. Укажите корректный ID пользователя Discord, упоминание или имя пользователя Minecraft."
+userinfo_discord_no_valid: "Информация о пользователе не найдена. Убедитесь, что указанный ID Discord, упоминание или имя пользователя Minecraft верны."
+userinfo_discord_title: "Информация о пользователе"
+userinfo_discord_player_name: "Имя игрока"
+userinfo_discord_id: "Discord ID"
+userinfo_discord_tag: "Упоминание"
+
+userinfo_discord_slash_description: "Получить информацию, связанную с пользователем"
+userinfo_discord_slash_option_minecraftname_title: "Имя_игрока"
+userinfo_discord_slash_option_minecraftname_description: "Имя пользователя в Minecraft"
+userinfo_discord_slash_option_discordid_title: "discord_id"
+userinfo_discord_slash_option_discordid_description: "ID пользователя Discord"
+userinfo_discord_slash_option_mention_title: "mention"
+userinfo_discord_slash_option_mention_description: "Упоминание пользователя (формат @user)"
+
+
+#UserList
+userlist_discord_title: "Список пользователей"
+userlist_discord_description: "Всего пользователей: %totalusers%"
+userlist_discord_users_label: "Пользователи"
+userlist_discord_footer: "Страница %page%/%total%"
+
+userlist_discord_slash_description: "Список зарегистрированных пользователей"
+userlist_discord_slash_option_page_title: "Страница"
+userlist_discord_slash_option_page_description: "Номер страницы"
+
+
+#Unregister
+unregister_kick: "Ваш аккаунт был отвязан."
+unregister_success: "Аккаунт %minecraft_username% был удалён."
+
+
+#Authme
+register_without_authentication: "Чтобы зарегистрироваться с существующим аккаунтом, вы должны сначала войти."
